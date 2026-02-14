@@ -14,7 +14,7 @@ from autokg_rag.ingest.manifest import build_raw_documents
 from autokg_rag.ingest.pdf_parse import (
     discover_pdf_files,
     extract_title,
-    parse_pdf_pages,
+    parse_pdf_pages_clean,
     sha256_for_file,
 )
 from autokg_rag.ingest.sectionize import detect_section
@@ -175,7 +175,7 @@ def run_ingest_pipeline(
             sha = sha256_for_file(file_path)
             doc_id = f"doc_{sha[:12]}"
 
-            page_texts = parse_pdf_pages(file_path)
+            page_texts = parse_pdf_pages_clean(file_path)
             title = extract_title(page_texts, fallback=file_path.stem)
 
             document = DocumentRecord(

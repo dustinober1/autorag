@@ -48,6 +48,10 @@ def _load_env_overrides() -> dict[str, Any]:
         "AUTORAG_RERANKER_ENABLED": ("reranker_enabled", _parse_env_bool),
         "AUTORAG_RERANKER_MODEL": ("reranker_model", str),
         "AUTORAG_RERANKER_CANDIDATE_K": ("reranker_candidate_k", _parse_env_int),
+        "AUTORAG_ANSWER_USE_LOCAL": ("answer_use_local", _parse_env_bool),
+        "AUTORAG_ANSWER_MODEL": ("answer_model", str),
+        "AUTORAG_ANSWER_TEMPERATURE": ("answer_temperature", _parse_env_float),
+        "AUTORAG_ANSWER_MAX_TOKENS": ("answer_max_tokens", _parse_env_int),
     }
 
     resolved: dict[str, Any] = {}

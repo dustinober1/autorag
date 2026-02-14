@@ -5,28 +5,38 @@ from __future__ import annotations
 import json
 import os
 import re
+from collections.abc import Mapping
+from dataclasses import asdict
 from pathlib import Path
-from typing import Annotated
+from typing import Annotated, cast
 
 import typer
 from pydantic import ValidationError
 
-from autokg_rag.answer import compose_grounded_answer
-from autokg_rag.app_api import demo_build_endpoint, run_artifact_retention, run_demo_doctor
+from autokg_rag.answer import OllamaSentenceAdapter, compose_grounded_answer
+from autokg_rag.app_api import (
+    demo_build_endpoint,
+    query_service,
+    run_artifact_retention,
+    run_demo_doctor,
+)
 from autokg_rag.config import Settings, load_settings
+from autokg_rag.eval.ab_test import RetrievalMode, format_ab_test_report, run_ab_test
 from autokg_rag.eval.dataset_builder import (
     bootstrap_starter_dataset,
     generate_dataset_from_chunks,
 )
+from autokg_rag.eval.judge import JudgementCriteria, evaluate_with_llm_judge
 from autokg_rag.eval.matrix_runner import run_matrix
+from autokg_rag.eval.metrics import ndcg_at_k, recall_at_k
 from autokg_rag.eval.report import build_experiment_report
 from autokg_rag.exceptions import AutoRAGError
 from autokg_rag.ingest import run_ingest_pipeline, run_smoke_pipeline
 from autokg_rag.io import read_jsonl_rows, write_jsonl_rows
 from autokg_rag.kg.pipeline import run_build_kg_pipeline, run_graph_query_pipeline
 from autokg_rag.retrieval import run_hybrid_query_pipeline
-from autokg_rag.schemas.api import AnswerPayload, QueryMode
-from autokg_rag.schemas.records import HybridHitRecord
+from autokg_rag.schemas.api import AnswerPayload, QueryMode, QueryRequest
+from autokg_rag.schemas.records import EvalQuestionRecord, HybridHitRecord, RetrievalHitRecord
 from autokg_rag.vector.pipeline import run_index_vector_pipeline, run_vector_query_pipeline
 from autokg_rag.vector.store import load_chunks
 
@@ -62,6 +72,17 @@ def _run_hybrid_query(
     )
 
 
+def _coerce_float(value: object) -> float:
+    if isinstance(value, (int, float)):
+        return float(value)
+    if isinstance(value, str) and value.strip():
+        try:
+            return float(value)
+        except ValueError:
+            return 0.0
+    return 0.0
+
+
 def _persist_answer_payload(payload: AnswerPayload, artifact_dir: Path) -> None:
     existing_answers = read_jsonl_rows(artifact_dir / "answers.jsonl")
     write_jsonl_rows(
@@ -75,6 +96,30 @@ def _persist_answer_payload(payload: AnswerPayload, artifact_dir: Path) -> None:
         existing_citation_trace
         + [trace.model_dump(mode="json") for trace in payload.citation_trace],
     )
+
+
+def _load_eval_questions(path: Path) -> list[EvalQuestionRecord]:
+    rows = read_jsonl_rows(path)
+    questions = [EvalQuestionRecord.model_validate(row) for row in rows]
+    if not questions:
+        raise AutoRAGError(f"Evaluation questions file is empty: {path}")
+    return questions
+
+
+def _context_for_hits(
+    *,
+    hits: list[HybridHitRecord] | list[RetrievalHitRecord],
+    chunk_by_id: Mapping[str, object],
+) -> list[str]:
+    context: list[str] = []
+    for hit in hits:
+        chunk = chunk_by_id.get(hit.chunk_id)
+        if chunk is None:
+            continue
+        chunk_text = getattr(chunk, "chunk_text", "")
+        if isinstance(chunk_text, str) and chunk_text.strip():
+            context.append(chunk_text)
+    return context
 
 
 @app.callback()
@@ -284,6 +329,10 @@ def answer(
     question: Annotated[str, typer.Option(..., "--question")],
     mode: Annotated[QueryMode, typer.Option("--mode")] = "hybrid",
     top_k: Annotated[int, typer.Option("--top-k", min=1)] = 8,
+    use_local: Annotated[bool, typer.Option("--use-local/--no-use-local")] = False,
+    local_model: Annotated[str | None, typer.Option("--local-model")] = None,
+    local_temperature: Annotated[float | None, typer.Option("--local-temperature")] = None,
+    local_max_tokens: Annotated[int | None, typer.Option("--local-max-tokens")] = None,
 ) -> None:
     """Compose grounded answer payload and persist answer artifacts."""
 
@@ -304,11 +353,39 @@ def answer(
         artifact_dir = settings.artifact_root / run_id
         chunk_by_id = {chunk.chunk_id: chunk for chunk in load_chunks(artifact_dir)}
 
+        sentence_adapter = None
+        resolved_use_local = use_local or bool(getattr(settings, "answer_use_local", False))
+        if resolved_use_local:
+            configured_model = str(getattr(settings, "answer_model", "llama3")).strip() or "llama3"
+            configured_temperature = float(getattr(settings, "answer_temperature", 0.2))
+            configured_max_tokens = max(1, int(getattr(settings, "answer_max_tokens", 512)))
+            resolved_model = (
+                local_model.strip()
+                if isinstance(local_model, str) and local_model.strip()
+                else configured_model
+            )
+            sentence_adapter = OllamaSentenceAdapter(
+                model=resolved_model,
+                temperature=(
+                    configured_temperature
+                    if local_temperature is None
+                    else float(local_temperature)
+                ),
+                max_tokens=(
+                    configured_max_tokens
+                    if local_max_tokens is None
+                    else max(1, int(local_max_tokens))
+                ),
+                ollama_base_url=settings.ollama_base_url,
+                ollama_timeout_seconds=settings.ollama_timeout_seconds,
+            )
+
         answer_record, citation_trace = compose_grounded_answer(
             question=question,
             hits=hits,
             chunk_by_id=chunk_by_id,
             max_sentences=3,
+            sentence_adapter=sentence_adapter,
         )
         payload = AnswerPayload(
             answer=answer_record,
@@ -593,6 +670,242 @@ def eval_report(run_id: Annotated[str, typer.Option(..., "--run-id")]) -> None:
         run_id = _validated_run_id(run_id)
         summary = build_experiment_report(run_id=run_id)
         typer.echo(json.dumps(summary, indent=2))
+    except (AutoRAGError, ValidationError, OSError, ValueError) as exc:
+        typer.secho(str(exc), err=True, fg=typer.colors.RED)
+        raise typer.Exit(code=1) from exc
+
+
+@eval_app.command("judge")
+def eval_judge(
+    run_id: Annotated[str, typer.Option(..., "--run-id")],
+    questions: Annotated[
+        Path,
+        typer.Option(
+            ...,
+            "--questions",
+            exists=True,
+            file_okay=True,
+            dir_okay=False,
+        ),
+    ],
+    mode: Annotated[QueryMode, typer.Option("--mode")] = "hybrid",
+    top_k: Annotated[int, typer.Option("--top-k", min=1)] = 8,
+    model: Annotated[str | None, typer.Option("--model")] = None,
+    criteria: Annotated[list[str] | None, typer.Option("--criteria")] = None,
+    out: Annotated[Path | None, typer.Option("--out")] = None,
+) -> None:
+    """Run LLM-as-a-judge scoring on answer outputs for a question set."""
+
+    try:
+        run_id = _validated_run_id(run_id)
+        settings = load_settings()
+        question_rows = _load_eval_questions(questions)
+        artifact_dir = settings.artifact_root / run_id
+        chunk_by_id = {chunk.chunk_id: chunk for chunk in load_chunks(artifact_dir)}
+        resolved_model = (
+            model.strip()
+            if isinstance(model, str) and model.strip()
+            else str(getattr(settings, "answer_model", "llama3"))
+        )
+        resolved_criteria_raw = criteria or ["correctness", "helpfulness", "groundedness"]
+        allowed_criteria = {"correctness", "helpfulness", "groundedness", "coherence"}
+        invalid_criteria = [
+            criterion for criterion in resolved_criteria_raw if criterion not in allowed_criteria
+        ]
+        if invalid_criteria:
+            raise AutoRAGError(
+                "Invalid --criteria values: "
+                f"{', '.join(sorted(set(invalid_criteria)))}. "
+                "Use correctness, helpfulness, groundedness, or coherence."
+            )
+        resolved_criteria = [
+            cast(JudgementCriteria, criterion) for criterion in resolved_criteria_raw
+        ]
+        output_path = out or (artifact_dir / "judge_results.jsonl")
+
+        rows: list[dict[str, object]] = []
+        for question in question_rows:
+            payload = query_service(
+                request=QueryRequest(
+                    run_id=run_id,
+                    question=question.question,
+                    mode=mode,
+                    top_k=top_k,
+                ),
+                settings=settings,
+            )
+            context = _context_for_hits(hits=payload.hits, chunk_by_id=chunk_by_id)
+            judgements: list[dict[str, object]] = []
+            for criterion in resolved_criteria:
+                judgement = evaluate_with_llm_judge(
+                    question=question.question,
+                    answer=payload.answer.answer_text,
+                    context=context,
+                    criteria=criterion,
+                    model=resolved_model,
+                    ollama_base_url=settings.ollama_base_url,
+                    timeout_seconds=settings.ollama_timeout_seconds,
+                )
+                judgements.append(judgement)
+
+            total_score = 0.0
+            for judgement in judgements:
+                total_score += _coerce_float(judgement.get("score", 0.0))
+            avg_score = total_score / float(len(judgements)) if judgements else 0.0
+            rows.append(
+                {
+                    "run_id": run_id,
+                    "question_id": question.question_id,
+                    "question": question.question,
+                    "mode": mode,
+                    "top_k": top_k,
+                    "answer": payload.answer.answer_text,
+                    "judgements": judgements,
+                    "avg_score": avg_score,
+                }
+            )
+
+        write_jsonl_rows(output_path, rows)
+        summary = {
+            "run_id": run_id,
+            "questions": len(rows),
+            "mode": mode,
+            "top_k": top_k,
+            "model": resolved_model,
+            "criteria": [str(item) for item in resolved_criteria],
+            "output_path": str(output_path),
+            "avg_score": (
+                sum(_coerce_float(row.get("avg_score", 0.0)) for row in rows)
+                / float(len(rows))
+                if rows
+                else 0.0
+            ),
+        }
+        typer.echo(json.dumps(summary, indent=2))
+    except (AutoRAGError, ValidationError, OSError, ValueError) as exc:
+        typer.secho(str(exc), err=True, fg=typer.colors.RED)
+        raise typer.Exit(code=1) from exc
+
+
+@eval_app.command("ab-test")
+def eval_ab_test(
+    run_id: Annotated[str, typer.Option(..., "--run-id")],
+    questions: Annotated[
+        Path,
+        typer.Option(
+            ...,
+            "--questions",
+            exists=True,
+            file_okay=True,
+            dir_okay=False,
+        ),
+    ],
+    mode_a: Annotated[RetrievalMode, typer.Option("--mode-a")] = "vector",
+    mode_b: Annotated[RetrievalMode, typer.Option("--mode-b")] = "hybrid",
+    metric: Annotated[str, typer.Option("--metric")] = "recall_at_k",
+    k: Annotated[int, typer.Option("--k", min=1)] = 5,
+    n_runs: Annotated[int, typer.Option("--n-runs", min=1)] = 1,
+    out: Annotated[Path | None, typer.Option("--out")] = None,
+) -> None:
+    """Run retrieval A/B testing and write markdown report."""
+
+    try:
+        run_id = _validated_run_id(run_id)
+        settings = load_settings()
+        question_rows = _load_eval_questions(questions)
+        question_payloads = [row.model_dump(mode="json") for row in question_rows]
+
+        def _run_retrieval(
+            question_row: dict[str, object],
+            mode: RetrievalMode,
+            top_k: int,
+        ) -> dict[str, float]:
+            question_record = EvalQuestionRecord.model_validate(question_row)
+            if mode == "vector":
+                hits_for_metrics = run_vector_query_pipeline(
+                    run_id=run_id,
+                    question=question_record.question,
+                    top_k=top_k,
+                    settings=settings,
+                )
+            elif mode == "graph":
+                hit_rows, _answer = run_graph_query_pipeline(
+                    run_id=run_id,
+                    question=question_record.question,
+                    top_k=top_k,
+                    settings=settings,
+                )
+                hits_for_metrics = [
+                    RetrievalHitRecord.model_validate(row) for row in hit_rows
+                ]
+            else:
+                hybrid_hits = run_hybrid_query_pipeline(
+                    run_id=run_id,
+                    question=question_record.question,
+                    top_k=top_k,
+                    settings=settings,
+                )
+                hits_for_metrics = [
+                    RetrievalHitRecord(
+                        question_id=hit.question_id,
+                        rank=hit.rank,
+                        score=hit.score,
+                        chunk_id=hit.chunk_id,
+                        doc_id=hit.doc_id,
+                        page=hit.page,
+                        section=hit.section,
+                    )
+                    for hit in hybrid_hits
+                ]
+
+            return {
+                "recall_at_k": recall_at_k(
+                    gold_citations=question_record.gold_citations,
+                    hits=hits_for_metrics,
+                    k=top_k,
+                ),
+                "ndcg_at_k": ndcg_at_k(
+                    gold_citations=question_record.gold_citations,
+                    hits=hits_for_metrics,
+                    k=top_k,
+                ),
+            }
+
+        result = run_ab_test(
+            questions=question_payloads,
+            run_retrieval_fn=_run_retrieval,
+            mode_a=mode_a,
+            mode_b=mode_b,
+            metric=metric,
+            k=k,
+            n_runs=n_runs,
+        )
+        markdown = format_ab_test_report(result)
+
+        reports_dir = Path("reports/experiments")
+        reports_dir.mkdir(parents=True, exist_ok=True)
+        output_path = out or reports_dir / f"ab_test_{run_id}_{mode_a}_vs_{mode_b}.md"
+        output_path.write_text(markdown, encoding="utf-8")
+        json_path = output_path.with_suffix(".json")
+        json_path.write_text(json.dumps(asdict(result), indent=2), encoding="utf-8")
+
+        typer.echo(
+            json.dumps(
+                {
+                    "run_id": run_id,
+                    "mode_a": mode_a,
+                    "mode_b": mode_b,
+                    "metric": metric,
+                    "k": k,
+                    "n_runs": n_runs,
+                    "report_path": str(output_path),
+                    "json_path": str(json_path),
+                    "winner": result.winner,
+                    "p_value": result.p_value,
+                },
+                indent=2,
+            )
+        )
     except (AutoRAGError, ValidationError, OSError, ValueError) as exc:
         typer.secho(str(exc), err=True, fg=typer.colors.RED)
         raise typer.Exit(code=1) from exc

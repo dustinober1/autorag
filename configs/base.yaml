@@ -1,7 +1,7 @@
 artifact_root: data/artifacts
 log_level: INFO
-chunk_word_size: 120
-chunk_word_overlap: 20
+chunk_word_size: 512
+chunk_word_overlap: 50
 sentence_window_size: 5
 semantic_similarity_breakpoint: 0.2
 embedding_dim: 256
@@ -12,6 +12,10 @@ ollama_timeout_seconds: 30
 reranker_enabled: false
 reranker_model: llama3:8b
 reranker_candidate_k: 30
+answer_use_local: false
+answer_model: llama3
+answer_temperature: 0.2
+answer_max_tokens: 512
 graph_max_depth: 2
 hybrid_vector_weight: 0.6
 hybrid_graph_weight: 0.4

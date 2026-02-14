@@ -22,6 +22,14 @@ Requires-Dist: pytest>=8.3.0; extra == "dev"
 Requires-Dist: ruff>=0.9.0; extra == "dev"
 Requires-Dist: mypy>=1.13.0; extra == "dev"
 Requires-Dist: types-PyYAML>=6.0.12.20250915; extra == "dev"
+Provides-Extra: vision
+Requires-Dist: pdfplumber>=0.11.0; extra == "vision"
+Requires-Dist: pillow>=10.0.0; extra == "vision"
+Requires-Dist: torch>=2.0.0; extra == "vision"
+Requires-Dist: transformers>=4.30.0; extra == "vision"
+Provides-Extra: local-llm
+Requires-Dist: ollama>=0.4.7; extra == "local-llm"
+Requires-Dist: scipy>=1.13.0; extra == "local-llm"
 
 # AutoRAG
 
@@ -48,5 +56,19 @@ uv sync
 make demo-build
 uv run streamlit run app/streamlit_app.py
 ```
+
+## Optional Ollama Demo Path
+
+Default local/CI flow remains `make demo-build`.  
+For the optional Ollama path:
+
+```bash
+ollama serve
+ollama pull embeddinggemma:300m
+ollama pull llama3:8b
+make demo-build-ollama
+```
+
+Matrix sample config: `configs/experiments/matrix_ollama.yaml`
 
 Runbook: `docs/runbook.md`

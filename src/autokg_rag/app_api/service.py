@@ -6,7 +6,7 @@ import json
 from pathlib import Path
 from typing import Any
 
-from autokg_rag.answer import compose_grounded_answer
+from autokg_rag.answer import OllamaSentenceAdapter, compose_grounded_answer
 from autokg_rag.config import Settings
 from autokg_rag.eval.dataset_builder import generate_dataset_from_chunks
 from autokg_rag.eval.matrix_runner import run_matrix
@@ -129,6 +129,14 @@ def _setting_int(*, settings: Settings, key: str, default: int) -> int:
         return default
 
 
+def _setting_float(*, settings: Settings, key: str, default: float) -> float:
+    value = getattr(settings, key, default)
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return default
+
+
 def _setting_str(*, settings: Settings, key: str, default: str) -> str:
     value = getattr(settings, key, default)
     if not isinstance(value, str):
@@ -148,6 +156,22 @@ def _reranker_candidate_k(*, settings: Settings, top_k: int) -> int:
 
 def _reranker_model(*, settings: Settings) -> str:
     return _setting_str(settings=settings, key="reranker_model", default="llama3:8b")
+
+
+def _answer_use_local(*, settings: Settings) -> bool:
+    return _setting_bool(settings=settings, key="answer_use_local", default=False)
+
+
+def _answer_model(*, settings: Settings) -> str:
+    return _setting_str(settings=settings, key="answer_model", default="llama3")
+
+
+def _answer_temperature(*, settings: Settings) -> float:
+    return _setting_float(settings=settings, key="answer_temperature", default=0.2)
+
+
+def _answer_max_tokens(*, settings: Settings) -> int:
+    return max(1, _setting_int(settings=settings, key="answer_max_tokens", default=512))
 
 
 def _persist_rerank_artifacts(
@@ -264,11 +288,22 @@ def query_service(*, request: QueryRequest, settings: Settings) -> AnswerPayload
         )
 
     chunk_by_id = {chunk.chunk_id: chunk for chunk in chunks}
+    sentence_adapter = None
+    if _answer_use_local(settings=settings):
+        sentence_adapter = OllamaSentenceAdapter(
+            model=_answer_model(settings=settings),
+            temperature=_answer_temperature(settings=settings),
+            max_tokens=_answer_max_tokens(settings=settings),
+            ollama_base_url=settings.ollama_base_url,
+            ollama_timeout_seconds=settings.ollama_timeout_seconds,
+        )
+
     answer_record, citation_trace = compose_grounded_answer(
         question=request.question,
         hits=hits,
         chunk_by_id=chunk_by_id,
         max_sentences=3,
+        sentence_adapter=sentence_adapter,
     )
     payload = AnswerPayload(
         answer=answer_record,

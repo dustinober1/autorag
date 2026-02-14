@@ -1,0 +1,5 @@
+{"question_id":"pmbok_001","type":"fact","question":"What are the 10 knowledge areas in PMBOK?","gold_citations":[],"gold_answer":"Integration, Scope, Schedule, Cost, Quality, Resource, Communications, Risk, Procurement, Stakeholder"}
+{"question_id":"pmbok_002","type":"fact","question":"What is the purpose of the project charter?","gold_citations":[],"gold_answer":"To formally authorize the project and provide the project manager with authority to apply resources."}
+{"question_id":"pmbok_003","type":"fact","question":"What is a Work Breakdown Structure (WBS)?","gold_citations":[],"gold_answer":"A hierarchical decomposition of the total scope of work to be carried out."}
+{"question_id":"pmbok_004","type":"fact","question":"What are the five process groups?","gold_citations":[],"gold_answer":"Initiating, Planning, Executing, Monitoring and Controlling, Closing"}
+{"question_id":"pmbok_005","type":"contrast","question":"What is the difference between predictive and agile approaches?","gold_citations":[],"gold_answer":"Predictive is plan-driven with extensive upfront planning; agile is iterative with frequent adaptation."}

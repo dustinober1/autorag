@@ -3,6 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 
 from autokg_rag.config.settings import Settings
+from autokg_rag.ingest.pdf_parse import parse_pdf_pages_clean
 from autokg_rag.ingest.pipeline import run_ingest_pipeline
 from autokg_rag.io import read_parquet_rows
 
@@ -53,3 +54,15 @@ def test_pdf_ingest_extracts_pages_sections_and_stable_doc_ids(tmp_path: Path) -
     assert pages
     assert all(str(row["text"]).strip() != "" for row in pages)
     assert all(str(row["section"]).strip() != "" for row in pages)
+
+
+def test_parse_pdf_pages_clean_removes_repeated_lines(tmp_path: Path) -> None:
+    path = tmp_path / "repeated.pdf"
+    path.write_text(
+        "PMBOK Guide\nUnique A\fPMBOK Guide\nUnique B\fPMBOK Guide\nUnique C",
+        encoding="utf-8",
+    )
+
+    pages = parse_pdf_pages_clean(path)
+    assert len(pages) == 3
+    assert all("PMBOK Guide" not in page for page in pages)

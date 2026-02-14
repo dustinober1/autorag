@@ -25,6 +25,10 @@ class Settings(BaseModel):
     reranker_enabled: bool = False
     reranker_model: str = Field(default="llama3:8b", min_length=1)
     reranker_candidate_k: int = Field(default=30, ge=1)
+    answer_use_local: bool = False
+    answer_model: str = Field(default="llama3", min_length=1)
+    answer_temperature: float = Field(default=0.2, ge=0.0, le=2.0)
+    answer_max_tokens: int = Field(default=512, ge=1)
     graph_max_depth: int = Field(default=2, ge=1)
     hybrid_vector_weight: float = Field(default=0.6, ge=0.0)
     hybrid_graph_weight: float = Field(default=0.4, ge=0.0)

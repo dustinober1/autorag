@@ -8,6 +8,10 @@ from pathlib import Path
 from pypdf import PdfReader
 
 from autokg_rag.exceptions import IngestError
+from autokg_rag.ingest.header_footer_filter import (
+    remove_header_footer_from_text,
+    remove_repeated_lines_across_pages,
+)
 
 
 def sha256_for_file(path: Path) -> str:
@@ -36,7 +40,8 @@ def discover_pdf_files(input_dir: Path) -> list[Path]:
 def _normalize_page_text(text: str) -> str:
     lines = [line.strip() for line in text.splitlines()]
     compact = "\n".join(line for line in lines if line)
-    return compact.strip() or "(empty page)"
+    cleaned = remove_header_footer_from_text(compact)
+    return cleaned.strip() or "(empty page)"
 
 
 def _parse_real_pdf(path: Path) -> list[str]:
@@ -73,6 +78,21 @@ def parse_pdf_pages(path: Path) -> list[str]:
             pass
 
     return _parse_text_fallback(path)
+
+
+def parse_pdf_pages_clean(
+    path: Path,
+    *,
+    repeated_line_threshold: float = 0.7,
+) -> list[str]:
+    """Extract pages, then remove lines repeated across most pages."""
+
+    pages = parse_pdf_pages(path)
+    cleaned_pages = remove_repeated_lines_across_pages(
+        pages,
+        threshold=repeated_line_threshold,
+    )
+    return [page.strip() or "(empty page)" for page in cleaned_pages]
 
 
 def extract_title(pages: list[str], fallback: str) -> str:

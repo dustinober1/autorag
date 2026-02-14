@@ -7,6 +7,7 @@ src/autokg_rag/answer/__init__.py
 src/autokg_rag/answer/composer.py
 src/autokg_rag/answer/grounding.py
 src/autokg_rag/answer/llm_adapter.py
+src/autokg_rag/answer/ollama_adapter.py
 src/autokg_rag/app_api/__init__.py
 src/autokg_rag/app_api/doctor.py
 src/autokg_rag/app_api/endpoints.py
@@ -28,11 +29,16 @@ src/autokg_rag/embeddings/fastembed_provider.py
 src/autokg_rag/embeddings/ollama_provider.py
 src/autokg_rag/embeddings/pipeline.py
 src/autokg_rag/eval/__init__.py
+src/autokg_rag/eval/ab_test.py
 src/autokg_rag/eval/dataset_builder.py
+src/autokg_rag/eval/judge.py
 src/autokg_rag/eval/matrix_runner.py
 src/autokg_rag/eval/metrics.py
 src/autokg_rag/eval/report.py
 src/autokg_rag/ingest/__init__.py
+src/autokg_rag/ingest/header_footer_filter.py
+src/autokg_rag/ingest/image_caption.py
+src/autokg_rag/ingest/image_extract.py
 src/autokg_rag/ingest/manifest.py
 src/autokg_rag/ingest/pdf_parse.py
 src/autokg_rag/ingest/pipeline.py
@@ -60,6 +66,7 @@ src/autokg_rag/schemas/api.py
 src/autokg_rag/schemas/provenance.py
 src/autokg_rag/schemas/records.py
 src/autokg_rag/vector/__init__.py
+src/autokg_rag/vector/image_index.py
 src/autokg_rag/vector/index.py
 src/autokg_rag/vector/pipeline.py
 src/autokg_rag/vector/retriever.py

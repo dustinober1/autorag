@@ -31,6 +31,16 @@ dev = [
   "mypy>=1.13.0",
   "types-PyYAML>=6.0.12.20250915",
 ]
+vision = [
+  "pdfplumber>=0.11.0",
+  "pillow>=10.0.0",
+  "torch>=2.0.0",
+  "transformers>=4.30.0",
+]
+local_llm = [
+  "ollama>=0.4.7",
+  "scipy>=1.13.0",
+]
 
 [project.scripts]
 autorag = "autokg_rag.cli:main"

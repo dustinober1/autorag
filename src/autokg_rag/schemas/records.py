@@ -130,7 +130,7 @@ class EvalQuestionRecord(BaseModel):
     question_id: str = Field(min_length=1)
     type: QuestionType
     question: str = Field(min_length=1)
-    gold_citations: list[Citation] = Field(min_length=1)
+    gold_citations: list[Citation] = Field(default_factory=list)
     gold_answer: str | None = None
 
 

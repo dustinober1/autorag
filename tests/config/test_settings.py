@@ -18,6 +18,10 @@ def test_load_settings_defaults_keep_local_deterministic_provider(tmp_path: Path
     assert settings.reranker_enabled is False
     assert settings.reranker_model == "llama3:8b"
     assert settings.reranker_candidate_k == 30
+    assert settings.answer_use_local is False
+    assert settings.answer_model == "llama3"
+    assert settings.answer_temperature == 0.2
+    assert settings.answer_max_tokens == 512
 
 
 def test_load_settings_parses_new_env_overrides(
@@ -31,6 +35,10 @@ def test_load_settings_parses_new_env_overrides(
     monkeypatch.setenv("AUTORAG_RERANKER_ENABLED", "true")
     monkeypatch.setenv("AUTORAG_RERANKER_MODEL", "bge-reranker-large")
     monkeypatch.setenv("AUTORAG_RERANKER_CANDIDATE_K", "64")
+    monkeypatch.setenv("AUTORAG_ANSWER_USE_LOCAL", "true")
+    monkeypatch.setenv("AUTORAG_ANSWER_MODEL", "mistral")
+    monkeypatch.setenv("AUTORAG_ANSWER_TEMPERATURE", "0.5")
+    monkeypatch.setenv("AUTORAG_ANSWER_MAX_TOKENS", "256")
 
     settings = load_settings(config_path=tmp_path / "missing.yaml")
 
@@ -41,6 +49,10 @@ def test_load_settings_parses_new_env_overrides(
     assert settings.reranker_enabled is True
     assert settings.reranker_model == "bge-reranker-large"
     assert settings.reranker_candidate_k == 64
+    assert settings.answer_use_local is True
+    assert settings.answer_model == "mistral"
+    assert settings.answer_temperature == 0.5
+    assert settings.answer_max_tokens == 256
 
 
 def test_load_settings_invalid_env_types_raise_validation_error(

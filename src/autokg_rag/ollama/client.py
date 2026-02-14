@@ -128,3 +128,22 @@ class OllamaClient:
         if format is not None:
             payload["format"] = format
         return self.post_json(path="/api/generate", payload=payload)
+
+    def chat(
+        self,
+        *,
+        model: str,
+        messages: list[dict[str, Any]],
+        stream: bool = False,
+        options: dict[str, Any] | None = None,
+    ) -> dict[str, Any]:
+        """Call `/api/chat` and return JSON payload."""
+
+        payload: dict[str, Any] = {
+            "model": model,
+            "messages": messages,
+            "stream": stream,
+        }
+        if options:
+            payload["options"] = options
+        return self.post_json(path="/api/chat", payload=payload)
