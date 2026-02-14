@@ -1,0 +1,2 @@
+[console_scripts]
+autorag = autokg_rag.cli:main

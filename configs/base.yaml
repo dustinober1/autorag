@@ -1,0 +1,5 @@
+artifact_root: data/artifacts
+log_level: INFO
+chunk_word_size: 120
+chunk_word_overlap: 20
+top_k: 3

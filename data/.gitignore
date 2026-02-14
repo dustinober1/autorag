@@ -1,0 +1,10 @@
+*
+!.gitignore
+!raw/
+!raw/.gitkeep
+!interim/
+!interim/.gitkeep
+!artifacts/
+!artifacts/.gitkeep
+!fixtures/
+!fixtures/**

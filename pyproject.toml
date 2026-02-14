@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=69.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "autorag"
+version = "0.1.0"
+description = "Self-building KG RAG local-first toolkit"
+readme = "README.md"
+requires-python = ">=3.11"
+authors = [{ name = "AutoRAG" }]
+dependencies = [
+  "pydantic>=2.10.0",
+  "typer>=0.15.0",
+  "PyYAML>=6.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.3.0",
+  "ruff>=0.9.0",
+  "mypy>=1.13.0",
+]
+
+[project.scripts]
+autorag = "autokg_rag.cli:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
