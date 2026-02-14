@@ -235,3 +235,31 @@ def test_matrix_runner_emits_complete_factorial_grid(
     }
     assert len(expected_exp_ids) == 36
     assert expected_exp_ids.issubset(observed_exp_ids)
+
+
+def test_matrix_runner_supports_optional_ollama_factors() -> None:
+    matrix_runner = pytest.importorskip("autokg_rag.eval.matrix_runner")
+    build_factorial_grid = matrix_runner.build_factorial_grid
+
+    matrix_config = {
+        "factors": {
+            "chunking": ["heading_recursive"],
+            "embedding_model": ["embeddinggemma:300m"],
+            "retrieval": ["hybrid"],
+            "embedding_provider": ["local_hash", "ollama"],
+            "reranker_enabled": ["false", "true"],
+            "reranker_model": ["llama3:8b"],
+        },
+    }
+    grid = build_factorial_grid(matrix_config)
+
+    assert len(grid) == 4
+    assert {spec.embedding_provider for spec in grid} == {"local_hash", "ollama"}
+    assert {spec.reranker_enabled for spec in grid} == {False, True}
+    assert {spec.embedding_model for spec in grid} == {"embeddinggemma:300m"}
+    assert {spec.reranker_model for spec in grid} == {"llama3:8b"}
+
+    exp_ids = {spec.exp_id for spec in grid}
+    assert "exp_heading_recursive_embeddinggemma_300m_hybrid" in exp_ids
+    assert any("_provider_ollama" in exp_id for exp_id in exp_ids)
+    assert any("_reranker_llama3_8b" in exp_id for exp_id in exp_ids)

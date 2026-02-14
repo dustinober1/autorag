@@ -1,4 +1,4 @@
-.PHONY: lint typecheck test verify bootstrap-sample-data m1 m2 m3 m4 m5 m6 demo-build demo-smoke
+.PHONY: lint typecheck test verify bootstrap-sample-data m1 m2 m3 m4 m5 m6 demo-build demo-build-ollama demo-smoke
 
 lint:
 	uv run ruff check src tests
@@ -35,6 +35,9 @@ m5:
 
 demo-build:
 	bash scripts/run_m6_demo.sh
+
+demo-build-ollama:
+	bash scripts/run_m6_demo_ollama.sh
 
 demo-smoke:
 	bash scripts/run_m6_demo_smoke.sh

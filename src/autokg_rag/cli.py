@@ -364,6 +364,7 @@ def doctor(
             artifact_root=settings.artifact_root,
             reports_dir=resolved_reports_dir,
             matrix_reports_dir=resolved_matrix_reports_dir,
+            settings=settings,
         )
     except (AutoRAGError, ValidationError, OSError, ValueError) as exc:
         typer.secho(str(exc), err=True, fg=typer.colors.RED)

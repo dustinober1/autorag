@@ -19,7 +19,7 @@ All retrieval/answer artifacts use these required fields:
 | M2 | `documents.parquet` | `doc_id`, `title`, `source_path`, `sha256` |
 | M2 | `pages.parquet` | `doc_id`, `page`, `section`, `text` |
 | M2 | `chunks.parquet` | `ChunkRecord` contract from `src/autokg_rag/schemas/records.py` |
-| M2 | `embedding_meta.parquet` | `chunk_id`, `row_idx`, `embedding_model`, `dim` |
+| M2 | `embedding_meta.parquet` | `chunk_id`, `row_idx`, `provider`, `embedding_model`, `dim` |
 | M2 | `vector_hits.jsonl` | `question_id`, `rank`, `score`, provenance fields |
 | M3 | `kg_nodes.parquet` | `node_id`, `canonical_name`, `node_type`, `aliases`, `confidence` |
 | M3 | `kg_edges.parquet` | `edge_id`, `source_node_id`, `relation`, `target_node_id`, `weight`, `evidence_chunk_ids` |

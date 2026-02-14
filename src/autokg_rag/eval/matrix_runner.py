@@ -39,9 +39,14 @@ DEFAULT_EMBEDDINGS: Final[tuple[str, ...]] = (
     "intfloat/e5-small-v2",
 )
 DEFAULT_RETRIEVAL: Final[tuple[str, ...]] = ("vector", "graph", "hybrid")
+DEFAULT_EMBEDDING_PROVIDER: Final[tuple[str, ...]] = ("local_hash",)
+DEFAULT_RERANKER_ENABLED: Final[tuple[str, ...]] = ("false",)
+DEFAULT_RERANKER_MODEL: Final[tuple[str, ...]] = ("llama3:8b",)
 DEFAULT_REPORTS_DIR: Final[Path] = Path("reports/experiments")
 _TOKEN_RE = re.compile(r"[A-Za-z0-9]+")
 _SLUG_RE = re.compile(r"[^A-Za-z0-9]+")
+_BOOL_TRUE = {"1", "true", "yes", "on"}
+_BOOL_FALSE = {"0", "false", "no", "off"}
 
 
 @dataclass(frozen=True)
@@ -52,6 +57,10 @@ class ExperimentSpec:
     chunking: str
     embedding: str
     retrieval: str
+    embedding_provider: str
+    embedding_model: str
+    reranker_enabled: bool
+    reranker_model: str
 
 
 @dataclass(frozen=True)
@@ -62,7 +71,11 @@ class ExperimentResultRow:
     exp_id: str
     chunking: str
     embedding: str
+    embedding_provider: str
+    embedding_model: str
     retrieval: str
+    reranker_enabled: bool
+    reranker_model: str
     recall_at_5: float
     recall_at_10: float
     ndcg_at_5: float
@@ -113,6 +126,10 @@ def _read_factor_values(
         direct = _as_str_list(factors.get(name))
         if direct:
             return direct
+        for alias in aliases:
+            from_alias = _as_str_list(factors.get(alias))
+            if from_alias:
+                return from_alias
 
     defaults = raw_config.get("defaults")
     if isinstance(defaults, dict):
@@ -239,6 +256,40 @@ def _value_scale(value: str, *, magnitude: float) -> float:
     digest = hashlib.sha1(value.encode("utf-8")).hexdigest()[:6]
     seed = int(digest, 16) % 11
     return 1.0 + (float(seed) * magnitude)
+
+
+def _coerce_bool_factor(values: list[str], *, factor_name: str) -> list[bool]:
+    parsed: list[bool] = []
+    for raw in values:
+        token = raw.strip().lower()
+        if token in _BOOL_TRUE:
+            parsed.append(True)
+            continue
+        if token in _BOOL_FALSE:
+            parsed.append(False)
+            continue
+        raise AutoRAGError(
+            f"Matrix factor '{factor_name}' contains invalid boolean value: {raw!r}. "
+            "Use true/false."
+        )
+    return parsed
+
+
+def _format_experiment_id(
+    *,
+    chunking: str,
+    embedding_model: str,
+    retrieval: str,
+    embedding_provider: str,
+    reranker_enabled: bool,
+    reranker_model: str,
+) -> str:
+    exp_id = f"exp_{_slug(chunking)}_{_slug(embedding_model)}_{_slug(retrieval)}"
+    if embedding_provider.strip().lower() != DEFAULT_EMBEDDING_PROVIDER[0]:
+        exp_id = f"{exp_id}_provider_{_slug(embedding_provider)}"
+    if reranker_enabled:
+        exp_id = f"{exp_id}_reranker_{_slug(reranker_model)}"
+    return exp_id
 
 
 def _rank_hits(
@@ -431,7 +482,7 @@ def _evaluate_experiment(
             chunks=chunks,
             top_k=top_k,
             chunking=spec.chunking,
-            embedding=spec.embedding,
+            embedding=spec.embedding_model,
             retrieval=spec.retrieval,
         )
         citations = _predicted_citations(hits)
@@ -484,7 +535,11 @@ def _evaluate_experiment(
             exp_id=spec.exp_id,
             chunking=spec.chunking,
             embedding=spec.embedding,
+            embedding_provider=spec.embedding_provider,
+            embedding_model=spec.embedding_model,
             retrieval=spec.retrieval,
+            reranker_enabled=spec.reranker_enabled,
+            reranker_model=spec.reranker_model,
             recall_at_5=0.0,
             recall_at_10=0.0,
             ndcg_at_5=0.0,
@@ -501,7 +556,11 @@ def _evaluate_experiment(
         exp_id=spec.exp_id,
         chunking=spec.chunking,
         embedding=spec.embedding,
+        embedding_provider=spec.embedding_provider,
+        embedding_model=spec.embedding_model,
         retrieval=spec.retrieval,
+        reranker_enabled=spec.reranker_enabled,
+        reranker_model=spec.reranker_model,
         recall_at_5=total_recall_5 / denominator,
         recall_at_10=total_recall_10 / denominator,
         ndcg_at_5=total_ndcg_5 / denominator,
@@ -520,7 +579,11 @@ def _write_matrix_csv(path: Path, rows: list[ExperimentResultRow]) -> None:
         "exp_id",
         "chunking",
         "embedding",
+        "embedding_provider",
+        "embedding_model",
         "retrieval",
+        "reranker_enabled",
+        "reranker_model",
         "recall_at_5",
         "recall_at_10",
         "ndcg_at_5",
@@ -581,8 +644,8 @@ def build_factorial_grid(config: dict[str, Any]) -> list[ExperimentSpec]:
     )
     embedding_values = _read_factor_values(
         config,
-        name="embedding",
-        aliases=("embedding", "embeddings"),
+        name="embedding_model",
+        aliases=("embedding_model", "embedding", "embeddings"),
         default=DEFAULT_EMBEDDINGS,
     )
     retrieval_values = _read_factor_values(
@@ -591,20 +654,55 @@ def build_factorial_grid(config: dict[str, Any]) -> list[ExperimentSpec]:
         aliases=("retrieval", "retrieval_modes"),
         default=DEFAULT_RETRIEVAL,
     )
+    embedding_provider_values = _read_factor_values(
+        config,
+        name="embedding_provider",
+        aliases=("embedding_provider",),
+        default=DEFAULT_EMBEDDING_PROVIDER,
+    )
+    reranker_enabled_values = _coerce_bool_factor(
+        _read_factor_values(
+            config,
+            name="reranker_enabled",
+            aliases=("reranker_enabled",),
+            default=DEFAULT_RERANKER_ENABLED,
+        ),
+        factor_name="reranker_enabled",
+    )
+    reranker_model_values = _read_factor_values(
+        config,
+        name="reranker_model",
+        aliases=("reranker_model",),
+        default=DEFAULT_RERANKER_MODEL,
+    )
 
     specs: list[ExperimentSpec] = []
     for chunking in chunking_values:
         for embedding in embedding_values:
             for retrieval in retrieval_values:
-                exp_id = f"exp_{_slug(chunking)}_{_slug(embedding)}_{_slug(retrieval)}"
-                specs.append(
-                    ExperimentSpec(
-                        exp_id=exp_id,
-                        chunking=chunking,
-                        embedding=embedding,
-                        retrieval=retrieval,
-                    )
-                )
+                for embedding_provider in embedding_provider_values:
+                    for reranker_enabled in reranker_enabled_values:
+                        for reranker_model in reranker_model_values:
+                            exp_id = _format_experiment_id(
+                                chunking=chunking,
+                                embedding_model=embedding,
+                                retrieval=retrieval,
+                                embedding_provider=embedding_provider,
+                                reranker_enabled=reranker_enabled,
+                                reranker_model=reranker_model,
+                            )
+                            specs.append(
+                                ExperimentSpec(
+                                    exp_id=exp_id,
+                                    chunking=chunking,
+                                    embedding=embedding,
+                                    retrieval=retrieval,
+                                    embedding_provider=embedding_provider,
+                                    embedding_model=embedding,
+                                    reranker_enabled=reranker_enabled,
+                                    reranker_model=reranker_model,
+                                )
+                            )
     return specs
 
 

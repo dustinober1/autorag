@@ -23,7 +23,9 @@ src/autokg_rag/config/loaders.py
 src/autokg_rag/config/settings.py
 src/autokg_rag/embeddings/__init__.py
 src/autokg_rag/embeddings/base.py
+src/autokg_rag/embeddings/factory.py
 src/autokg_rag/embeddings/fastembed_provider.py
+src/autokg_rag/embeddings/ollama_provider.py
 src/autokg_rag/embeddings/pipeline.py
 src/autokg_rag/eval/__init__.py
 src/autokg_rag/eval/dataset_builder.py
@@ -46,9 +48,13 @@ src/autokg_rag/kg/store_sqlite.py
 src/autokg_rag/observability/__init__.py
 src/autokg_rag/observability/logging.py
 src/autokg_rag/observability/metrics.py
+src/autokg_rag/ollama/__init__.py
+src/autokg_rag/ollama/client.py
 src/autokg_rag/retrieval/__init__.py
 src/autokg_rag/retrieval/fusion.py
 src/autokg_rag/retrieval/hybrid.py
+src/autokg_rag/retrieval/ollama_reranker.py
+src/autokg_rag/retrieval/rerank.py
 src/autokg_rag/schemas/__init__.py
 src/autokg_rag/schemas/api.py
 src/autokg_rag/schemas/provenance.py

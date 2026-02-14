@@ -22,6 +22,24 @@ Default outputs:
 - `reports/experiments/matrix_results.json`
 - `reports/experiments/leaderboard.md`
 
+## Optional Ollama demo flow
+
+Default deterministic flow is unchanged (`make demo-build` / `make demo-smoke`).
+Use Ollama only when explicitly opting in:
+
+```bash
+ollama serve
+ollama pull embeddinggemma:300m
+ollama pull llama3:8b
+make demo-build-ollama
+```
+
+Notes:
+- Script: `scripts/run_m6_demo_ollama.sh`
+- Matrix sample: `configs/experiments/matrix_ollama.yaml`
+- Doctor runs Ollama checks only when `AUTORAG_EMBEDDING_PROVIDER=ollama`
+  or `AUTORAG_RERANKER_ENABLED=true`.
+
 ## Deterministic demo fixture pack (M8 kickoff)
 
 - Fixture pack definition: `configs/demo_fixture_pack.yaml`
@@ -111,3 +129,10 @@ In the app:
 - `AUTORAG_DEMO_TOP_K` (default: `8`)
 - `AUTORAG_DEMO_REPORTS_DIR` (default: `reports/milestones`)
 - `AUTORAG_DEMO_MATRIX_REPORTS_DIR` (default: `reports/experiments`)
+- `AUTORAG_EMBEDDING_PROVIDER` (default: `local_hash`)
+- `AUTORAG_EMBEDDING_MODEL` (default: `bge-small-en-v1.5`)
+- `AUTORAG_RERANKER_ENABLED` (default: `false`)
+- `AUTORAG_RERANKER_MODEL` (default: `llama3:8b`)
+- `AUTORAG_RERANKER_CANDIDATE_K` (default: `30`)
+- `AUTORAG_OLLAMA_BASE_URL` (default: `http://localhost:11434`)
+- `AUTORAG_OLLAMA_TIMEOUT_SECONDS` (default: `30`)

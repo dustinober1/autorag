@@ -24,4 +24,18 @@ make demo-build
 uv run streamlit run app/streamlit_app.py
 ```
 
+## Optional Ollama Demo Path
+
+Default local/CI flow remains `make demo-build`.  
+For the optional Ollama path:
+
+```bash
+ollama serve
+ollama pull embeddinggemma:300m
+ollama pull llama3:8b
+make demo-build-ollama
+```
+
+Matrix sample config: `configs/experiments/matrix_ollama.yaml`
+
 Runbook: `docs/runbook.md`

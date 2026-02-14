@@ -1,0 +1,16 @@
+run_id: m6_ollama
+reports_dir: reports/experiments/ollama
+top_k: 10
+factors:
+  chunking:
+    - heading_recursive
+  embedding_provider:
+    - ollama
+  embedding_model:
+    - embeddinggemma:300m
+  retrieval:
+    - hybrid
+  reranker_enabled:
+    - "true"
+  reranker_model:
+    - llama3:8b
