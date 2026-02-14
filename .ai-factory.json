@@ -1,0 +1,26 @@
+{
+  "version": "1.7.0",
+  "agent": "universal",
+  "skillsDir": ".agents/skills",
+  "installedSkills": [
+    "ai-factory",
+    "architecture",
+    "best-practices",
+    "commit",
+    "deploy",
+    "evolve",
+    "feature",
+    "fix",
+    "implement",
+    "improve",
+    "review",
+    "security-checklist",
+    "skill-generator",
+    "task"
+  ],
+  "mcp": {
+    "github": false,
+    "filesystem": false,
+    "postgres": false
+  }
+}
