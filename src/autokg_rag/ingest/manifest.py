@@ -15,6 +15,7 @@ class RawDocument:
     """In-memory representation for a source document."""
 
     manifest: DocumentManifestRecord
+    source_path: Path
     pages: list[str]
 
 def build_raw_documents(input_dir: Path) -> list[RawDocument]:
@@ -38,6 +39,6 @@ def build_raw_documents(input_dir: Path) -> list[RawDocument]:
             sha256=sha,
             total_pages=len(pages),
         )
-        docs.append(RawDocument(manifest=manifest, pages=pages))
+        docs.append(RawDocument(manifest=manifest, source_path=path, pages=pages))
 
     return docs
