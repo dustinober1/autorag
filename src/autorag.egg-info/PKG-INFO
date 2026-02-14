@@ -11,6 +11,7 @@ Requires-Dist: PyYAML>=6.0.0
 Requires-Dist: numpy>=2.2.0
 Requires-Dist: pyarrow>=19.0.0
 Requires-Dist: pypdf>=5.1.0
+Requires-Dist: streamlit>=1.42.0
 Provides-Extra: dev
 Requires-Dist: pytest>=8.3.0; extra == "dev"
 Requires-Dist: ruff>=0.9.0; extra == "dev"
@@ -26,3 +27,12 @@ uv sync
 uv run autorag smoke --input data/fixtures/pdfs --question "What is project scope?" --run-id m1
 uv run pytest tests/e2e/test_m1_smoke_pipeline.py -q
 ```
+
+## Milestone 6 demo
+
+```bash
+make demo-build
+uv run streamlit run app/streamlit_app.py
+```
+
+Runbook: `docs/runbook.md`

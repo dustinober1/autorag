@@ -11,6 +11,7 @@ import typer
 from pydantic import ValidationError
 
 from autokg_rag.answer import compose_grounded_answer
+from autokg_rag.app_api import demo_build_endpoint
 from autokg_rag.config import Settings, load_settings
 from autokg_rag.eval.dataset_builder import (
     bootstrap_starter_dataset,
@@ -23,7 +24,7 @@ from autokg_rag.ingest import run_ingest_pipeline, run_smoke_pipeline
 from autokg_rag.io import read_jsonl_rows, write_jsonl_rows
 from autokg_rag.kg.pipeline import run_build_kg_pipeline, run_graph_query_pipeline
 from autokg_rag.retrieval import run_hybrid_query_pipeline
-from autokg_rag.schemas.api import AnswerPayload
+from autokg_rag.schemas.api import AnswerPayload, QueryMode
 from autokg_rag.schemas.records import HybridHitRecord
 from autokg_rag.vector.pipeline import run_index_vector_pipeline, run_vector_query_pipeline
 from autokg_rag.vector.store import load_chunks
@@ -280,7 +281,7 @@ def query(
 def answer(
     run_id: Annotated[str, typer.Option(..., "--run-id")],
     question: Annotated[str, typer.Option(..., "--question")],
-    mode: Annotated[str, typer.Option("--mode")] = "hybrid",
+    mode: Annotated[QueryMode, typer.Option("--mode")] = "hybrid",
     top_k: Annotated[int, typer.Option("--top-k", min=1)] = 8,
 ) -> None:
     """Compose grounded answer payload and persist answer artifacts."""
@@ -319,6 +320,52 @@ def answer(
     except (AutoRAGError, ValidationError) as exc:
         typer.secho(str(exc), err=True, fg=typer.colors.RED)
         raise typer.Exit(code=1) from exc
+
+
+@app.command("demo-build")
+def demo_build(
+    run_id: Annotated[str, typer.Option("--run-id")] = "m6",
+    input_dir: Annotated[
+        Path,
+        typer.Option(
+            "--input",
+            exists=True,
+            file_okay=False,
+            dir_okay=True,
+        ),
+    ] = Path("data/fixtures/pdfs"),
+    question: Annotated[
+        str,
+        typer.Option("--question"),
+    ] = "Compare mitigation and acceptance strategies.",
+    mode: Annotated[QueryMode, typer.Option("--mode")] = "hybrid",
+    top_k: Annotated[int, typer.Option("--top-k", min=1)] = 8,
+    reports_dir: Annotated[Path, typer.Option("--reports-dir")] = Path("reports/milestones"),
+    matrix_reports_dir: Annotated[
+        Path,
+        typer.Option("--matrix-reports-dir"),
+    ] = Path("reports/experiments"),
+) -> None:
+    """Run the full Milestone 6 portfolio demo workflow."""
+
+    try:
+        run_id = _validated_run_id(run_id)
+        settings = load_settings()
+        summary = demo_build_endpoint(
+            run_id=run_id,
+            input_dir=input_dir,
+            question=question,
+            mode=mode,
+            top_k=top_k,
+            reports_dir=reports_dir,
+            matrix_reports_dir=matrix_reports_dir,
+            settings=settings,
+        )
+    except (AutoRAGError, ValidationError, OSError, ValueError) as exc:
+        typer.secho(str(exc), err=True, fg=typer.colors.RED)
+        raise typer.Exit(code=1) from exc
+
+    typer.echo(json.dumps(summary, indent=2))
 
 
 @eval_app.command("bootstrap-starter")
