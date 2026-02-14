@@ -6,4 +6,6 @@ sentence_window_size: 5
 semantic_similarity_breakpoint: 0.2
 embedding_dim: 256
 graph_max_depth: 2
+hybrid_vector_weight: 0.6
+hybrid_graph_weight: 0.4
 top_k: 8

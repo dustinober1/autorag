@@ -98,6 +98,13 @@ class RetrievalHitRecord(ProvenanceRecord):
     score: float
 
 
+class HybridHitRecord(RetrievalHitRecord):
+    """Hybrid retrieval hit carrying both component scores."""
+
+    vector_score: float
+    graph_score: float
+
+
 class AnswerRecord(BaseModel):
     """Answer payload with mandatory citations."""
 
