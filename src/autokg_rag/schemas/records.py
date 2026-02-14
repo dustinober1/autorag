@@ -48,6 +48,9 @@ class ChunkRecord(ProvenanceRecord):
     """Chunk payload with required provenance."""
 
     chunk_text: str = Field(min_length=1)
+    chunk_type: str = Field(default="text", min_length=1)  # e.g., "text", "table", "figure"
+    section_path: str = Field(default="", min_length=0)   # Hierarchical path like "1. Introduction / 1.1 Background"
+    cross_refs: list[str] = Field(default_factory=list)   # Cross-references to related chunks
 
 
 class EmbeddingMetaRecord(BaseModel):
