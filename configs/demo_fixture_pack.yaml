@@ -1,0 +1,18 @@
+version: 1
+pack_id: m8_demo_fixture_pack_v1
+description: Deterministic local fixture pack for demo-smoke and doctor hardening.
+source_root: data/fixtures/pdfs
+
+selection_policy:
+  strategy: fixed_manifest
+  order: lexical_filename_ascending
+  random_sampling: false
+  include_manifest_only: true
+
+manifest:
+  - relative_path: project_scope_fixture.pdf
+    sha256: 589ef4772fa4e9b403466fea66347cbc0a0cc7f610e15bf141236f361c471eed
+    coverage_tag: scope_control
+  - relative_path: risk_response_fixture.pdf
+    sha256: 0c774ba93c9b5727f7c4ae44f121d11bde8563081894cfaee1dddd36c1b29efd
+    coverage_tag: mitigation_vs_acceptance
