@@ -18,3 +18,5 @@ __pycache__/
 /reports/milestones/*
 !/reports/experiments/.gitkeep
 !/reports/milestones/.gitkeep
+
+/files/*
