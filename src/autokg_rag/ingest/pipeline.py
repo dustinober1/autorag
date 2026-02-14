@@ -14,10 +14,16 @@ from autokg_rag.ingest.manifest import build_raw_documents
 from autokg_rag.ingest.pdf_parse import (
     discover_pdf_files,
     extract_title,
-    parse_pdf_pages_clean,
+    parse_pdf_with_tables,
     sha256_for_file,
 )
-from autokg_rag.ingest.sectionize import detect_section
+from autokg_rag.ingest.sectionize import (
+    detect_section,
+    get_cross_references,
+    initialize_pmbok_toc_for_document,
+    resolve_pmbok_section_path,
+)
+from autokg_rag.ingest.table_extractor import table_to_markdown
 from autokg_rag.io import write_jsonl_rows, write_parquet_rows
 from autokg_rag.observability import MetricsWriter, StructuredLogger
 from autokg_rag.schemas.provenance import Citation
@@ -71,19 +77,38 @@ def run_smoke_pipeline(
     with metrics.timer(stage="chunking", metric_name="chunking.seconds"):
         logger.info(stage="chunking", event="start")
         chunks: list[ChunkRecord] = []
+
         for document in raw_documents:
+            if "pmbok" in str(document.source_path).lower():
+                initialize_pmbok_toc_for_document(document.source_path)
             for page_number, page_text in enumerate(document.pages, start=1):
-                section = detect_section(page_text)
-                chunks.extend(
-                    chunk_page(
-                        doc_id=document.manifest.doc_id,
-                        page=page_number,
-                        section=section,
-                        text=page_text,
-                        chunk_word_size=settings.chunk_word_size,
-                        chunk_word_overlap=settings.chunk_word_overlap,
-                    )
+                section = detect_section(page_text, doc_path=document.source_path, page_num=page_number)
+                section_path = (
+                    resolve_pmbok_section_path(document.source_path, page_number)
+                    if "pmbok" in str(document.source_path).lower()
+                    else ""
                 )
+
+                # Get cross references from the page text
+                cross_refs = get_cross_references(page_text, section_path)
+
+                # Create chunk with extended fields
+                base_chunks = chunk_page(
+                    doc_id=document.manifest.doc_id,
+                    page=page_number,
+                    section=section,
+                    text=page_text,
+                    chunk_word_size=settings.chunk_word_size,
+                    chunk_word_overlap=settings.chunk_word_overlap,
+                )
+
+                # Add extended fields to each chunk
+                for chunk in base_chunks:
+                    chunk.chunk_type = "text"
+                    chunk.section_path = section_path
+                    chunk.cross_refs = cross_refs
+                    chunks.append(chunk)
+        
         logger.info(stage="chunking", event="complete", chunks=len(chunks))
         metrics.counter(stage="chunking", metric_name="chunks.count", value=float(len(chunks)))
 
@@ -171,11 +196,13 @@ def run_ingest_pipeline(
     with metrics.timer(stage="ingest", metric_name="ingest.seconds"):
         logger.info(stage="ingest", event="start")
         pdf_files = discover_pdf_files(input_dir)
+        
         for file_path in pdf_files:
             sha = sha256_for_file(file_path)
             doc_id = f"doc_{sha[:12]}"
 
-            page_texts = parse_pdf_pages_clean(file_path)
+            # Parse PDF with both text and tables
+            page_texts, tables = parse_pdf_with_tables(file_path)
             title = extract_title(page_texts, fallback=file_path.stem)
 
             document = DocumentRecord(
@@ -186,15 +213,38 @@ def run_ingest_pipeline(
             )
             documents.append(document)
 
+            if "pmbok" in str(file_path).lower():
+                initialize_pmbok_toc_for_document(file_path)
+
+            # Process text pages
             for page_number, page_text in enumerate(page_texts, start=1):
+                section = detect_section(page_text, doc_path=file_path, page_num=page_number)
+
                 pages.append(
                     PageRecord(
                         doc_id=doc_id,
                         page=page_number,
-                        section=detect_section(page_text),
+                        section=section,
                         text=page_text,
                     )
                 )
+
+            # Process extracted tables as separate chunks
+            for table in tables:
+                section = detect_section("", doc_path=file_path, page_num=table.page)
+
+                # Convert table to markdown format
+                table_content = table_to_markdown(table)
+
+                if table_content:  # Only add if table has content
+                    pages.append(
+                        PageRecord(
+                            doc_id=doc_id,
+                            page=table.page,
+                            section=section,
+                            text=f"TABLE:\n{table_content}",
+                        )
+                    )
 
         logger.info(
             stage="ingest",
@@ -224,6 +274,35 @@ def run_ingest_pipeline(
             sentence_window_size=settings.sentence_window_size,
             semantic_similarity_breakpoint=settings.semantic_similarity_breakpoint,
         )
+        
+        # Enhance chunks with additional PMBOK-specific fields
+        enhanced_chunks = []
+        for chunk in chunks:
+            # Determine chunk type based on content
+            chunk_type = "table" if "TABLE:" in chunk.chunk_text else "text"
+            
+            # Get section path based on document type
+            doc_path = None
+            for doc in documents:
+                if doc.doc_id == chunk.doc_id:
+                    doc_path = Path(doc.source_path)
+                    break
+            
+            section_path = ""
+            if doc_path and "pmbok" in str(doc_path).lower():
+                section_path = resolve_pmbok_section_path(doc_path, chunk.page)
+            
+            # Get cross-references
+            cross_refs = get_cross_references(chunk.chunk_text, section_path)
+            
+            # Update the chunk with new fields
+            chunk.chunk_type = chunk_type
+            chunk.section_path = section_path
+            chunk.cross_refs = cross_refs
+            enhanced_chunks.append(chunk)
+        
+        chunks = enhanced_chunks
+        
         logger.info(stage="chunking", event="complete", chunks=len(chunks))
         metrics.counter(stage="chunking", metric_name="chunks.count", value=float(len(chunks)))
 
