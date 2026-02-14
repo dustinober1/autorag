@@ -12,7 +12,7 @@ import typer
 from pydantic import ValidationError
 
 from autokg_rag.answer import compose_grounded_answer
-from autokg_rag.app_api import demo_build_endpoint, run_demo_doctor
+from autokg_rag.app_api import demo_build_endpoint, run_artifact_retention, run_demo_doctor
 from autokg_rag.config import Settings, load_settings
 from autokg_rag.eval.dataset_builder import (
     bootstrap_starter_dataset,
@@ -372,14 +372,54 @@ def doctor(
     typer.echo(report.model_dump_json(indent=2))
     if report.status == "error":
         for check in report.checks:
-            if check.status != "missing":
+            if check.status == "valid":
                 continue
             hint = check.hint or "Run `make demo-build`."
+            label = check.status.upper()
             typer.secho(
-                f"[MISSING] {check.name}: {check.path} -> {hint}",
+                f"[{label}] {check.name}: {check.path} -> {hint}",
                 err=True,
                 fg=typer.colors.RED,
             )
+        raise typer.Exit(code=1)
+
+
+@app.command("cleanup-artifacts")
+def cleanup_artifacts(
+    keep_latest: Annotated[int, typer.Option("--keep-latest", min=0)] = 3,
+    keep_run: Annotated[list[str] | None, typer.Option("--keep-run")] = None,
+    apply: Annotated[
+        bool,
+        typer.Option(
+            "--apply",
+            help="Delete candidate run directories. Defaults to dry-run when omitted.",
+        ),
+    ] = False,
+    artifact_root: Annotated[Path | None, typer.Option("--artifact-root")] = None,
+) -> None:
+    """Plan or apply artifact retention cleanup (dry-run by default)."""
+
+    try:
+        settings = load_settings()
+        resolved_artifact_root = settings.artifact_root if artifact_root is None else artifact_root
+        resolved_keep_run_ids: set[str] = set()
+        for candidate in keep_run or []:
+            resolved_keep_run_ids.add(_validated_run_id(candidate))
+
+        report = run_artifact_retention(
+            artifact_root=resolved_artifact_root,
+            keep_latest=keep_latest,
+            keep_run_ids=resolved_keep_run_ids,
+            dry_run=not apply,
+        )
+    except (AutoRAGError, ValidationError, OSError, ValueError) as exc:
+        typer.secho(str(exc), err=True, fg=typer.colors.RED)
+        raise typer.Exit(code=1) from exc
+
+    typer.echo(report.model_dump_json(indent=2))
+    if report.status == "error":
+        for failure in report.failures:
+            typer.secho(f"[ERROR] {failure}", err=True, fg=typer.colors.RED)
         raise typer.Exit(code=1)
 
 

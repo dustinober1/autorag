@@ -6,12 +6,14 @@ from autokg_rag.app_api.endpoints import (
     list_runs_endpoint,
     query_endpoint,
 )
+from autokg_rag.app_api.retention import run_artifact_retention
 from autokg_rag.app_api.service import query_service, run_demo_build
 
 __all__ = [
     "demo_build_endpoint",
     "list_runs_endpoint",
     "query_endpoint",
+    "run_artifact_retention",
     "run_demo_doctor",
     "query_service",
     "run_demo_build",

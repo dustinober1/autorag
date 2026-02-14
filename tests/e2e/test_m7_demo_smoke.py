@@ -70,3 +70,38 @@ def test_demo_smoke_target_produces_minimum_m6_artifacts(tmp_path: Path) -> None
     answer_record = first_row.get("answer_record")
     assert isinstance(answer_record, dict)
     assert answer_record.get("answer_text")
+
+    doctor_result = subprocess.run(
+        ["uv", "run", "autorag", "doctor"],
+        cwd=repo_root,
+        capture_output=True,
+        text=True,
+        env=env,
+        check=False,
+    )
+    assert doctor_result.returncode == 0, (
+        f"{doctor_result.stdout}\n{doctor_result.stderr}"
+    )
+    doctor_payload = json.loads(doctor_result.stdout)
+    assert doctor_payload.get("status") == "ok"
+    assert doctor_payload.get("missing") == 0
+    assert doctor_payload.get("invalid") == 0
+
+    checks = doctor_payload.get("checks")
+    assert isinstance(checks, list)
+    checks_by_name = {
+        str(row.get("name")): row
+        for row in checks
+        if isinstance(row, dict)
+    }
+    for required_check in (
+        "answers_jsonl",
+        "demo_payload_samples_jsonl",
+        "matrix_results_json",
+        "matrix_results_csv",
+        "m6_demo_report",
+        "leaderboard_md",
+    ):
+        row = checks_by_name.get(required_check)
+        assert isinstance(row, dict), required_check
+        assert row.get("status") == "valid", required_check
