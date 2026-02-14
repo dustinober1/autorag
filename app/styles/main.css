@@ -1,0 +1,136 @@
+:root {
+  --bg: #fafaf8;
+  --surface: #ffffff;
+  --border: #e8e8e4;
+  --ink: #1a1a1a;
+  --muted: #6b7280;
+  --accent: #0a5c5c;
+  --accent-bg: #f0f7f7;
+  --error: #dc2626;
+  --success: #059669;
+  --warn: #b45309;
+}
+
+html,
+body,
+[class*="css"] {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+[data-testid="stAppViewContainer"] {
+  background:
+    radial-gradient(circle at top right, rgba(10, 92, 92, 0.08), transparent 40%),
+    linear-gradient(180deg, #fcfcfb 0%, var(--bg) 100%);
+  color: var(--ink);
+}
+
+[data-testid="stHeader"] {
+  background: transparent;
+}
+
+[data-testid="stMainBlockContainer"] {
+  max-width: 1160px;
+  padding-top: 1.25rem;
+  padding-bottom: 2.5rem;
+}
+
+[data-testid="stSidebar"] {
+  background: linear-gradient(180deg, #f7f6f2 0%, #f2f0ea 100%);
+  border-right: 1px solid var(--border);
+}
+
+[data-testid="stSidebar"] > div:first-child {
+  padding-top: 1.1rem;
+}
+
+.main-title {
+  font-size: 1.65rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--ink);
+  margin-bottom: 0.1rem;
+}
+
+.main-subtitle {
+  color: var(--muted);
+  font-size: 0.95rem;
+  margin-bottom: 0.5rem;
+}
+
+.context-line {
+  color: var(--muted);
+  font-size: 0.92rem;
+  margin-bottom: 1rem;
+}
+
+.context-line .context-token {
+  color: var(--ink);
+  font-weight: 500;
+}
+
+.question-label {
+  color: var(--muted);
+  font-size: 0.85rem;
+  margin-bottom: 0.35rem;
+}
+
+.stTextInput input {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  min-height: 44px;
+  background: var(--surface);
+}
+
+.stTextInput input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px rgba(10, 92, 92, 0.18);
+}
+
+.stButton > button {
+  border: 0;
+  border-radius: 12px;
+  min-height: 44px;
+  color: #fff;
+  background: var(--accent);
+  font-weight: 600;
+}
+
+.stButton > button:hover {
+  background: #084949;
+}
+
+div[data-baseweb="tab-list"] {
+  gap: 0.25rem;
+  border-bottom: 1px solid var(--border);
+}
+
+div[data-baseweb="tab-list"] button {
+  color: var(--muted);
+  font-weight: 500;
+}
+
+div[data-baseweb="tab-list"] button[aria-selected="true"] {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
+[data-testid="stDataFrame"] {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+[data-testid="stDataFrame"] [role="columnheader"] {
+  background: var(--accent-bg);
+}
+
+@media (max-width: 900px) {
+  [data-testid="stMainBlockContainer"] {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .main-title {
+    font-size: 1.35rem;
+  }
+}
