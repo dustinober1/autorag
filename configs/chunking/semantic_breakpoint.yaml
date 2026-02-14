@@ -1,0 +1,4 @@
+chunk_word_size: 180
+chunk_word_overlap: 20
+sentence_window_size: 5
+semantic_similarity_breakpoint: 0.35
