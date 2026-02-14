@@ -333,6 +333,7 @@ def answer(
     local_model: Annotated[str | None, typer.Option("--local-model")] = None,
     local_temperature: Annotated[float | None, typer.Option("--local-temperature")] = None,
     local_max_tokens: Annotated[int | None, typer.Option("--local-max-tokens")] = None,
+    max_sentences: Annotated[int | None, typer.Option("--max-sentences", min=1)] = None,
 ) -> None:
     """Compose grounded answer payload and persist answer artifacts."""
 
@@ -354,6 +355,10 @@ def answer(
         chunk_by_id = {chunk.chunk_id: chunk for chunk in load_chunks(artifact_dir)}
 
         sentence_adapter = None
+        configured_max_sentences = max(1, int(getattr(settings, "answer_max_sentences", 6)))
+        resolved_max_sentences = (
+            configured_max_sentences if max_sentences is None else max(1, int(max_sentences))
+        )
         resolved_use_local = use_local or bool(getattr(settings, "answer_use_local", False))
         if resolved_use_local:
             configured_model = str(getattr(settings, "answer_model", "llama3")).strip() or "llama3"
@@ -384,7 +389,7 @@ def answer(
             question=question,
             hits=hits,
             chunk_by_id=chunk_by_id,
-            max_sentences=3,
+            max_sentences=resolved_max_sentences,
             sentence_adapter=sentence_adapter,
         )
         payload = AnswerPayload(

@@ -29,6 +29,7 @@ class Settings(BaseModel):
     answer_model: str = Field(default="llama3", min_length=1)
     answer_temperature: float = Field(default=0.2, ge=0.0, le=2.0)
     answer_max_tokens: int = Field(default=512, ge=1)
+    answer_max_sentences: int = Field(default=6, ge=1)
     graph_max_depth: int = Field(default=2, ge=1)
     hybrid_vector_weight: float = Field(default=0.6, ge=0.0)
     hybrid_graph_weight: float = Field(default=0.4, ge=0.0)

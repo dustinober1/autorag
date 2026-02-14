@@ -39,6 +39,11 @@ uv run streamlit run app/streamlit_app.py
 3. Optionally adjust answer/embedding/reranker model selections.
 4. Ask a question and inspect citations, retrieval hits, and grounding trace.
 
+### Answer Length
+
+- Answer length is controlled by `answer_max_sentences` (default `6`) in `configs/base.yaml`.
+- Override via env: `AUTORAG_ANSWER_MAX_SENTENCES=<N>`.
+
 ## Optional Ollama Demo Path
 
 Default local/CI flow remains `make demo-build`.  

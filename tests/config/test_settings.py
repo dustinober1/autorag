@@ -22,6 +22,7 @@ def test_load_settings_defaults_keep_local_deterministic_provider(tmp_path: Path
     assert settings.answer_model == "llama3"
     assert settings.answer_temperature == 0.2
     assert settings.answer_max_tokens == 512
+    assert settings.answer_max_sentences == 6
 
 
 def test_load_settings_parses_new_env_overrides(
@@ -39,6 +40,7 @@ def test_load_settings_parses_new_env_overrides(
     monkeypatch.setenv("AUTORAG_ANSWER_MODEL", "mistral")
     monkeypatch.setenv("AUTORAG_ANSWER_TEMPERATURE", "0.5")
     monkeypatch.setenv("AUTORAG_ANSWER_MAX_TOKENS", "256")
+    monkeypatch.setenv("AUTORAG_ANSWER_MAX_SENTENCES", "9")
 
     settings = load_settings(config_path=tmp_path / "missing.yaml")
 
@@ -53,6 +55,7 @@ def test_load_settings_parses_new_env_overrides(
     assert settings.answer_model == "mistral"
     assert settings.answer_temperature == 0.5
     assert settings.answer_max_tokens == 256
+    assert settings.answer_max_sentences == 9
 
 
 def test_load_settings_invalid_env_types_raise_validation_error(

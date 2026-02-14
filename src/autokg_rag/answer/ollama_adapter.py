@@ -86,7 +86,8 @@ class OllamaAdapter:
             "Use only the provided context to answer the question.\n\n"
             f"Context:\n{context}\n\n"
             f"Question: {question}\n\n"
-            "Respond with a concise answer and keep citation markers like [1], [2] inline."
+            "Respond with a detailed grounded answer and keep "
+            "citation markers like [1], [2] inline."
         )
         if system_prompt is None:
             system_prompt = "You are a grounded assistant that answers from provided context only."

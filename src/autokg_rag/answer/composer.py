@@ -68,7 +68,7 @@ def compose_grounded_answer(
     question: str,
     hits: Sequence[HybridHitLike],
     chunk_by_id: Mapping[str, ChunkRecord],
-    max_sentences: int = 3,
+    max_sentences: int = 6,
     sentence_adapter: SentenceAdapter | None = None,
 ) -> tuple[AnswerRecord, list[CitationTraceRecord]]:
     """Compose an answer where every output sentence maps to a citation."""

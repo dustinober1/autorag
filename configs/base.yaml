@@ -16,6 +16,7 @@ answer_use_local: false
 answer_model: llama3
 answer_temperature: 0.2
 answer_max_tokens: 512
+answer_max_sentences: 6
 graph_max_depth: 2
 hybrid_vector_weight: 0.6
 hybrid_graph_weight: 0.4

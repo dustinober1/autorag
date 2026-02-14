@@ -174,6 +174,10 @@ def _answer_max_tokens(*, settings: Settings) -> int:
     return max(1, _setting_int(settings=settings, key="answer_max_tokens", default=512))
 
 
+def _answer_max_sentences(*, settings: Settings) -> int:
+    return max(1, _setting_int(settings=settings, key="answer_max_sentences", default=6))
+
+
 def _persist_rerank_artifacts(
     *,
     artifact_dir: Path,
@@ -302,7 +306,7 @@ def query_service(*, request: QueryRequest, settings: Settings) -> AnswerPayload
         question=request.question,
         hits=hits,
         chunk_by_id=chunk_by_id,
-        max_sentences=3,
+        max_sentences=_answer_max_sentences(settings=settings),
         sentence_adapter=sentence_adapter,
     )
     payload = AnswerPayload(
