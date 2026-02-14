@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import os
 import re
 from pathlib import Path
 from typing import Annotated
@@ -11,7 +12,7 @@ import typer
 from pydantic import ValidationError
 
 from autokg_rag.answer import compose_grounded_answer
-from autokg_rag.app_api import demo_build_endpoint
+from autokg_rag.app_api import demo_build_endpoint, run_demo_doctor
 from autokg_rag.config import Settings, load_settings
 from autokg_rag.eval.dataset_builder import (
     bootstrap_starter_dataset,
@@ -320,6 +321,66 @@ def answer(
     except (AutoRAGError, ValidationError) as exc:
         typer.secho(str(exc), err=True, fg=typer.colors.RED)
         raise typer.Exit(code=1) from exc
+
+
+@app.command()
+def doctor(
+    run_id: Annotated[str | None, typer.Option("--run-id")] = None,
+    input_dir: Annotated[Path | None, typer.Option("--input")] = None,
+    reports_dir: Annotated[Path | None, typer.Option("--reports-dir")] = None,
+    matrix_reports_dir: Annotated[Path | None, typer.Option("--matrix-reports-dir")] = None,
+) -> None:
+    """Validate local demo prerequisites and expected M6 artifacts."""
+
+    try:
+        raw_run_id = run_id if run_id is not None else os.getenv("AUTORAG_DEMO_RUN_ID")
+        if raw_run_id is None:
+            raw_run_id = "m6"
+        resolved_run_id = _validated_run_id(raw_run_id)
+
+        raw_input_dir = (
+            str(input_dir)
+            if input_dir is not None
+            else os.getenv("AUTORAG_DEMO_INPUT_DIR", "data/fixtures/pdfs")
+        )
+        raw_reports_dir = (
+            str(reports_dir)
+            if reports_dir is not None
+            else os.getenv("AUTORAG_DEMO_REPORTS_DIR", "reports/milestones")
+        )
+        raw_matrix_reports_dir = (
+            str(matrix_reports_dir)
+            if matrix_reports_dir is not None
+            else os.getenv("AUTORAG_DEMO_MATRIX_REPORTS_DIR", "reports/experiments")
+        )
+        resolved_input_dir = Path(raw_input_dir)
+        resolved_reports_dir = Path(raw_reports_dir)
+        resolved_matrix_reports_dir = Path(raw_matrix_reports_dir)
+        settings = load_settings()
+
+        report = run_demo_doctor(
+            run_id=resolved_run_id,
+            input_dir=resolved_input_dir,
+            artifact_root=settings.artifact_root,
+            reports_dir=resolved_reports_dir,
+            matrix_reports_dir=resolved_matrix_reports_dir,
+        )
+    except (AutoRAGError, ValidationError, OSError, ValueError) as exc:
+        typer.secho(str(exc), err=True, fg=typer.colors.RED)
+        raise typer.Exit(code=1) from exc
+
+    typer.echo(report.model_dump_json(indent=2))
+    if report.status == "error":
+        for check in report.checks:
+            if check.status != "missing":
+                continue
+            hint = check.hint or "Run `make demo-build`."
+            typer.secho(
+                f"[MISSING] {check.name}: {check.path} -> {hint}",
+                err=True,
+                fg=typer.colors.RED,
+            )
+        raise typer.Exit(code=1)
 
 
 @app.command("demo-build")
