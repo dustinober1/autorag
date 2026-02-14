@@ -12,6 +12,12 @@ from pydantic import ValidationError
 
 from autokg_rag.answer import compose_grounded_answer
 from autokg_rag.config import Settings, load_settings
+from autokg_rag.eval.dataset_builder import (
+    bootstrap_starter_dataset,
+    generate_dataset_from_chunks,
+)
+from autokg_rag.eval.matrix_runner import run_matrix
+from autokg_rag.eval.report import build_experiment_report
 from autokg_rag.exceptions import AutoRAGError
 from autokg_rag.ingest import run_ingest_pipeline, run_smoke_pipeline
 from autokg_rag.io import read_jsonl_rows, write_jsonl_rows
@@ -23,6 +29,8 @@ from autokg_rag.vector.pipeline import run_index_vector_pipeline, run_vector_que
 from autokg_rag.vector.store import load_chunks
 
 app = typer.Typer(help="AutoRAG command line interface")
+eval_app = typer.Typer(help="Evaluation harness commands")
+app.add_typer(eval_app, name="eval")
 _RUN_ID_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]*$")
 
 
@@ -309,6 +317,134 @@ def answer(
 
         typer.echo(payload.model_dump_json(indent=2))
     except (AutoRAGError, ValidationError) as exc:
+        typer.secho(str(exc), err=True, fg=typer.colors.RED)
+        raise typer.Exit(code=1) from exc
+
+
+@eval_app.command("bootstrap-starter")
+def eval_bootstrap_starter(
+    out: Annotated[
+        Path,
+        typer.Option(
+            ...,
+            "--out",
+            file_okay=True,
+            dir_okay=False,
+        ),
+    ],
+) -> None:
+    """Write the embedded 20-question starter dataset JSONL."""
+
+    try:
+        rows = bootstrap_starter_dataset(out_path=out)
+        typer.echo(
+            json.dumps(
+                {
+                    "out": str(out),
+                    "questions": len(rows),
+                },
+                indent=2,
+            )
+        )
+    except (AutoRAGError, ValidationError, OSError, ValueError) as exc:
+        typer.secho(str(exc), err=True, fg=typer.colors.RED)
+        raise typer.Exit(code=1) from exc
+
+
+@eval_app.command("generate")
+def eval_generate(
+    run_id: Annotated[str, typer.Option(..., "--run-id")],
+    input_dir: Annotated[
+        Path,
+        typer.Option(
+            ...,
+            "--input",
+            exists=True,
+            file_okay=False,
+            dir_okay=True,
+        ),
+    ],
+    target_size: Annotated[int, typer.Option(..., "--target-size", min=200, max=500)],
+) -> None:
+    """Generate evaluation questions from prior run artifacts."""
+
+    try:
+        run_id = _validated_run_id(run_id)
+        settings = load_settings()
+        output_path = generate_dataset_from_chunks(
+            run_id=run_id,
+            input_artifact_dir=input_dir,
+            target_size=target_size,
+            output_artifact_root=settings.artifact_root,
+        )
+        typer.echo(
+            json.dumps(
+                {
+                    "run_id": run_id,
+                    "target_size": target_size,
+                    "output_path": str(output_path),
+                    "questions": len(read_jsonl_rows(output_path)),
+                },
+                indent=2,
+            )
+        )
+    except (AutoRAGError, ValidationError, OSError, ValueError) as exc:
+        typer.secho(str(exc), err=True, fg=typer.colors.RED)
+        raise typer.Exit(code=1) from exc
+
+
+@eval_app.command("run-matrix")
+def eval_run_matrix(
+    run_id: Annotated[str, typer.Option(..., "--run-id")],
+    config: Annotated[
+        Path,
+        typer.Option(
+            ...,
+            "--config",
+            exists=True,
+            file_okay=True,
+            dir_okay=False,
+        ),
+    ],
+) -> None:
+    """Execute factorial experiment matrix and persist reports."""
+
+    try:
+        run_id = _validated_run_id(run_id)
+        settings = load_settings()
+        rows = run_matrix(
+            run_id=run_id,
+            config_path=config,
+            settings=settings,
+        )
+        typer.echo(
+            json.dumps(
+                {
+                    "run_id": run_id,
+                    "config": str(config),
+                    "experiments": len(rows),
+                    "reports_dir": "reports/experiments",
+                    "matrix_results_csv": "reports/experiments/matrix_results.csv",
+                    "matrix_results_json": "reports/experiments/matrix_results.json",
+                    "per_query_dir": "reports/experiments/per_query",
+                },
+                indent=2,
+            )
+        )
+    except (AutoRAGError, ValidationError, OSError, ValueError) as exc:
+        typer.secho(str(exc), err=True, fg=typer.colors.RED)
+        raise typer.Exit(code=1) from exc
+
+
+@eval_app.command("report")
+def eval_report(run_id: Annotated[str, typer.Option(..., "--run-id")]) -> None:
+    """Write markdown leaderboard report from matrix result artifacts."""
+
+    try:
+        run_id = _validated_run_id(run_id)
+        summary = build_experiment_report(run_id=run_id)
+        typer.echo(json.dumps(summary, indent=2))
+    except (AutoRAGError, ValidationError, OSError, ValueError) as exc:
         typer.secho(str(exc), err=True, fg=typer.colors.RED)
         raise typer.Exit(code=1) from exc
 

@@ -1,8 +1,14 @@
 """Artifact record schemas used across milestones."""
 
+from __future__ import annotations
+
+from typing import Literal
+
 from pydantic import BaseModel, ConfigDict, Field, PositiveInt
 
 from autokg_rag.schemas.provenance import Citation, ProvenanceRecord
+
+QuestionType = Literal["fact", "multi_hop", "contrast"]
 
 
 class DocumentManifestRecord(BaseModel):
@@ -113,3 +119,40 @@ class AnswerRecord(BaseModel):
     question_id: str = Field(min_length=1)
     answer_text: str = Field(min_length=1)
     citations: list[Citation] = Field(min_length=1)
+
+
+class EvalQuestionRecord(BaseModel):
+    """Evaluation question with gold citations."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    question_id: str = Field(min_length=1)
+    type: QuestionType
+    question: str = Field(min_length=1)
+    gold_citations: list[Citation] = Field(min_length=1)
+    gold_answer: str | None = None
+
+
+class EvalMetricRowRecord(BaseModel):
+    """Per-query metric row for one `k` value."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    question_id: str = Field(min_length=1)
+    k: PositiveInt
+    recall_at_k: float = Field(ge=0.0, le=1.0)
+    ndcg_at_k: float = Field(ge=0.0, le=1.0)
+    citation_precision: float = Field(ge=0.0, le=1.0)
+    faithfulness_proxy: float = Field(ge=0.0, le=1.0)
+
+
+class EvalMetricAggregateRecord(BaseModel):
+    """Aggregate metrics averaged across query rows."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    query_count: int = Field(ge=0)
+    recall_at_k: float = Field(ge=0.0, le=1.0)
+    ndcg_at_k: float = Field(ge=0.0, le=1.0)
+    citation_precision: float = Field(ge=0.0, le=1.0)
+    faithfulness_proxy: float = Field(ge=0.0, le=1.0)

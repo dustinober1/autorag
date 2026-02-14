@@ -1,0 +1,19 @@
+run_id: m5
+dataset_path: data/artifacts/m5/questions_300.jsonl
+source_run_id: m4
+reports_dir: reports/experiments
+top_k: 10
+factors:
+  chunking:
+    - fixed_400_50
+    - heading_recursive
+    - sentence_window_5
+    - semantic_breakpoint
+  embedding:
+    - BAAI/bge-small-en-v1.5
+    - sentence-transformers/all-MiniLM-L6-v2
+    - intfloat/e5-small-v2
+  retrieval:
+    - vector
+    - graph
+    - hybrid
