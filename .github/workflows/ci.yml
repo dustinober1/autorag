@@ -27,11 +27,5 @@ jobs:
       - name: Install dependencies
         run: uv sync --extra dev
 
-      - name: Lint
-        run: make lint
-
-      - name: Typecheck
-        run: make typecheck
-
-      - name: Test
-        run: make test
+      - name: Verify
+        run: make verify

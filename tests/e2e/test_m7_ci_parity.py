@@ -36,12 +36,11 @@ def test_verify_target_matches_ci_commands() -> None:
 
     workflow_commands = _run_commands_from_workflow(ci_workflow_path)
     assert "uv sync --extra dev" in workflow_commands
-    assert "make lint" in workflow_commands
-    assert "make typecheck" in workflow_commands
-    assert "make test" in workflow_commands
-
-    assert workflow_commands.index("make lint") < workflow_commands.index("make typecheck")
-    assert workflow_commands.index("make typecheck") < workflow_commands.index("make test")
+    assert "make verify" in workflow_commands
+    assert "make lint" not in workflow_commands
+    assert "make typecheck" not in workflow_commands
+    assert "make test" not in workflow_commands
+    assert workflow_commands.index("uv sync --extra dev") < workflow_commands.index("make verify")
 
     verify_dry_run = subprocess.run(
         ["make", "-n", "verify"],
@@ -51,6 +50,10 @@ def test_verify_target_matches_ci_commands() -> None:
         check=False,
     )
     assert verify_dry_run.returncode == 0, verify_dry_run.stderr
-    assert "ruff check src tests" in verify_dry_run.stdout
-    assert "mypy src" in verify_dry_run.stdout
-    assert "pytest -q" in verify_dry_run.stdout
+    lint_idx = verify_dry_run.stdout.find("ruff check src tests")
+    typecheck_idx = verify_dry_run.stdout.find("mypy src")
+    test_idx = verify_dry_run.stdout.find("pytest -q")
+    assert lint_idx >= 0
+    assert typecheck_idx >= 0
+    assert test_idx >= 0
+    assert lint_idx < typecheck_idx < test_idx
