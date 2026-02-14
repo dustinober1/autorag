@@ -9,6 +9,8 @@ from typing import Any
 import pyarrow as pa  # type: ignore[import-untyped]
 import pyarrow.parquet as pq  # type: ignore[import-untyped]
 
+from autokg_rag.exceptions import SchemaError
+
 
 def write_jsonl_rows(path: Path, rows: list[dict[str, Any]]) -> None:
     """Write records to a JSONL file, replacing existing content."""
@@ -26,10 +28,15 @@ def read_jsonl_rows(path: Path) -> list[dict[str, Any]]:
         return []
 
     rows: list[dict[str, Any]] = []
-    for line in path.read_text(encoding="utf-8").splitlines():
+    for line_no, line in enumerate(path.read_text(encoding="utf-8").splitlines(), start=1):
         if not line.strip():
             continue
-        parsed = json.loads(line)
+        try:
+            parsed = json.loads(line)
+        except json.JSONDecodeError as exc:
+            raise SchemaError(
+                f"Invalid JSONL in '{path}' at line {line_no}: {exc.msg}"
+            ) from exc
         if isinstance(parsed, dict):
             rows.append(parsed)
     return rows
