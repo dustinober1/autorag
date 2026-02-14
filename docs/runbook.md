@@ -22,6 +22,18 @@ Default outputs:
 - `reports/experiments/matrix_results.json`
 - `reports/experiments/leaderboard.md`
 
+## M7 hardening commands
+
+```bash
+make verify
+make demo-smoke
+uv run autorag doctor
+```
+
+- `make verify` runs lint + typecheck + tests in CI-equivalent order.
+- `make demo-smoke` runs a fast-path M6 smoke build (defaults `run_id=m6_smoke`, `mode=vector`, `top_k=4`).
+- `autorag doctor` validates local demo prerequisites and output artifacts, returning actionable missing-file hints.
+
 ## Interactive app
 
 ```bash
