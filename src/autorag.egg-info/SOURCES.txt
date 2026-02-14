@@ -10,6 +10,7 @@ src/autokg_rag/answer/llm_adapter.py
 src/autokg_rag/app_api/__init__.py
 src/autokg_rag/app_api/doctor.py
 src/autokg_rag/app_api/endpoints.py
+src/autokg_rag/app_api/retention.py
 src/autokg_rag/app_api/service.py
 src/autokg_rag/chunking/__init__.py
 src/autokg_rag/chunking/base.py
