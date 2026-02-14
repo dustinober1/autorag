@@ -8,19 +8,24 @@
     "best-practices",
     "commit",
     "deploy",
+    "developing-with-streamlit",
     "evolve",
     "feature",
     "fix",
     "implement",
     "improve",
+    "pydantic",
+    "python-design-patterns",
+    "python-testing-patterns",
+    "rag-implementation",
     "review",
     "security-checklist",
     "skill-generator",
     "task"
   ],
   "mcp": {
-    "github": false,
-    "filesystem": false,
+    "github": true,
+    "filesystem": true,
     "postgres": false
   }
 }
