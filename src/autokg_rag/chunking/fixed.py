@@ -36,6 +36,9 @@ def chunk_page(
                 page=page,
                 section=section,
                 chunk_text=chunk_text,
+                chunk_type="text",
+                section_path="",
+                cross_refs=[],
             )
         )
 
