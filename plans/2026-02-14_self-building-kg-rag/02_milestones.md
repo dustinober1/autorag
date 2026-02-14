@@ -1,0 +1,145 @@
+# B) MILESTONES (6 total)
+
+## Milestone 1 — Skeleton + contracts + observability (minimal E2E)
+- Goal: Run a smoke pipeline end-to-end on fixture PDFs and return one cited answer.
+- Scope included: project scaffold, config system, CLI skeleton, provenance schemas, structured logging, metrics hooks, smoke retriever.
+- Scope excluded: real embeddings, real KG extraction, full eval matrix.
+- CLI commands to run it:
+  - `uv sync`
+  - `uv run autorag smoke --input data/fixtures/pdfs --question "What is project scope?" --run-id m1`
+  - `uv run pytest tests/e2e/test_m1_smoke_pipeline.py -q`
+- Data artifacts produced (files + schemas):
+  - `data/artifacts/m1/doc_manifest.jsonl` schema `{doc_id, source_path, sha256, total_pages}`
+  - `data/artifacts/m1/chunks.jsonl` schema `{chunk_id, doc_id, page, section, chunk_text}`
+  - `data/artifacts/m1/answer.json` schema `{question_id, answer_text, citations[]}`
+  - `data/artifacts/m1/metrics.jsonl` schema `{run_id, stage, metric_name, value, timestamp}`
+- Tests (exact pytest names + assertions):
+  - `tests/contracts/test_provenance_schema.py::test_chunk_requires_doc_page_section_chunk_id` asserts missing provenance fields fail validation.
+  - `tests/observability/test_logging_metrics.py::test_stage_logs_and_metric_events_emitted` asserts logs include `run_id/stage` and metrics file has counters.
+  - `tests/e2e/test_m1_smoke_pipeline.py::test_smoke_pipeline_returns_cited_answer` asserts answer is non-empty and each citation maps to an existing chunk.
+- Done when acceptance checklist:
+  - `autorag smoke` runs successfully on fixtures.
+  - Output answer always includes at least one valid citation.
+  - Logs and metrics exist for each stage.
+  - All M1 tests pass.
+
+## Milestone 2 — Real ingest + chunking + vector retrieval baseline
+- Goal: Process ~25 PDFs into chunked artifacts and answer with vector-only retrieval.
+- Scope included: PDF parsing, section detection, all 4 chunking strategies, embedding generation, vector index/search.
+- Scope excluded: ontology/KG and hybrid fusion.
+- CLI commands to run it:
+  - `uv run autorag ingest --input data/raw/pdfs --run-id m2 --chunking heading_recursive`
+  - `uv run autorag index-vector --run-id m2 --embedding bge-small-en-v1.5`
+  - `uv run autorag query --run-id m2 --mode vector --question "How is scope baseline used?" --top-k 8`
+  - `uv run pytest tests/e2e/test_m2_vector_pipeline.py -q`
+- Data artifacts produced (files + schemas):
+  - `data/artifacts/m2/documents.parquet` schema `{doc_id, title, source_path, sha256}`
+  - `data/artifacts/m2/pages.parquet` schema `{doc_id, page, section, text}`
+  - `data/artifacts/m2/chunks.parquet` schema `ChunkRecord`
+  - `data/artifacts/m2/embeddings.npy` schema `float32[num_chunks, dim]`
+  - `data/artifacts/m2/embedding_meta.parquet` schema `{chunk_id, row_idx, embedding_model, dim}`
+  - `data/artifacts/m2/vector_hits.jsonl` schema `{question_id, rank, score, chunk_id, doc_id, page, section}`
+- Tests (exact pytest names + assertions):
+  - `tests/ingest/test_pdf_parser.py::test_pdf_ingest_extracts_pages_sections_and_stable_doc_ids` asserts deterministic `doc_id` and non-empty page text.
+  - `tests/chunking/test_chunk_strategies.py::test_chunkers_emit_valid_provenance_and_unique_chunk_ids` asserts IDs unique and provenance preserved.
+  - `tests/vector/test_vector_index.py::test_vector_index_roundtrip_and_topk_ordering` asserts top-k sorted by descending score.
+  - `tests/e2e/test_m2_vector_pipeline.py::test_vector_pipeline_completes_under_600_seconds_on_sample_25_pdfs` asserts runtime and artifact existence.
+- Done when acceptance checklist:
+  - Ingest+index+vector query works from raw PDFs.
+  - Provenance is present on all retrieved hits.
+  - 25-PDF demo run completes under 10 minutes on macOS CPU.
+  - All M2 tests pass.
+
+## Milestone 3 — Automated ontology extraction + graph store + graph retrieval
+- Goal: Build KG from chunks and support graph-only retrieval.
+- Scope included: entity/relation extraction, canonicalization, SQLite KG store, traversal retriever.
+- Scope excluded: hybrid fusion and answer-level reranking improvements.
+- CLI commands to run it:
+  - `uv run autorag build-kg --run-id m3`
+  - `uv run autorag query --run-id m3 --mode graph --question "How does scope control affect risk response?" --top-k 8`
+  - `uv run pytest tests/e2e/test_m3_graph_pipeline.py -q`
+- Data artifacts produced (files + schemas):
+  - `data/artifacts/m3/kg_nodes.parquet` schema `{node_id, canonical_name, node_type, aliases, confidence}`
+  - `data/artifacts/m3/kg_edges.parquet` schema `{edge_id, source_node_id, relation, target_node_id, weight, evidence_chunk_ids}`
+  - `data/artifacts/m3/kg.sqlite` tables `nodes`, `edges`, `chunk_mentions`
+  - `data/artifacts/m3/graph_hits.jsonl` schema `RetrievalHit`
+- Tests (exact pytest names + assertions):
+  - `tests/kg/test_ontology_extraction.py::test_ontology_extractor_outputs_nodes_edges_with_evidence_chunks` asserts every edge has `evidence_chunk_ids`.
+  - `tests/kg/test_graph_store_sqlite.py::test_sqlite_graph_roundtrip_preserves_node_and_edge_counts` asserts persistence fidelity.
+  - `tests/retrieval/test_graph_retriever.py::test_graph_retriever_returns_multihop_hits_with_provenance` asserts traversal depth >1 returns cited chunks.
+  - `tests/e2e/test_m3_graph_pipeline.py::test_graph_pipeline_end_to_end_returns_cited_answer` asserts graph mode answer has valid citations.
+- Done when acceptance checklist:
+  - KG build completes on M2 artifacts.
+  - Graph query returns citations with full provenance.
+  - Multi-hop question fixture retrieves >1-hop evidence.
+  - All M3 tests pass.
+
+## Milestone 4 — Hybrid retrieval + grounded answerer
+- Goal: Combine vector and graph signals and generate grounded answers with citation spans.
+- Scope included: fusion scoring, dedupe/rerank, answer composition, citation formatter, optional LLM adapter interface.
+- Scope excluded: full benchmark matrix automation and UI.
+- CLI commands to run it:
+  - `uv run autorag query --run-id m4 --mode hybrid --question "Compare mitigation and acceptance strategies." --top-k 10`
+  - `uv run autorag answer --run-id m4 --question "Compare mitigation and acceptance strategies." --mode hybrid`
+  - `uv run pytest tests/e2e/test_m4_hybrid_qa.py -q`
+- Data artifacts produced (files + schemas):
+  - `data/artifacts/m4/hybrid_hits.jsonl` schema `{rank, score, vector_score, graph_score, chunk_id,...}`
+  - `data/artifacts/m4/answers.jsonl` schema `AnswerRecord`
+  - `data/artifacts/m4/citation_trace.jsonl` schema `{answer_sentence_id, citation, support_score}`
+- Tests (exact pytest names + assertions):
+  - `tests/retrieval/test_hybrid_retriever.py::test_hybrid_fusion_combines_vector_and_graph_scores` asserts fused score reflects both components.
+  - `tests/answer/test_grounded_answer.py::test_each_answer_sentence_has_supporting_citation` asserts sentence-to-citation linkage.
+  - `tests/contracts/test_answer_payload.py::test_answer_payload_matches_schema_contract` asserts API/CLI JSON contract.
+  - `tests/e2e/test_m4_hybrid_qa.py::test_hybrid_beats_vector_on_multihop_fixture_recall_at_5` asserts hybrid Recall@5 >= vector on fixture set.
+- Done when acceptance checklist:
+  - Hybrid mode produces grounded answers with citation list.
+  - Citation trace can be validated against source chunks.
+  - Hybrid improves multihop retrieval on fixture benchmark.
+  - All M4 tests pass.
+
+## Milestone 5 — Evaluation harness + dataset generation + experiment runner
+- Goal: Generate 200–500 eval questions and run chunking/embedding/retrieval comparison matrix.
+- Scope included: dataset builder, metrics calculators, factorial experiment runner, markdown/CSV/JSON reports.
+- Scope excluded: interactive app UX polish.
+- CLI commands to run it:
+  - `uv run autorag eval bootstrap-starter --out eval/datasets/starter_questions_20.jsonl`
+  - `uv run autorag eval generate --run-id m5 --input data/artifacts/m4 --target-size 300`
+  - `uv run autorag eval run-matrix --run-id m5 --config configs/experiments/matrix.yaml`
+  - `uv run autorag eval report --run-id m5`
+  - `uv run pytest tests/e2e/test_m5_eval_harness.py -q`
+- Data artifacts produced (files + schemas):
+  - `data/artifacts/m5/questions_300.jsonl` schema `{question_id, type, question, gold_citations[]}`
+  - `reports/experiments/matrix_results.csv` schema `EvalRow`
+  - `reports/experiments/matrix_results.json` schema `{run_id, summary, rows[]}`
+  - `reports/experiments/per_query/*.jsonl` schema `{exp_id, question_id, metrics, hits, answer}`
+- Tests (exact pytest names + assertions):
+  - `tests/eval/test_question_generator.py::test_generated_dataset_hits_target_size_and_type_mix` asserts 200–500 count and type distribution.
+  - `tests/eval/test_metrics.py::test_recall_ndcg_citation_precision_faithfulness_known_case` asserts metric correctness on fixed fixtures.
+  - `tests/eval/test_matrix_runner.py::test_matrix_runner_emits_complete_factorial_grid` asserts all planned experiment IDs exist.
+  - `tests/e2e/test_m5_eval_harness.py::test_eval_harness_writes_csv_json_and_markdown_report` asserts output files and non-empty rows.
+- Done when acceptance checklist:
+  - Dataset generation produces valid JSONL with provenance-linked labels.
+  - Matrix run completes and writes CSV/JSON summaries.
+  - Report ranks configs by primary metric (`nDCG@10` default).
+  - All M5 tests pass.
+
+## Milestone 6 — Demo app + reproducible runbook
+- Goal: Deliver interactive demo app plus one-command reproducible portfolio demo flow.
+- Scope included: Streamlit app, query API service layer, citation viewer, run selection, final docs/report.
+- Scope excluded: production deployment and user auth.
+- CLI commands to run it:
+  - `make demo-build` (ingest + index + kg + hybrid + eval on sample set)
+  - `uv run streamlit run app/streamlit_app.py`
+  - `uv run pytest tests/e2e/test_m6_demo_workflow.py -q`
+- Data artifacts produced (files + schemas):
+  - `reports/milestones/m6_demo_report.md` schema `{run_id, config, key_metrics, screenshots}`
+  - `data/artifacts/m6/demo_payload_samples.jsonl` schema `{question, answer_record}`
+- Tests (exact pytest names + assertions):
+  - `tests/app/test_api_contract.py::test_query_service_returns_answerrecord_with_citations` asserts service payload contract.
+  - `tests/app/test_streamlit_smoke.py::test_streamlit_renders_query_and_citation_panels` asserts UI page loads and key widgets exist.
+  - `tests/e2e/test_m6_demo_workflow.py::test_demo_build_generates_required_artifacts` asserts `demo-build` outputs answer + report.
+- Done when acceptance checklist:
+  - Demo runs locally with no external services.
+  - User can switch vector/graph/hybrid and inspect citations.
+  - Portfolio runbook reproduces results end-to-end.
+  - All M6 tests pass.
