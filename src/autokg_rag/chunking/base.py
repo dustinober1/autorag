@@ -79,6 +79,9 @@ def _make_chunk(
         page=page.page,
         section=page.section,
         chunk_text=chunk_text.strip() or "(empty)",
+        chunk_type="text",  # Default to text type
+        section_path="",    # Will be set later in the pipeline
+        cross_refs=[],      # Will be populated later
     )
 
 
