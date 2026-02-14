@@ -27,18 +27,25 @@ def render_sidebar(st: Any) -> SidebarState:
     sidebar = _sidebar(st)
     session_state = getattr(st, "session_state", {})
     available_runs = list(session_state.get("available_runs", []))
+    previous_run = str(session_state.get("selected_run_id", ""))
 
     sidebar.markdown('<div class="sidebar-title">AutoRAG</div>', unsafe_allow_html=True)
-    sidebar.markdown('<div class="sidebar-subtitle">Milestone 6 Demo · v0.1</div>', unsafe_allow_html=True)
+    sidebar.markdown(
+        '<div class="sidebar-subtitle">Milestone 6 Demo · v0.1</div>',
+        unsafe_allow_html=True,
+    )
 
     run_count = len(available_runs)
     run_label = f"Run ID ({run_count})"
 
     if available_runs:
+        selected_index = run_count - 1
+        if previous_run in available_runs:
+            selected_index = available_runs.index(previous_run)
         selected_run = sidebar.selectbox(
             run_label,
             options=available_runs,
-            index=run_count - 1,
+            index=selected_index,
         )
     else:
         sidebar.selectbox(
@@ -77,6 +84,8 @@ def render_sidebar(st: Any) -> SidebarState:
             ),
             unsafe_allow_html=True,
         )
+
+    session_state["selected_run_id"] = selected_run
 
     return SidebarState(
         run_id=selected_run,

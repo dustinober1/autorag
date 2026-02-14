@@ -170,3 +170,18 @@
   height: 100%;
   background: var(--accent);
 }
+
+.store-stats {
+  margin-top: 0.65rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  padding: 0.6rem 0.75rem;
+  font-size: 0.82rem;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.store-stats strong {
+  color: var(--ink);
+}

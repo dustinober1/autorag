@@ -24,6 +24,21 @@ make demo-build
 uv run streamlit run app/streamlit_app.py
 ```
 
+### New App Capabilities
+
+- Store CRUD from the sidebar (`Create Store`, `Delete Selected Store`)
+- Multi-document PDF upload into a selected store
+- Per-document listing, incremental add, and remove with embedding row realignment
+- Dynamic Ollama model discovery from `/api/tags` with runtime model selection
+- arXiv search, select, download, and ingest directly into a target store
+
+### Typical UI Flow
+
+1. Create or select a store in the sidebar.
+2. Upload PDFs in `Upload Documents` (or use `arXiv Search & Import`).
+3. Optionally adjust answer/embedding/reranker model selections.
+4. Ask a question and inspect citations, retrieval hits, and grounding trace.
+
 ## Optional Ollama Demo Path
 
 Default local/CI flow remains `make demo-build`.  
