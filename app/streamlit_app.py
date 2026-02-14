@@ -76,6 +76,7 @@ _SESSION_SELECTED_ANSWER_MODEL = "selected_answer_model"
 _SESSION_SELECTED_EMBEDDING_MODEL = "selected_embedding_model"
 _SESSION_SELECTED_RERANKER_MODEL = "selected_reranker_model"
 _SESSION_ARXIV_RESULTS = "arxiv_results"
+_SESSION_ARXIV_SELECTED_LABELS = "arxiv_selected_labels"
 
 
 QueryHandler = Callable[..., AnswerPayload]
@@ -439,7 +440,12 @@ def render_app(
                 _notify_error(st, f"Add documents failed: {exc}")
 
         arxiv_results = _restore_arxiv_results(session_state.get(_SESSION_ARXIV_RESULTS))
-        arxiv_state = render_arxiv_panel(st, papers=arxiv_results)
+        arxiv_state = render_arxiv_panel(
+            st,
+            papers=arxiv_results,
+            store_names=available_runs,
+            default_store=sidebar_state.run_id,
+        )
         if arxiv_state.search_requested and arxiv_state.query:
             try:
                 with st.spinner("Searching arXiv..."):
@@ -450,34 +456,41 @@ def render_app(
                 session_state[_SESSION_ARXIV_RESULTS] = [
                     paper.model_dump(mode="json") for paper in arxiv_results
                 ]
+                session_state[_SESSION_ARXIV_SELECTED_LABELS] = []
                 _notify_success(st, f"Found {len(arxiv_results)} arXiv papers.")
             except Exception as exc:  # noqa: BLE001
                 _notify_error(st, f"arXiv search failed: {exc}")
 
         if arxiv_state.import_requested and arxiv_state.selected_ids:
-            selected_map = {paper.arxiv_id: paper for paper in arxiv_results}
-            selected_papers = [
-                selected_map[paper_id]
-                for paper_id in arxiv_state.selected_ids
-                if paper_id in selected_map
-            ]
-            if selected_papers:
-                try:
-                    with st.spinner("Downloading and ingesting selected arXiv papers..."):
-                        import_result = ingest_arxiv_endpoint(
-                            store_name=sidebar_state.run_id,
-                            papers=selected_papers,
-                            settings=active_settings,
+            if not arxiv_state.target_store:
+                _notify_error(st, "Select a target store for arXiv import.")
+            else:
+                selected_map = {paper.arxiv_id: paper for paper in arxiv_results}
+                selected_papers = [
+                    selected_map[paper_id]
+                    for paper_id in arxiv_state.selected_ids
+                    if paper_id in selected_map
+                ]
+                if selected_papers:
+                    try:
+                        with st.spinner("Downloading and ingesting selected arXiv papers..."):
+                            import_result = ingest_arxiv_endpoint(
+                                store_name=arxiv_state.target_store,
+                                papers=selected_papers,
+                                settings=active_settings,
+                            )
+                        _notify_success(
+                            st,
+                            (
+                                f"Imported {import_result.documents} arXiv papers "
+                                f"({import_result.pages} pages, {import_result.chunks} chunks) "
+                                f"into '{arxiv_state.target_store}'."
+                            ),
                         )
-                    _notify_success(
-                        st,
-                        (
-                            f"Imported {import_result.documents} arXiv papers "
-                            f"({import_result.pages} pages, {import_result.chunks} chunks)."
-                        ),
-                    )
-                except Exception as exc:  # noqa: BLE001
-                    _notify_error(st, f"arXiv import failed: {exc}")
+                    except Exception as exc:  # noqa: BLE001
+                        _notify_error(st, f"arXiv import failed: {exc}")
+                else:
+                    _notify_error(st, "No valid arXiv papers were selected for import.")
 
     default_question = str(session_state.get(_SESSION_LAST_QUESTION, _DEFAULT_QUESTION))
     question, submitted = render_question_bar(st, default_question=default_question)
