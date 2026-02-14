@@ -55,8 +55,43 @@ class EmbeddingMetaRecord(BaseModel):
     dim: int = Field(ge=1)
 
 
+class KGNodeRecord(BaseModel):
+    """Knowledge-graph node record."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    node_id: str = Field(min_length=1)
+    canonical_name: str = Field(min_length=1)
+    node_type: str = Field(min_length=1)
+    aliases: list[str] = Field(min_length=1)
+    confidence: float = Field(ge=0.0, le=1.0)
+
+
+class KGEdgeRecord(BaseModel):
+    """Knowledge-graph edge record with evidence provenance."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    edge_id: str = Field(min_length=1)
+    source_node_id: str = Field(min_length=1)
+    relation: str = Field(min_length=1)
+    target_node_id: str = Field(min_length=1)
+    weight: float = Field(ge=0.0)
+    evidence_chunk_ids: list[str] = Field(min_length=1)
+
+
+class ChunkMentionRecord(BaseModel):
+    """Chunk to node mention counts for graph diagnostics."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    chunk_id: str = Field(min_length=1)
+    node_id: str = Field(min_length=1)
+    mention_count: int = Field(ge=1)
+
+
 class RetrievalHitRecord(ProvenanceRecord):
-    """Vector retrieval hit payload."""
+    """Retrieval hit payload with provenance."""
 
     question_id: str = Field(min_length=1)
     rank: PositiveInt

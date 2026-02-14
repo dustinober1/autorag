@@ -17,4 +17,5 @@ class Settings(BaseModel):
     sentence_window_size: int = Field(default=5, ge=1)
     semantic_similarity_breakpoint: float = Field(default=0.2, ge=0.0, le=1.0)
     embedding_dim: int = Field(default=256, ge=8)
-    top_k: int = Field(default=3, ge=1)
+    graph_max_depth: int = Field(default=2, ge=1)
+    top_k: int = Field(default=8, ge=1)

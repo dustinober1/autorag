@@ -12,6 +12,7 @@ from pydantic import ValidationError
 from autokg_rag.config import load_settings
 from autokg_rag.exceptions import AutoRAGError
 from autokg_rag.ingest import run_ingest_pipeline, run_smoke_pipeline
+from autokg_rag.kg.pipeline import run_build_kg_pipeline, run_graph_query_pipeline
 from autokg_rag.vector.pipeline import run_index_vector_pipeline, run_vector_query_pipeline
 
 app = typer.Typer(help="AutoRAG command line interface")
@@ -127,6 +128,33 @@ def index_vector(
     )
 
 
+@app.command("build-kg")
+def build_kg(run_id: Annotated[str, typer.Option(..., "--run-id")]) -> None:
+    """Build knowledge-graph artifacts from chunked data."""
+
+    try:
+        settings = load_settings()
+        node_count, edge_count, mention_count = run_build_kg_pipeline(
+            run_id=run_id,
+            settings=settings,
+        )
+    except (AutoRAGError, ValidationError) as exc:
+        typer.secho(str(exc), err=True, fg=typer.colors.RED)
+        raise typer.Exit(code=1) from exc
+
+    typer.echo(
+        json.dumps(
+            {
+                "run_id": run_id,
+                "nodes": node_count,
+                "edges": edge_count,
+                "chunk_mentions": mention_count,
+            },
+            indent=2,
+        )
+    )
+
+
 @app.command()
 def query(
     run_id: Annotated[str, typer.Option(..., "--run-id")],
@@ -134,24 +162,45 @@ def query(
     mode: Annotated[str, typer.Option("--mode")] = "vector",
     top_k: Annotated[int, typer.Option("--top-k", min=1)] = 8,
 ) -> None:
-    """Run retrieval query and print hits."""
+    """Run retrieval query and print outputs."""
 
     try:
-        if mode != "vector":
-            raise AutoRAGError(f"Unsupported mode '{mode}' for this milestone. Use --mode vector.")
-
         settings = load_settings()
-        hits = run_vector_query_pipeline(
-            run_id=run_id,
-            question=question,
-            top_k=top_k,
-            settings=settings,
+
+        if mode == "vector":
+            hits = run_vector_query_pipeline(
+                run_id=run_id,
+                question=question,
+                top_k=top_k,
+                settings=settings,
+            )
+            typer.echo(json.dumps([hit.model_dump(mode="json") for hit in hits], indent=2))
+            return
+
+        if mode == "graph":
+            hit_rows, answer = run_graph_query_pipeline(
+                run_id=run_id,
+                question=question,
+                top_k=top_k,
+                settings=settings,
+            )
+            typer.echo(
+                json.dumps(
+                    {
+                        "answer": answer.model_dump(mode="json"),
+                        "hits": hit_rows,
+                    },
+                    indent=2,
+                )
+            )
+            return
+
+        raise AutoRAGError(
+            f"Unsupported mode '{mode}' for this milestone. Use --mode vector or --mode graph."
         )
     except (AutoRAGError, ValidationError) as exc:
         typer.secho(str(exc), err=True, fg=typer.colors.RED)
         raise typer.Exit(code=1) from exc
-
-    typer.echo(json.dumps([hit.model_dump(mode="json") for hit in hits], indent=2))
 
 
 def main() -> None:
