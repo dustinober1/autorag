@@ -34,7 +34,12 @@ def _compose_answer_text(question: str, best_chunk: ChunkRecord) -> str:
     return f"For '{question}', the source states: {sentence}"
 
 
-def run_smoke_pipeline(input_dir: Path, question: str, run_id: str, settings: Settings) -> AnswerRecord:
+def run_smoke_pipeline(
+    input_dir: Path,
+    question: str,
+    run_id: str,
+    settings: Settings,
+) -> AnswerRecord:
     """Execute Milestone 1 smoke workflow and persist required artifacts."""
 
     artifact_dir = settings.artifact_root / run_id
@@ -51,7 +56,11 @@ def run_smoke_pipeline(input_dir: Path, question: str, run_id: str, settings: Se
         logger.info(stage="ingest", event="start")
         raw_documents = build_raw_documents(input_dir=input_dir)
         logger.info(stage="ingest", event="complete", documents=len(raw_documents))
-        metrics.counter(stage="ingest", metric_name="documents.count", value=float(len(raw_documents)))
+        metrics.counter(
+            stage="ingest",
+            metric_name="documents.count",
+            value=float(len(raw_documents)),
+        )
 
     manifest_payloads = [doc.manifest.model_dump(mode="json") for doc in raw_documents]
     _write_jsonl(artifact_dir / "doc_manifest.jsonl", manifest_payloads)
@@ -83,7 +92,12 @@ def run_smoke_pipeline(input_dir: Path, question: str, run_id: str, settings: Se
         if not hits:
             raise RetrievalError("Retriever returned no chunks")
         best = hits[0].chunk
-        logger.info(stage="retrieval", event="complete", hits=len(hits), best_chunk_id=best.chunk_id)
+        logger.info(
+            stage="retrieval",
+            event="complete",
+            hits=len(hits),
+            best_chunk_id=best.chunk_id,
+        )
 
     citation = Citation(
         chunk_id=best.chunk_id,
@@ -104,7 +118,11 @@ def run_smoke_pipeline(input_dir: Path, question: str, run_id: str, settings: Se
             encoding="utf-8",
         )
         logger.info(stage="answer", event="complete", citations=len(answer.citations))
-        metrics.counter(stage="answer", metric_name="citations.count", value=float(len(answer.citations)))
+        metrics.counter(
+            stage="answer",
+            metric_name="citations.count",
+            value=float(len(answer.citations)),
+        )
 
     logger.info(stage="pipeline", event="complete", artifact_dir=str(artifact_dir))
     return answer

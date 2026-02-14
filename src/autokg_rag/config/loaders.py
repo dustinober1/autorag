@@ -11,7 +11,10 @@ import yaml
 from autokg_rag.config.settings import Settings
 
 
-def load_settings(overrides: dict[str, Any] | None = None, config_path: Path | None = None) -> Settings:
+def load_settings(
+    overrides: dict[str, Any] | None = None,
+    config_path: Path | None = None,
+) -> Settings:
     """Load settings from YAML, environment variables, and explicit overrides.
 
     Precedence order is: base YAML, environment variables, explicit overrides.

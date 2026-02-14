@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import json
 from dataclasses import dataclass
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
@@ -31,7 +31,7 @@ class StructuredLogger:
 
     def _emit(self, level: str, stage: str, event: str, fields: dict[str, Any]) -> None:
         record: dict[str, Any] = {
-            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "timestamp": datetime.now(UTC).isoformat(),
             "level": level,
             "run_id": self.run_id,
             "stage": stage,

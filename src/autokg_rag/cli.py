@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+from typing import Annotated
 
 import typer
 from pydantic import ValidationError
@@ -21,15 +22,29 @@ def callback() -> None:
 
 @app.command()
 def smoke(
-    input: Path = typer.Option(..., "--input", exists=True, file_okay=False, dir_okay=True),
-    question: str = typer.Option(..., "--question"),
-    run_id: str = typer.Option(..., "--run-id"),
+    input_dir: Annotated[
+        Path,
+        typer.Option(
+            ...,
+            "--input",
+            exists=True,
+            file_okay=False,
+            dir_okay=True,
+        ),
+    ],
+    question: Annotated[str, typer.Option(..., "--question")],
+    run_id: Annotated[str, typer.Option(..., "--run-id")],
 ) -> None:
     """Run Milestone 1 smoke pipeline and print answer payload."""
 
     try:
         settings = load_settings()
-        answer = run_smoke_pipeline(input_dir=input, question=question, run_id=run_id, settings=settings)
+        answer = run_smoke_pipeline(
+            input_dir=input_dir,
+            question=question,
+            run_id=run_id,
+            settings=settings,
+        )
     except (AutoRAGError, ValidationError) as exc:
         typer.secho(str(exc), err=True, fg=typer.colors.RED)
         raise typer.Exit(code=1) from exc

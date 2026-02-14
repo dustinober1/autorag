@@ -12,6 +12,7 @@ Provides-Extra: dev
 Requires-Dist: pytest>=8.3.0; extra == "dev"
 Requires-Dist: ruff>=0.9.0; extra == "dev"
 Requires-Dist: mypy>=1.13.0; extra == "dev"
+Requires-Dist: types-PyYAML>=6.0.12.20250915; extra == "dev"
 
 # AutoRAG
 

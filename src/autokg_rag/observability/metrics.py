@@ -4,10 +4,10 @@ from __future__ import annotations
 
 import json
 import time
+from collections.abc import Iterator
 from contextlib import contextmanager
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
-from typing import Iterator
 
 
 class MetricsWriter:
@@ -26,7 +26,7 @@ class MetricsWriter:
             "stage": stage,
             "metric_name": metric_name,
             "value": value,
-            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "timestamp": datetime.now(UTC).isoformat(),
         }
         with self._output_path.open("a", encoding="utf-8") as handle:
             handle.write(f"{json.dumps(payload, ensure_ascii=True)}\n")
