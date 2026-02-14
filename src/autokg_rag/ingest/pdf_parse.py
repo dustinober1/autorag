@@ -12,6 +12,7 @@ from autokg_rag.ingest.header_footer_filter import (
     remove_header_footer_from_text,
     remove_repeated_lines_across_pages,
 )
+from .table_extractor import ExtractedTable, extract_tables_from_pdf
 
 
 def sha256_for_file(path: Path) -> str:
@@ -107,3 +108,10 @@ def extract_title(pages: list[str], fallback: str) -> str:
             return stripped[:200]
 
     return fallback
+
+
+def parse_pdf_with_tables(path: Path) -> tuple[list[str], list[ExtractedTable]]:
+    """Extract page text and tables from a PDF."""
+    pages = parse_pdf_pages_clean(path)
+    tables = extract_tables_from_pdf(path)
+    return pages, tables
