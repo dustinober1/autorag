@@ -2,6 +2,8 @@
 !.gitignore
 !raw/
 !raw/.gitkeep
+!raw/pdfs/
+!raw/pdfs/.gitkeep
 !interim/
 !interim/.gitkeep
 !artifacts/
