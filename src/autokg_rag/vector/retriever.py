@@ -7,7 +7,8 @@ from dataclasses import dataclass
 
 import numpy as np
 
-from autokg_rag.embeddings.fastembed_provider import LocalHashEmbeddingProvider
+from autokg_rag.embeddings.base import EmbeddingProvider
+from autokg_rag.exceptions import RetrievalError
 from autokg_rag.schemas.records import ChunkRecord, RetrievalHitRecord
 from autokg_rag.vector.index import search_top_k
 
@@ -49,14 +50,22 @@ def retrieve_vector_hits(
     question: str,
     chunks: list[ChunkRecord],
     embeddings: np.ndarray,
-    embedding_model: str,
-    embedding_dim: int,
+    embedding_provider: EmbeddingProvider,
     top_k: int,
 ) -> list[RetrievalHitRecord]:
     """Retrieve top-k vector hits with provenance fields."""
 
-    provider = LocalHashEmbeddingProvider(model_name=embedding_model, dim=embedding_dim)
-    query_matrix = provider.embed_texts([question])
+    if embeddings.ndim != 2:
+        raise RetrievalError("Embedding matrix must be two-dimensional.")
+
+    embedding_dim = int(embeddings.shape[1])
+    query_matrix = embedding_provider.embed_texts([question])
+    if query_matrix.ndim != 2 or int(query_matrix.shape[0]) != 1:
+        raise RetrievalError("Embedding provider returned invalid query embedding shape.")
+    if int(query_matrix.shape[1]) != embedding_dim:
+        raise RetrievalError(
+            "Query embedding dimension does not match indexed embeddings. Re-run index-vector."
+        )
     query_vector = (
         query_matrix[0]
         if query_matrix.size

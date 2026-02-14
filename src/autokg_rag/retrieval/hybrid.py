@@ -11,6 +11,7 @@ from autokg_rag.kg.retriever import retrieve_graph_hits
 from autokg_rag.observability import MetricsWriter, StructuredLogger
 from autokg_rag.retrieval.fusion import fuse_hybrid_hits
 from autokg_rag.schemas.records import HybridHitRecord
+from autokg_rag.vector.pipeline import resolve_query_embedding_provider
 from autokg_rag.vector.retriever import retrieve_vector_hits
 from autokg_rag.vector.store import (
     align_chunks_with_meta,
@@ -60,15 +61,17 @@ def run_hybrid_query_pipeline(
             raise RetrievalError(
                 "Embedding rows and chunk metadata count do not match. Re-run index-vector."
             )
+        if embeddings.ndim != 2:
+            raise RetrievalError("Embedding matrix must be two-dimensional. Re-run index-vector.")
 
         question_id = _question_id(run_id=run_id, question=question)
+        provider = resolve_query_embedding_provider(meta=meta, settings=settings)
         vector_hits = retrieve_vector_hits(
             question_id=question_id,
             question=question,
             chunks=ordered_chunks,
             embeddings=embeddings,
-            embedding_model=meta[0].embedding_model,
-            embedding_dim=int(meta[0].dim),
+            embedding_provider=provider,
             top_k=top_k,
         )
         graph_hits = retrieve_graph_hits(

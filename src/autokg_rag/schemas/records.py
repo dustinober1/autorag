@@ -57,6 +57,7 @@ class EmbeddingMetaRecord(BaseModel):
 
     chunk_id: str = Field(min_length=1)
     row_idx: int = Field(ge=0)
+    provider: str = Field(default="local_hash", min_length=1)
     embedding_model: str = Field(min_length=1)
     dim: int = Field(ge=1)
 

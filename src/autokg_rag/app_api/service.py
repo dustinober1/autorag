@@ -16,13 +16,15 @@ from autokg_rag.ingest import run_ingest_pipeline
 from autokg_rag.io import read_jsonl_rows, write_jsonl_rows
 from autokg_rag.kg.pipeline import run_build_kg_pipeline
 from autokg_rag.kg.retriever import retrieve_graph_hits
+from autokg_rag.ollama import OllamaClient
 from autokg_rag.retrieval import run_hybrid_query_pipeline
+from autokg_rag.retrieval.ollama_reranker import OllamaReranker
+from autokg_rag.retrieval.rerank import RerankResult, with_sequential_ranks
 from autokg_rag.schemas.api import AnswerPayload, QueryMode, QueryRequest
 from autokg_rag.schemas.records import HybridHitRecord, RetrievalHitRecord
 from autokg_rag.vector.pipeline import run_index_vector_pipeline, run_vector_query_pipeline
 from autokg_rag.vector.store import load_chunks
 
-_DEFAULT_EMBEDDING_MODEL = "bge-small-en-v1.5"
 _DEFAULT_CHUNKING_STRATEGY = "heading_recursive"
 _DEFAULT_DATASET_SIZE = 20
 _DEFAULT_MATRIX_TOP_K = 10
@@ -69,20 +71,25 @@ def _to_hybrid_hit(hit: RetrievalHitRecord, *, mode: QueryMode) -> HybridHitReco
     )
 
 
-def _retrieve_hits(*, request: QueryRequest, settings: Settings) -> list[HybridHitRecord]:
+def _retrieve_hits(
+    *,
+    request: QueryRequest,
+    settings: Settings,
+    top_k: int,
+) -> list[HybridHitRecord]:
     if request.mode == "hybrid":
         try:
             return run_hybrid_query_pipeline(
                 run_id=request.run_id,
                 question=request.question,
-                top_k=request.top_k,
+                top_k=top_k,
                 settings=settings,
             )
         except RetrievalError:
             vector_hits = run_vector_query_pipeline(
                 run_id=request.run_id,
                 question=request.question,
-                top_k=request.top_k,
+                top_k=top_k,
                 settings=settings,
             )
             return [_to_hybrid_hit(hit, mode="vector") for hit in vector_hits]
@@ -92,7 +99,7 @@ def _retrieve_hits(*, request: QueryRequest, settings: Settings) -> list[HybridH
         vector_hits = run_vector_query_pipeline(
             run_id=request.run_id,
             question=request.question,
-            top_k=request.top_k,
+            top_k=top_k,
             settings=settings,
         )
         return [_to_hybrid_hit(hit, mode="vector") for hit in vector_hits]
@@ -101,10 +108,83 @@ def _retrieve_hits(*, request: QueryRequest, settings: Settings) -> list[HybridH
         run_id=request.run_id,
         question=request.question,
         artifact_dir=artifact_dir,
-        top_k=request.top_k,
+        top_k=top_k,
         max_depth=settings.graph_max_depth,
     )
     return [_to_hybrid_hit(hit, mode="graph") for hit in graph_hits]
+
+
+def _setting_bool(*, settings: Settings, key: str, default: bool = False) -> bool:
+    value = getattr(settings, key, default)
+    if isinstance(value, bool):
+        return value
+    return bool(value)
+
+
+def _setting_int(*, settings: Settings, key: str, default: int) -> int:
+    value = getattr(settings, key, default)
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return default
+
+
+def _setting_str(*, settings: Settings, key: str, default: str) -> str:
+    value = getattr(settings, key, default)
+    if not isinstance(value, str):
+        return default
+    stripped = value.strip()
+    return stripped if stripped else default
+
+
+def _reranker_enabled(*, settings: Settings) -> bool:
+    return _setting_bool(settings=settings, key="reranker_enabled", default=False)
+
+
+def _reranker_candidate_k(*, settings: Settings, top_k: int) -> int:
+    configured = _setting_int(settings=settings, key="reranker_candidate_k", default=top_k)
+    return max(top_k, configured)
+
+
+def _reranker_model(*, settings: Settings) -> str:
+    return _setting_str(settings=settings, key="reranker_model", default="llama3:8b")
+
+
+def _persist_rerank_artifacts(
+    *,
+    artifact_dir: Path,
+    model: str,
+    candidate_k: int,
+    rerank_result: RerankResult,
+    final_hits: list[HybridHitRecord],
+) -> None:
+    if not final_hits:
+        return
+
+    question_id = final_hits[0].question_id
+    trace_rows = read_jsonl_rows(artifact_dir / "rerank_trace.jsonl")
+    trace_row: dict[str, Any] = {
+        "question_id": question_id,
+        "model": model,
+        "candidate_k": candidate_k,
+        "parse_status": rerank_result.parse_status,
+    }
+    if rerank_result.prompt_hash is not None:
+        trace_row["prompt_hash"] = rerank_result.prompt_hash
+    if rerank_result.raw_output is not None:
+        trace_row["raw_output"] = rerank_result.raw_output
+    if rerank_result.error is not None:
+        trace_row["error"] = rerank_result.error
+    trace_rows.append(trace_row)
+    write_jsonl_rows(artifact_dir / "rerank_trace.jsonl", trace_rows)
+
+    reranked_rows = read_jsonl_rows(artifact_dir / "reranked_hits.jsonl")
+    reranked_rows.extend(hit.model_dump(mode="json") for hit in final_hits)
+    write_jsonl_rows(artifact_dir / "reranked_hits.jsonl", reranked_rows)
+
+
+def _truncate_hits(*, hits: list[HybridHitRecord], top_k: int) -> list[HybridHitRecord]:
+    return with_sequential_ranks(list(hits[: max(1, top_k)]))
 
 
 def _persist_answer_payload(payload: AnswerPayload, artifact_dir: Path) -> None:
@@ -150,9 +230,38 @@ def query_service(*, request: QueryRequest, settings: Settings) -> AnswerPayload
             f"No chunks found for run_id '{request.run_id}'. Run ingest before querying."
         )
 
-    hits = _retrieve_hits(request=request, settings=settings)
+    reranker_is_enabled = _reranker_enabled(settings=settings)
+    retrieval_top_k = (
+        _reranker_candidate_k(settings=settings, top_k=request.top_k)
+        if reranker_is_enabled
+        else request.top_k
+    )
+
+    hits = _retrieve_hits(request=request, settings=settings, top_k=retrieval_top_k)
     if not hits:
         raise RetrievalError("Query returned no hits.")
+
+    if reranker_is_enabled:
+        model = _reranker_model(settings=settings)
+        client = OllamaClient(
+            base_url=settings.ollama_base_url,
+            timeout_seconds=settings.ollama_timeout_seconds,
+        )
+        reranker = OllamaReranker(model=model, client=client)
+        chunk_text_by_id = {chunk.chunk_id: chunk.chunk_text for chunk in chunks}
+        rerank_result = reranker.rerank(
+            question=request.question,
+            hits=hits,
+            chunk_text_by_id=chunk_text_by_id,
+        )
+        hits = _truncate_hits(hits=rerank_result.hits, top_k=request.top_k)
+        _persist_rerank_artifacts(
+            artifact_dir=artifact_dir,
+            model=model,
+            candidate_k=retrieval_top_k,
+            rerank_result=rerank_result,
+            final_hits=hits,
+        )
 
     chunk_by_id = {chunk.chunk_id: chunk for chunk in chunks}
     answer_record, citation_trace = compose_grounded_answer(
@@ -181,7 +290,9 @@ def _demo_matrix_config(
     run_id: str,
     dataset_path: Path,
     reports_dir: Path,
+    settings: Settings,
 ) -> dict[str, Any]:
+    reranker_enabled = str(bool(settings.reranker_enabled)).lower()
     return {
         "run_id": run_id,
         "dataset_path": str(dataset_path),
@@ -190,8 +301,11 @@ def _demo_matrix_config(
         "top_k": _DEFAULT_MATRIX_TOP_K,
         "factors": {
             "chunking": [_DEFAULT_CHUNKING_STRATEGY],
-            "embedding": [_DEFAULT_EMBEDDING_MODEL],
+            "embedding_model": [settings.embedding_model],
+            "embedding_provider": [settings.embedding_provider],
             "retrieval": ["hybrid"],
+            "reranker_enabled": [reranker_enabled],
+            "reranker_model": [settings.reranker_model],
         },
     }
 
@@ -205,6 +319,7 @@ def _write_demo_report(
     answer_payload: AnswerPayload,
     reports_dir: Path,
     matrix_rows: list[dict[str, Any]],
+    settings: Settings,
 ) -> Path:
     reports_dir.mkdir(parents=True, exist_ok=True)
     report_path = reports_dir / "m6_demo_report.md"
@@ -224,7 +339,10 @@ def _write_demo_report(
             "top_k": top_k,
             "question": question,
             "chunking": _DEFAULT_CHUNKING_STRATEGY,
-            "embedding": _DEFAULT_EMBEDDING_MODEL,
+            "embedding_provider": settings.embedding_provider,
+            "embedding_model": settings.embedding_model,
+            "reranker_enabled": bool(settings.reranker_enabled),
+            "reranker_model": settings.reranker_model,
             "retrieval": "hybrid",
         },
         "key_metrics": key_metrics,
@@ -269,7 +387,7 @@ def run_demo_build(
     )
     run_index_vector_pipeline(
         run_id=run_id,
-        embedding_model=_DEFAULT_EMBEDDING_MODEL,
+        embedding_model=settings.embedding_model,
         settings=settings,
     )
     run_build_kg_pipeline(run_id=run_id, settings=settings)
@@ -298,6 +416,7 @@ def run_demo_build(
             run_id=run_id,
             dataset_path=dataset_path,
             reports_dir=matrix_reports_dir,
+            settings=settings,
         ),
     )
     build_experiment_report(run_id=run_id, reports_dir=matrix_reports_dir)
@@ -309,6 +428,7 @@ def run_demo_build(
         answer_payload=answer_payload,
         reports_dir=reports_dir,
         matrix_rows=matrix_rows,
+        settings=settings,
     )
 
     return {
