@@ -56,3 +56,31 @@ def test_ollama_adapter_generate_with_context_returns_citation_rows(
 
     assert "charter" in answer.lower()
     assert citations and citations[0]["index"] == 1
+
+
+def test_ollama_adapter_forwards_api_key_to_client(monkeypatch: MonkeyPatch) -> None:
+    """OllamaAdapter should forward api_key to the internal OllamaClient."""
+    captured_api_key: list[str] = []
+
+    class _CapturingClient:
+        def __init__(self, *, base_url: str, timeout_seconds: float, api_key: str) -> None:
+            captured_api_key.append(api_key)
+
+        def chat(
+            self,
+            *,
+            model: str,
+            messages: list[dict[str, object]],
+            stream: bool = False,
+            options: dict[str, object] | None = None,
+        ) -> dict[str, object]:
+            return {"message": {"content": "test"}}
+
+    monkeypatch.setattr("autokg_rag.answer.ollama_adapter.OllamaClient", _CapturingClient)
+
+    adapter = OllamaAdapter(model="llama3", api_key="secret-token")
+    adapter.generate("test prompt")
+
+    assert len(captured_api_key) == 1
+    assert captured_api_key[0] == "secret-token", \
+        "OllamaAdapter should forward api_key to the internal client"
