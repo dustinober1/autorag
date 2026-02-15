@@ -66,3 +66,15 @@ def test_load_settings_invalid_env_types_raise_validation_error(
 
     with pytest.raises(ValidationError):
         load_settings(config_path=tmp_path / "missing.yaml")
+
+
+def test_load_settings_parses_ollama_api_key_from_env(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    """Settings should load OLLAMA_API_KEY from environment variable."""
+    monkeypatch.setenv("OLLAMA_API_KEY", "test-cloud-key")
+
+    settings = load_settings(config_path=tmp_path / "missing.yaml")
+
+    assert settings.ollama_api_key == "test-cloud-key"
