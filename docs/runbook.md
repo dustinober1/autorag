@@ -136,3 +136,25 @@ In the app:
 - `AUTORAG_RERANKER_CANDIDATE_K` (default: `30`)
 - `AUTORAG_OLLAMA_BASE_URL` (default: `http://localhost:11434`)
 - `AUTORAG_OLLAMA_TIMEOUT_SECONDS` (default: `30`)
+
+## Ollama Cloud (remote models)
+
+To use [Ollama Cloud](https://cloud.ollama.com/) (remote hosted models) instead of a local Ollama instance:
+
+1. Set `AUTORAG_OLLAMA_BASE_URL` to the Ollama Cloud endpoint (e.g., `https://api.ollama.com`)
+2. Set `OLLAMA_API_KEY` to your Ollama Cloud API token
+
+The API key is sent as a Bearer token in the `Authorization` header:
+
+```
+Authorization: Bearer <OLLAMA_API_KEY>
+```
+
+Example:
+
+```bash
+export OLLAMA_API_KEY=your_ollama_cloud_token
+export AUTORAG_OLLAMA_BASE_URL=https://api.ollama.com
+```
+
+Note: When `OLLAMA_API_KEY` is empty or unset, no Authorization header is sent (default behavior for local Ollama).
