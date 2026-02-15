@@ -4,14 +4,13 @@ from __future__ import annotations
 
 import re
 from pathlib import Path
-from typing import Dict, Optional
 
 from .pmbok_toc_parser import TocEntry, load_pmbok_toc
 
 _SECTION_PREFIX_RE = re.compile(r"^(?:section\s+\d+[\.:\-]?\s*)", re.IGNORECASE)
 
 # Global cache for TOC data per document
-_toc_cache: Dict[str, Dict[int, TocEntry]] = {}
+_toc_cache: dict[str, dict[int, TocEntry]] = {}
 
 
 def initialize_pmbok_toc_for_document(pdf_path: Path) -> None:
@@ -23,7 +22,7 @@ def initialize_pmbok_toc_for_document(pdf_path: Path) -> None:
         _toc_cache[doc_id] = section_map
 
 
-def detect_section(page_text: str, doc_path: Optional[Path] = None, page_num: Optional[int] = None) -> str:
+def detect_section(page_text: str, doc_path: Path | None = None, page_num: int | None = None) -> str:
     """Detect a best-effort section label from page content, using PMBOK TOC if available."""
 
     # If we have document path and page number, try to use TOC mapping
@@ -33,7 +32,7 @@ def detect_section(page_text: str, doc_path: Optional[Path] = None, page_num: Op
             section_entry = _toc_cache[doc_id].get(page_num)
             if section_entry:
                 return section_entry.full_path or section_entry.title
-    
+
     # Fallback to original logic if no TOC available or matching
     for line in page_text.splitlines():
         candidate = line.strip()
@@ -71,7 +70,7 @@ def get_cross_references(chunk_text: str, current_section_path: str) -> list[str
         r'[Tt]able\s+(\d+(?:\.\d+)*)',
         r'[Ee]xhibit\s+(\d+(?:\.\d+)*)',
     ]
-    
+
     refs: list[str] = []
     for pattern in cross_ref_patterns:
         matches = re.findall(pattern, chunk_text)

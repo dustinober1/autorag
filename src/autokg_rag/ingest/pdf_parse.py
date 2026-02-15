@@ -12,6 +12,7 @@ from autokg_rag.ingest.header_footer_filter import (
     remove_header_footer_from_text,
     remove_repeated_lines_across_pages,
 )
+
 from .table_extractor import ExtractedTable, extract_tables_from_pdf
 
 

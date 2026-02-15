@@ -2,10 +2,9 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
 import re
+from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict
 
 from pypdf import PdfReader
 
@@ -13,17 +12,17 @@ from pypdf import PdfReader
 @dataclass
 class TocEntry:
     """Represents a single entry in the PMBOK Table of Contents."""
-    
+
     level: int
     number: str
     title: str
     page: int
     full_path: str = ""  # Full hierarchical path like "1. Project Management Framework"
-    
+
 
 class PmbokTocParser:
     """Parses PMBOK PDF to extract hierarchical Table of Contents."""
-    
+
     def __init__(self) -> None:
         # Patterns for detecting TOC entries in PMBOK format
         # Common patterns for PMBOK TOC entries like "1.1 Project Management Overview .................. 23"
@@ -37,14 +36,14 @@ class PmbokTocParser:
             # Alternative pattern that captures more variations
             re.compile(r'^(\d+(?:\.\d+)*)[.\s]+(.+?)\s+([IVXivx\d]+)$'),  # Roman numerals too
         ]
-        
+
         # Pattern to identify TOC start in PMBOK
         self.toc_start_patterns = [
             re.compile(r'^Table of Contents$', re.IGNORECASE),
             re.compile(r'^Contents$', re.IGNORECASE),
             re.compile(r'^CONTENTS$', re.IGNORECASE),
         ]
-    
+
     def parse_toc_from_pdf(self, pdf_path: Path) -> list[TocEntry]:
         """Parse the TOC from a PMBOK PDF file."""
         reader = PdfReader(str(pdf_path))
@@ -154,7 +153,7 @@ class PmbokTocParser:
             else:
                 entry.full_path = entry.title
 
-    def create_section_map(self, toc_entries: list[TocEntry], *, max_page: int | None = None) -> Dict[int, TocEntry]:
+    def create_section_map(self, toc_entries: list[TocEntry], *, max_page: int | None = None) -> dict[int, TocEntry]:
         """Create a mapping from page numbers to their corresponding TOC entries."""
         section_map: dict[int, TocEntry] = {}
         if not toc_entries:
@@ -180,7 +179,7 @@ class PmbokTocParser:
 
         return section_map
 
-    def find_section_by_page(self, section_map: Dict[int, TocEntry], page_num: int) -> TocEntry | None:
+    def find_section_by_page(self, section_map: dict[int, TocEntry], page_num: int) -> TocEntry | None:
         """Find the appropriate section for a given page number."""
         if not section_map:
             return None
@@ -197,7 +196,7 @@ class PmbokTocParser:
         return section_map[min(section_map.keys())]
 
 
-def load_pmbok_toc(pdf_path: Path) -> tuple[list[TocEntry], Dict[int, TocEntry]]:
+def load_pmbok_toc(pdf_path: Path) -> tuple[list[TocEntry], dict[int, TocEntry]]:
     """Convenience function to load PMBOK TOC and create section map."""
     parser = PmbokTocParser()
     reader = PdfReader(str(pdf_path))

@@ -108,7 +108,7 @@ def run_smoke_pipeline(
                     chunk.section_path = section_path
                     chunk.cross_refs = cross_refs
                     chunks.append(chunk)
-        
+
         logger.info(stage="chunking", event="complete", chunks=len(chunks))
         metrics.counter(stage="chunking", metric_name="chunks.count", value=float(len(chunks)))
 
@@ -196,7 +196,7 @@ def run_ingest_pipeline(
     with metrics.timer(stage="ingest", metric_name="ingest.seconds"):
         logger.info(stage="ingest", event="start")
         pdf_files = discover_pdf_files(input_dir)
-        
+
         for file_path in pdf_files:
             sha = sha256_for_file(file_path)
             doc_id = f"doc_{sha[:12]}"
@@ -274,35 +274,35 @@ def run_ingest_pipeline(
             sentence_window_size=settings.sentence_window_size,
             semantic_similarity_breakpoint=settings.semantic_similarity_breakpoint,
         )
-        
+
         # Enhance chunks with additional PMBOK-specific fields
         enhanced_chunks = []
         for chunk in chunks:
             # Determine chunk type based on content
             chunk_type = "table" if "TABLE:" in chunk.chunk_text else "text"
-            
+
             # Get section path based on document type
             doc_path = None
             for doc in documents:
                 if doc.doc_id == chunk.doc_id:
                     doc_path = Path(doc.source_path)
                     break
-            
+
             section_path = ""
             if doc_path and "pmbok" in str(doc_path).lower():
                 section_path = resolve_pmbok_section_path(doc_path, chunk.page)
-            
+
             # Get cross-references
             cross_refs = get_cross_references(chunk.chunk_text, section_path)
-            
+
             # Update the chunk with new fields
             chunk.chunk_type = chunk_type
             chunk.section_path = section_path
             chunk.cross_refs = cross_refs
             enhanced_chunks.append(chunk)
-        
+
         chunks = enhanced_chunks
-        
+
         logger.info(stage="chunking", event="complete", chunks=len(chunks))
         metrics.counter(stage="chunking", metric_name="chunks.count", value=float(len(chunks)))
 
