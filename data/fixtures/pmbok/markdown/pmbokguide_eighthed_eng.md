@@ -68,15 +68,12 @@ For other terms used in this standard, refer to the glossary and the PMI Lexicon
 
 **1.3 Foundational Elements of Project Management**
 
-This section outlines the essential elements required to understand and effectively engage in project management. The section explores key project management perspectives and relationships that are crucial for effective project delivery and organizational success, covering concepts such as the following:
+This section outlines the essential elements required to understand and effectively engage in project management. It explores key perspectives and relationships crucial for effective project delivery and organizational success, covering concepts such as:
 
-   - How projects create value and drive organizational change;
-
-   - The link between organizational governance and project governance during project initiation;
-
-   - The differences between operations management and project management; and
-
-   - The relationships among portfolio, program, and project management, as well as their connections to operations management.
+- How projects create value and drive organizational change;
+- The link between organizational governance and project governance during project initiation;
+- The differences between operations management and project management; and
+- The relationships among portfolio, program, and project management, as well as their connections to operations management.
 
 By examining these foundational elements, project management practitioners can gain a comprehensive understanding of how projects fit into the broader organizational context and contribute to value delivery.
 
