@@ -19,9 +19,14 @@ class OllamaAdapter:
     max_tokens: int = 512
     base_url: str = "http://localhost:11434"
     timeout_seconds: float = 60.0
+    api_key: str = ""
 
     def _client(self) -> OllamaClient:
-        return OllamaClient(base_url=self.base_url, timeout_seconds=self.timeout_seconds)
+        return OllamaClient(
+            base_url=self.base_url,
+            timeout_seconds=self.timeout_seconds,
+            api_key=self.api_key,
+        )
 
     def generate(
         self,
@@ -113,6 +118,7 @@ def get_ollama_adapter(
     max_tokens: int = 512,
     base_url: str = "http://localhost:11434",
     timeout_seconds: float = 60.0,
+    api_key: str = "",
 ) -> OllamaAdapter:
     """Get a reusable Ollama adapter instance."""
 
@@ -124,6 +130,7 @@ def get_ollama_adapter(
             max_tokens=max_tokens,
             base_url=base_url,
             timeout_seconds=timeout_seconds,
+            api_key=api_key,
         )
         return _default_adapter
 
@@ -133,4 +140,5 @@ def get_ollama_adapter(
     _default_adapter.max_tokens = int(max_tokens)
     _default_adapter.base_url = base_url
     _default_adapter.timeout_seconds = float(timeout_seconds)
+    _default_adapter.api_key = api_key
     return _default_adapter
