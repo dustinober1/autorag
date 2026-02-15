@@ -21,4 +21,3 @@ __pycache__/
 
 /files/*
 .env
-scripts/normalize_pmbok_paragraphs.py
