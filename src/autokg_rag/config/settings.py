@@ -22,6 +22,7 @@ class Settings(BaseModel):
     embedding_model: str = Field(default="bge-small-en-v1.5", min_length=1)
     ollama_base_url: str = Field(default="http://localhost:11434", min_length=1)
     ollama_timeout_seconds: float = Field(default=30.0, gt=0.0)
+    ollama_api_key: str = Field(default="", description="Bearer token for Ollama Cloud")
     reranker_enabled: bool = False
     reranker_model: str = Field(default="llama3:8b", min_length=1)
     reranker_candidate_k: int = Field(default=30, ge=1)
