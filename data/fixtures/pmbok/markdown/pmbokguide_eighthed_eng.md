@@ -28,7 +28,7 @@ In this evolving landscape, the role of a project manager continues to expand be
 
 The Standard for Project Management serves as a foundational guide for project management practitioners, providing a common language and framework that can be applied across various industries, methodologies, and technological advancements. The standard supports organizations and project professionals in navigating the complexities of modern project management, ensuring consistency and effectiveness in project delivery while allowing for the flexibility needed in today’s dynamic business environment. By applying the standard, organizations can better position themselves to achieve strategic objectives, drive innovation, maintain competitiveness, and contribute to societal impact.
 
-**1.2 Key Terms and Concepts**
+## 1.2 Key Terms and Concepts
 
 The Standard for Project Management reflects the advancement of the profession. Organizations expect projects to deliver outcomes. Project managers are expected to deliver projects that create value for the organization and stakeholders within the organization’s system for value delivery. The following terms are defined to provide context for the content in this standard:
 
