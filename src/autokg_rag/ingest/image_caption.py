@@ -58,6 +58,7 @@ def generate_image_caption(
     model: str = "llava-llama3",
     ollama_base_url: str = "http://localhost:11434",
     timeout_seconds: float = 60.0,
+    ollama_api_key: str = "",
     client: OllamaClient | None = None,
 ) -> str:
     """Generate a caption for one image using Ollama chat vision input."""
@@ -71,6 +72,7 @@ def generate_image_caption(
     resolved_client = client or OllamaClient(
         base_url=ollama_base_url,
         timeout_seconds=timeout_seconds,
+        api_key=ollama_api_key,
     )
     response = resolved_client.chat(
         model=model,
@@ -97,10 +99,15 @@ def batch_caption_images(
     model: str = "llava-llama3",
     ollama_base_url: str = "http://localhost:11434",
     timeout_seconds: float = 60.0,
+    ollama_api_key: str = "",
 ) -> list[dict[str, object]]:
     """Caption multiple images and return success/error rows."""
 
-    client = OllamaClient(base_url=ollama_base_url, timeout_seconds=timeout_seconds)
+    client = OllamaClient(
+        base_url=ollama_base_url,
+        timeout_seconds=timeout_seconds,
+        api_key=ollama_api_key,
+    )
     rows: list[dict[str, object]] = []
     for image_path in image_paths:
         try:

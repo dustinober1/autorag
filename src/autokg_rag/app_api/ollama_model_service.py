@@ -42,6 +42,7 @@ def list_available_models(settings: Settings) -> list[OllamaModelInfo]:
     client = OllamaClient(
         base_url=settings.ollama_base_url,
         timeout_seconds=settings.ollama_timeout_seconds,
+        api_key=settings.ollama_api_key,
     )
     payload = client.list_tags()
     raw_models = payload.get("models")

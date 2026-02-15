@@ -26,6 +26,7 @@ def create_embedding_provider(
     embedding_dim: int,
     ollama_base_url: str = "http://localhost:11434",
     ollama_timeout_seconds: float = 30.0,
+    ollama_api_key: str = "",
 ) -> ProviderSelection:
     """Build an embedding provider from resolved runtime settings."""
 
@@ -53,6 +54,7 @@ def create_embedding_provider(
     client = OllamaClient(
         base_url=ollama_base_url,
         timeout_seconds=float(ollama_timeout_seconds),
+        api_key=ollama_api_key,
     )
     ollama_provider = OllamaEmbeddingProvider(
         model_name=embedding_model,

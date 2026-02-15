@@ -70,6 +70,7 @@ def evaluate_with_llm_judge(
     model: str = "llama3",
     ollama_base_url: str = "http://localhost:11434",
     timeout_seconds: float = 60.0,
+    ollama_api_key: str = "",
     client: OllamaClient | None = None,
 ) -> dict[str, object]:
     """Evaluate one answer with an Ollama judge model."""
@@ -77,6 +78,7 @@ def evaluate_with_llm_judge(
     resolved_client = client or OllamaClient(
         base_url=ollama_base_url,
         timeout_seconds=timeout_seconds,
+        api_key=ollama_api_key,
     )
     prompt = _build_judge_prompt(
         question=question,
@@ -109,6 +111,7 @@ def evaluate_answer_set(
     model: str = "llama3",
     ollama_base_url: str = "http://localhost:11434",
     timeout_seconds: float = 60.0,
+    ollama_api_key: str = "",
     client: OllamaClient | None = None,
 ) -> list[dict[str, object]]:
     """Evaluate an answer set across one or more judge criteria."""
@@ -117,6 +120,7 @@ def evaluate_answer_set(
     resolved_client = client or OllamaClient(
         base_url=ollama_base_url,
         timeout_seconds=timeout_seconds,
+        api_key=ollama_api_key,
     )
 
     rows: list[dict[str, object]] = []

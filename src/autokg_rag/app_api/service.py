@@ -274,6 +274,7 @@ def query_service(*, request: QueryRequest, settings: Settings) -> AnswerPayload
         client = OllamaClient(
             base_url=settings.ollama_base_url,
             timeout_seconds=settings.ollama_timeout_seconds,
+            api_key=settings.ollama_api_key,
         )
         reranker = OllamaReranker(model=model, client=client)
         chunk_text_by_id = {chunk.chunk_id: chunk.chunk_text for chunk in chunks}
