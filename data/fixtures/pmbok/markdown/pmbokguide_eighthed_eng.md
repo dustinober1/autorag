@@ -66,7 +66,7 @@ The Standard for Project Management reflects the advancement of the profession. 
 
 For other terms used in this standard, refer to the glossary and the PMI Lexicon of Project Management Terms [1]
 
-**1.3 Foundational Elements of Project Management**
+## 1.3 Foundational Elements of Project Management
 
 This section outlines the essential elements required to understand and effectively engage in project management. It explores key perspectives and relationships crucial for effective project delivery and organizational success, covering concepts such as:
 
@@ -77,7 +77,7 @@ This section outlines the essential elements required to understand and effectiv
 
 By examining these foundational elements, project management practitioners can gain a comprehensive understanding of how projects fit into the broader organizational context and contribute to value delivery.
 
-**1.3.1 Characteristics of a Project**
+### 1.3.1 Characteristics of a Project
 
 Organizations expect projects to deliver value in addition to outputs and artifacts. Project managers are expected to deliver project outcomes that create value for the organization and stakeholders within the organization’s system for value delivery.
 
