@@ -907,7 +907,7 @@ _The Standard for Project Management_ reflects the advancement of the profession
 
    - **Project manager.** The person assigned by the performing organization to lead the team that is responsible for achieving the project objectives. Project managers perform a variety of functions such as facilitating the project team’s work to achieve the intended outcomes and managing the processes to bring about those outcomes in order to enable value delivery. Additional functions are identified in Section 2.4.
 
-Section 1 – Introduction 5
+Section 1 – Introduction
 
    - **Project success.** The consensus view across intended beneficiaries, other stakeholders, and project participants that a project was perceived to have delivered value that was worth the effort and expense.
 
@@ -964,7 +964,7 @@ For example, a large housing development project may involve a single constructi
 
 Organizational governance provides direction and control through policies, processes, procedures, and decisions to meet strategic and operational goals. Typically overseen by an executive committee or organizational leaders, organizational governance helps ensure transparency, oversight, compliance, resiliency, and adaptability for its stakeholders. In many organizations, organizational governance is inspired by the country’s laws, business domain regulations, industry standards, and
 
-Section 1 – Introduction 7
+Section 1 – Introduction
 
 Figure 1-1. Impact of Projects on Organizational States
 
@@ -1017,7 +1017,7 @@ Changes in business or organizational operations can be the focus of a project, 
 
    - At each closeout phase or iteration.
 
-Section 1 – Introduction 9
+Section 1 – Introduction
 
 At determined points, deliverables, human resources, and knowledge are transferred between the project and operations for implementation of the delivered work. These transfers help ensure the seamless integration of project outcomes into the organization’s operational framework. This implementation may occur through a transfer of project resources or knowledge to operations or through a transfer of operational resources to the project. Engaging operations teams early in project planning is beneficial and can significantly influence the long-term success and sustainability of a project. This is when the project is typically handed over to operations to sustain and use the results of the project.
 
@@ -1036,7 +1036,7 @@ Figure 1-2 illustrates a sample portfolio indicating the relationships among the
 
 Figure 1-2. A Framework for Managing Portfolios, Programs, Projects, and Operations
 
-Section 1 – Introduction 11
+Section 1 – Introduction
 
 Table 1-1 gives a comparative overview of portfolios, programs, and projects from an organizational perspective. The table highlights key differences and similarities in terms of definition, scope, change, planning, monitoring, and success criteria.
 
@@ -2484,7 +2484,6 @@ _Knowledge (PMBOK_ **This section describes important information about A Guide 
 
 **1.1 Structure of the** _**PMBOK**_ _**[®]**_ _**Guide**_
 
-**overview of the content.**
 
 **1.1 Structure of the** _**PMBOK**_ _**[®]**_ _**Guide**_
 
@@ -2560,7 +2559,7 @@ Tailoring is the deliberate adaptation of the project management approach, gover
 
 In embracing the full spectrum of project management approaches, this edition of the _PMBOK_ _[®]_ _Guide_ recognizes that no publication can capture every tool, technique, process, or practice that project teams might use. Therefore, this edition presents an array of commonly used good practices, activities, and processes that project practitioners can use to accomplish their work. These practices and processes are able to fit most projects most of the time.
 
-Section 1 – Introduction 5
+Section 1 – Introduction
 
 **Section** 12
 
@@ -2580,7 +2579,6 @@ interdependent areas of focus that work in unison to achieve the desired project
 
 seven project management performance domains presented in this guide, without specific weighting
 
-**overview of the content.**
 
 **describes the relationship of the PMBOK® Guide to The Standard for Project** A project management performance domain is a group of related processes that are critical for the
 
@@ -2594,7 +2592,6 @@ interdependent areas of focus that work in unison to achieve the desired project
 
 seven project management performance domains presented in this guide, without specific weighting
 
-**overview of the content.**
 
 or order:
 
@@ -2666,7 +2663,7 @@ The performance domain processes are listed in Table 2-1, along with their relat
 |Resources||<br> <br>• Plan Resource<br>Management<br>• Estimate<br>Resources|<br>• Acquire<br>Resources<br>•  Lead the Team|<br>• Monitor<br>and Control<br>Resourcing||
 |Risk||<br> <br> <br> <br>• Plan Risk<br>Management<br>• Identify Risks<br>• Perform Risk<br>Analysis<br>• Plan Risk<br>Responses|<br>• Implement Risk<br>Responses|•  Monitor Risks||
 
-Section 2 – Project Management Performance Domains 9
+Section 2 – Project Management Performance Domains
 
 the value of the project investment. To that end, each performance domain concludes with guidance on maintaining a focus on that value. For any process output, there should be a corresponding, higher-order outcome in mind. A project schedule itself does not add value; its true importance lies in fostering stakeholder alignment around the overall timeline for delivering project value.
 
@@ -2712,7 +2709,7 @@ Table 2-2. Sampling of Common Project Governance Scenarios
 |Early termination for<br>positive cause|A project or phase is closed before exhausting its planned schedule and/or bud-<br>get because the desired value impact has been achieved|
 |Early termination for<br>negative cause|A project or phase is closed before exhausting its planned schedule and/or bud-<br>get because the desired value impact is no longer achievable|
 
-Section 2 – Project Management Performance Domains 11
+Section 2 – Project Management Performance Domains
 
 Figure 2-1. Structured Versus Self-Governed Projects
 
@@ -2751,7 +2748,7 @@ Predictive project environments may call for two additional governance component
 
    - **Investment control** is often required in environments that call for some type of formal stewardship of project investment funding, such as public corporations, government agencies, and certain financial entities (e.g., retirement funds). Investment control frequently includes a thorough risk evaluation procedure to analyze the possible returns on investment and reduce potential risks. For example, many lender-financed construction projects have defined decision points in the design and build phases of the project to determine whether the next round of investment funding still makes good business sense for the lender and overall project.
 
-Section 2 – Project Management Performance Domains 13
+Section 2 – Project Management Performance Domains
 
 **2.1.5 Key Concepts**
 
@@ -2822,7 +2819,7 @@ In the project management context, governance includes characteristics of unific
 
 In summary, the Governance performance domain focuses on creating a structured approach to decision-making and oversight, helping to ensure that project activities are aligned with organizational objectives and that the value proposition of the project is protected and enhanced throughout its life cycle.
 
-Section 2 – Project Management Performance Domains 15
+Section 2 – Project Management Performance Domains
 
 It should be noted that the processes of the Governance performance domain span across the project life cycle from initiation to closure. Governance is not a one-time activity; it is pervasive throughout the project life cycle. The following processes are included in the Governance performance domain (see Figure 2-2):
 
@@ -2858,7 +2855,7 @@ The Initiate Project or Phase process officially authorizes the start of a proje
 
 Figure 2-3. Initiate Project or Phase Inputs, Tools and Techniques, and Outputs
 
-Section 2 – Project Management Performance Domains 17
+Section 2 – Project Management Performance Domains
 
 The project charter forms a partnership between the performing and requesting organizations. The approved business case, or similar item, justifies the reason behind initiating the project and the expected value.
 
@@ -2903,7 +2900,7 @@ _**2.1.6.3 Plan Sourcing Strategy**_
 
 The Plan Sourcing Strategy process entails documenting project sourcing decisions, specifying the source selection approach, determining the scope of work for external sourcing, and selecting the appropriate contracts and sources for delivering the work (see Figure 2-5).
 
-Section 2 – Project Management Performance Domains 19
+Section 2 – Project Management Performance Domains
 
 Figure 2-5. Plan Sourcing Strategy Inputs, Tools and Techniques, and Outputs
 
@@ -2932,7 +2929,7 @@ The Manage Project Execution process involves leading and performing the work de
 
 This process includes executing the planned project activities to complete deliverables and achieve set objectives. The process also involves allocating resources, managing their efficient use, and making adjustments to project plans based on the analysis of work performance data and
 
-Section 2 – Project Management Performance Domains 21
+Section 2 – Project Management Performance Domains
 
 Figure 2-6. Manage Project Execution Inputs, Tools and Techniques, and Outputs
 
@@ -2959,7 +2956,7 @@ Quality management is sometimes called quality assurance, although quality manag
 
 Figure 2-7. Manage Quality Assurance Inputs, Tools and Techniques, and Outputs
 
-Section 2 – Project Management Performance Domains 23
+Section 2 – Project Management Performance Domains
 
 The Manage Quality Assurance process implements a set of planned and systematic acts and processes defined within the project’s quality management plan that can help to achieve the following:
 
@@ -3012,7 +3009,7 @@ Managing knowledge involves more than just documenting explicit knowledge for sh
 
 Tacit knowledge resides in the minds of individual experts or in social groups and situations and is often shared through conversations and interactions between people. Tacit knowledge, often deeply ingrained in experts’ experience and intuition, can be shared within a project by fostering a collaborative and trust-filled environment. This effort involves creating opportunities for knowledge transfer through open communication, mentoring relationships, and team-building activities. Encouraging face-to-face interactions and hosting regular brainstorming sessions can help make implicit knowledge more accessible. The latest artificial intelligence (AI) technologies,
 
-Section 2 – Project Management Performance Domains 25
+Section 2 – Project Management Performance Domains
 
 such as interview bots, add new, strong capabilities in capturing and sharing both tacit and explicit knowledge. An important objective of knowledge management is converting tacit knowledge into explicit knowledge when possible.
 
@@ -3055,7 +3052,7 @@ By collecting and analyzing leading and lagging indicators, project practitioner
 
 Measurement requires time and effort that could be allocated to other productive tasks; therefore, project teams should focus on measuring only what is relevant and ensure that the metrics are actionable. Metrics should adhere to the SMART criteria explained in Section 2.1.5.3 to be effective.
 
-Section 2 – Project Management Performance Domains 27
+Section 2 – Project Management Performance Domains
 
 **2.1.6.7.1 Measurement Pitfalls**
 
@@ -3094,7 +3091,7 @@ Although changes can be initiated verbally, they should be documented in writing
 
 Figure 2-11 shows an example flow of how the Assess and Implement Changes process might be performed.
 
-Section 2 – Project Management Performance Domains 29
+Section 2 – Project Management Performance Domains
 
 Figure 2-11. Example Flow for Project Changes
 
@@ -3117,7 +3114,7 @@ The Close Project or Phase process involves finalizing all activities related to
 
 Figure 2-12. Close Project or Phase Inputs, Tools and Techniques, and Outputs
 
-Section 2 – Project Management Performance Domains 31
+Section 2 – Project Management Performance Domains
 
 **2.1.6.9.1 Predictive Approaches**
 
@@ -3212,7 +3209,7 @@ Project governance should be tailored to the context in which the project operat
 
      - Defining the project status reporting requirements.
 
-Section 2 – Project Management Performance Domains 33
+Section 2 – Project Management Performance Domains
 
 Additionally, it is essential to assess whether the governance and integration in adaptive projects will lean toward self-governing teams and a total-quality approach. Determining whether and how a project management office should be involved is another critical step. Deciding if the team will establish a governance board and identifying which committees or stakeholders should be involved are further considerations to help tailor the governance approach to fit the specific needs and context of the project.
 
@@ -3249,7 +3246,7 @@ The following key concepts support effective practices for the Scope performance
 
    - **Business case.** The business case is a documented economic feasibility study used to establish validity of the benefits to be delivered by a portfolio component, program, or project. Projects are initiated through a business case that outlines costs, benefits, and how value will be created, together with project success criteria.
 
-Section 2 – Project Management Performance Domains 35
+Section 2 – Project Management Performance Domains
 
 Table 2-4. Governance Interactions With Other Performance Domains
 
@@ -3270,7 +3267,7 @@ Table 2-4. Governance Interactions With Other Performance Domains
 |Lessons learned/<br>retrospectives are<br>managed throughout the<br>project.|Project teams ensure that the project and organizational knowledge and<br>learning are combined to manage project deliverables and value. Lessons<br>learned are incorporated during the ongoing processes, not only at the end of<br>the project.|
 |Key management mem-<br>bers are kept apprised of<br>the project.|Project metrics are in place and tracked regularly.<br>Project teams focus efforts on:<br>•  Operational status and progress of project components and related<br> <br>activities;<br>•  Expected and incurred project resource requirements;<br>•  Known project risks, their response plans, and escalation criteria;<br>•  Strategic and operational assumptions;<br>•  Benefts realized;<br>•  Decision criteria, tracking, and communication;<br>•  Project change control;<br>•  Compliance with corporate and legal policies;<br>•  Project information and communications management;<br>•  Issues and issue response plans; and<br>•  Project funding and fnancial performance.|
 
-Section 2 – Project Management Performance Domains 37
+Section 2 – Project Management Performance Domains
 
     - **Project scope.** Project scope encompasses the work performed to deliver a product, service, or result with the specified features and functions. The project scope helps ensure that the expected value is achieved. Scope encapsulates a project’s expected value, so it is the most important component of any project’s baseline. The delivery of any project’s scope should generate expected value that is not only worth the time and resources invested, but also ideally maximized.
 
@@ -3310,7 +3307,7 @@ The Scope performance domain encompasses the processes necessary to define, deve
 
 Figure 2-13. Scope Performance Domain Processes Overview
 
-Section 2 – Project Management Performance Domains 39
+Section 2 – Project Management Performance Domains
 
    - **Develop Scope Structure.** The process of subdividing project deliverables and project work into smaller, more manageable components. In agile projects, this effort corresponds to the decomposition of the product backlog (product backlog breakdown), where work items can be broken down into epics, features, and user stories.
 
@@ -3337,7 +3334,7 @@ _**2.2.2.3 Define Scope**_
 
 The objective of this process is to develop a detailed or high-level description of the project, product, and value expected to be delivered, as well as a quality management plan. This description may be done at the beginning of the project for predictive approaches or at the beginning of each iteration for adaptive and hybrid approaches. In predictive approaches, these deliverables should be structured in the WBS, whereas in adaptive approaches, these deliverables are progressively defined through a backlog. This process also identifies the quality requirements and standards for the deliverables, as well as determines how the project will demonstrate that the quality requirements are met. The key benefit of this process is that it helps ensure that the stakeholders and project team understand the value that will be delivered through a product, service, or result (see Figure 2-16).
 
-Section 2 – Project Management Performance Domains 41
+Section 2 – Project Management Performance Domains
 
 Figure 2-16. Defne Scope Inputs, Tools and Techniques, and Outputs
 
@@ -3356,7 +3353,7 @@ Monitor and Control Scope is the ongoing process of monitoring and managing chan
 
 Figure 2-18. Monitor and Control Scope Inputs, Tools and Techniques, and Outputs
 
-Section 2 – Project Management Performance Domains 43
+Section 2 – Project Management Performance Domains
 
 Figure 2-19. Validate Scope Inputs, Tools and Techniques, and Outputs
 
@@ -3395,7 +3392,7 @@ The scope of a project does not exist in isolation; it is deeply interconnected 
 
 One important aspect is understanding the governance mechanisms within a project, particularly as they relate to the broader organizational context. Changes to the project scope should be navigated within these established governance structures to address potential consequences such as the need for additional budgets or resources. Such changes may be subject to review and approval processes to ensure that relevant scope modifications are justified and aligned with the strategic objectives of both the project and the organization. This adherence to governance is vital because scope fundamentally drives the project’s value.
 
-Section 2 – Project Management Performance Domains 45
+Section 2 – Project Management Performance Domains
 
 Finally, managing risk is intrinsic to managing scope, as risks can significantly alter a project’s trajectory. Comprehensive risk analysis is crucial to understanding potential impacts on the project scope. Rescoping may be employed as a strategy to mitigate, avoid, or transfer risks.
 
@@ -3435,7 +3432,7 @@ The following key concepts support effective practices for the Schedule performa
 
    - **Schedule baseline.** The schedule baseline is the approved version of a schedule model that can be changed using formal change control procedures and is used as the basis for comparison to actual results. The level of formality on change control procedures tends to be more rigid on projects using predictive approaches and more flexible, or even nonexistent, on projects using adaptive and agile approaches.
 
-Section 2 – Project Management Performance Domains 47
+Section 2 – Project Management Performance Domains
 
     - **Schedule flexibility.** Flexibility is essential for adapting to changes, managing risks, and optimizing resource allocations. Flexibility enhances team morale, supports incremental delivery, and helps ensure higher-quality outcomes.
 
@@ -3475,7 +3472,7 @@ Develop Schedule is the process of analyzing sequences, durations, resource requ
 
 Figure 2-21. Plan Schedule Management Inputs, Tools and Techniques, and Outputs
 
-Section 2 – Project Management Performance Domains 49
+Section 2 – Project Management Performance Domains
 
 Figure 2-22. Develop Schedule Inputs, Tools and Techniques, and Outputs
 
@@ -3506,7 +3503,7 @@ basis for estimating, scheduling, executing, monitoring, and controlling the pro
 
      - Note: Depending on the degree of decomposition, the sequence can be determined at different levels, including the level of the control account, the work package, or the activity.
 
-Section 2 – Project Management Performance Domains 51
+Section 2 – Project Management Performance Domains
 
     - **Step 3: Estimate effort and duration.** Estimating effort and duration is about determining the number of work periods (hours, days, weeks, or other) needed to complete individual activities with estimated resources. The key benefit of this process is that it provides the amount of time and effort each activity will take to complete.
 
@@ -3569,7 +3566,7 @@ _**2.3.2.3 Monitor and Control Schedule**_
 
 Monitor and Control Schedule is the process of monitoring the status of the project to update the project schedule and managing changes to the agreed-upon schedule. Updating the schedule requires knowing the actual or forecasted performance to date. The key benefit of this process is maintaining a realistic schedule throughout the duration of the project (see Figure 2-24).
 
-Section 2 – Project Management Performance Domains 53
+Section 2 – Project Management Performance Domains
 
 Figure 2-24. Monitor and Control Schedule Inputs, Tools and Techniques, and Outputs
 
@@ -3616,7 +3613,7 @@ The choice of project life cycle and development approach can significantly infl
 
    - **Hybrid life cycle.** In a hybrid development approach, scheduling combines the flexibility of adaptive methods with the structured planning of a predictive approach. The high-level project schedule is planned to use predictive techniques to outline key milestones and deliverables. Within this framework, the subordinate project streams can use adaptive or predictive methods depending on their characteristics. Adaptive sprints or iterations are used to manage the detailed execution of project components with a high rate of change in requirements, allowing for adaptability and the frequent reassessment of priorities. Other components may use Kanban or the critical path method. This approach can help ensure that the overall project stays on track and that teams can respond quickly to changes and continuously improve the deliverables.
 
-Section 2 – Project Management Performance Domains 55
+Section 2 – Project Management Performance Domains
 
 _**2.3.3.2 Product and Deliverable Attributes**_
 
@@ -3673,7 +3670,7 @@ The Scope, Schedule, and Finance performance domains are closely linked to one a
 
 Activities related to the Schedule performance domain should be considered successful only if they contribute to specific outcomes. Table 2-7 shows a set of sample target outcomes, along with a potential check to confirm whether those outcomes are met.
 
-Section 2 – Project Management Performance Domains 57
+Section 2 – Project Management Performance Domains
 
 |Table 2-7. Check Outcomes—Schedule|Performance Domain|
 |---|---|
@@ -3720,7 +3717,7 @@ The following key concepts support effective practices for the Finance performan
 
    - **Financial constraints.** Budget is generally the primary financial constraint of a project but it is not the only one. Sometimes the project is restricted to the use of a given type of financial resource. Examples may include types of funding like capital expenditures (CapEx) and operational expenditures (OpEx) or internal versus external personnel, which may incur different budget strategies or funding that is allocated for a specific purpose or a specific time period such as a fiscal year. CapEx are intended funds invested by
 
-Section 2 – Project Management Performance Domains 59
+Section 2 – Project Management Performance Domains
 
 the performing organization to acquire, upgrade, and maintain physical assets such as property, plants, buildings, technology, or equipment. OpEx are intended funds for the ongoing costs of running the day-to-day business activities or operations. These expenses typically include advertising expenses, administration fees, wages, rent, and utility costs. In some cases, the total amount of OpEx can influence the financial results of the whole organization. In other cases, the budget is allocated annually and therefore has to be used within the year, with no possibility of being transferred to the next year. In projects that implement an agile approach, the budget can be allocated for a quarter and then revised quarterly. This allocation allows more flexibility in terms of budget, based on the amount of work achieved.
 
@@ -3745,7 +3742,7 @@ The Finance performance domain includes the processes required to determine, man
 
    - **Estimate Costs.** The process of developing an approximation of the cost of resources needed to complete project work.
 
-Section 2 – Project Management Performance Domains 61
+Section 2 – Project Management Performance Domains
 
 |Initiating|Planning<br>Plan<br>Estimate Develop<br>Financial<br>Costs Budget<br>Management|Closing|
 |---|---|---|
@@ -3771,7 +3768,7 @@ Figure 2-27. Plan Financial Management Inputs, Tools and Techniques, and Outputs
 
 Figure 2-28. Estimate Costs Inputs, Tools and Techniques, and Outputs
 
-Section 2 – Project Management Performance Domains 63
+Section 2 – Project Management Performance Domains
 
 Figure 2-29. Develop Budget Inputs, Tools and Techniques, and Outputs
 
@@ -3796,7 +3793,7 @@ Because each project is unique, activities and processes in the Finance performa
 
    - **Development approach.** Iterative approaches impact the project expenditures, flattening the spent curve throughout the project. Both financial planning and controls should be tailored accordingly. For iterative projects, cost management practices, such as time-phased budgeting and continuous funding assessment, are employed to manage evolving project needs.
 
-Section 2 – Project Management Performance Domains 65
+Section 2 – Project Management Performance Domains
 
     - **Procurement strategy.** Make-or-buy decisions are connected to the procurement strategy. For buy decisions, procurement tailoring involves selecting the appropriate contract type, such as fixed-price or time and materials (T&M) contracts, based on risk distribution and cost certainty, which may have multiple implications for the financial side of the project. It is important to tailor the financial processes with the procurement strategy to minimize the risk of cost overruns. Sometimes organizations make a buy decision to outsource if they do not have the in-house infrastructure or technologies needed to internally complete the project.
 
@@ -3840,7 +3837,7 @@ Internal and external stakeholders include individuals, groups, and organization
 
 Effective stakeholder identification, analysis, and engagement includes stakeholders who are either internal or external to the organization, those who are supportive of the project, those who are neutral, and opponents, who are not supportive of the project. The activities of identification, prioritization, and engagement should be reviewed and updated routinely, or at least when the project progresses through phases. While having relevant technical project management skills is an important aspect to delivering successful projects, possessing the interpersonal and leadership skills to work effectively with stakeholders is just as important, if not more so.
 
-Section 2 – Project Management Performance Domains 67
+Section 2 – Project Management Performance Domains
 
 Figure 2-31. Examples of Project Stakeholders
 
@@ -3881,7 +3878,7 @@ In many cases the project sponsor, especially on high-priority projects, may be 
 
    - **Vendor and supplier management/procurement** . Even though procurement is not a core part of this performance domain, there are important skills related to vendor management that the project manager should have. Vendors and suppliers are important stakeholders in projects where external resources are involved. In specific industries, such as construction, vendor management and procurement are key elements to the success of the project.
 
-Section 2 – Project Management Performance Domains 69
+Section 2 – Project Management Performance Domains
 
 **2.5.2 Processes**
 
@@ -3919,7 +3916,7 @@ _**2.5.2.2 Plan Stakeholder Engagement**_
 
 Plan Stakeholder Engagement is the process of developing strategies to engage identified project stakeholders based on their needs, expectations, interests, requirements, and potential impact on the project. The key benefit of this process is that it provides an actionable plan to interact effectively with stakeholders. This process is performed periodically throughout the project as needed (see Figure 2-34).
 
-Section 2 – Project Management Performance Domains 71
+Section 2 – Project Management Performance Domains
 
 Figure 2-34. Plan Stakeholder Engagement Inputs, Tools and Techniques, and Outputs
 
@@ -3942,7 +3939,7 @@ _**2.5.2.6 Monitor Stakeholder Engagement**_
 
 The Monitor Stakeholder Engagement process involves assessing the effectiveness of stakeholder engagement efforts, identifying necessary adjustments to improve relationships, and refining strategies or plans to better meet stakeholder participation needs. The key benefit of this process is that it maintains or increases the efficiency and effectiveness of stakeholder engagement activities as the project evolves and its environment changes. This process is performed throughout the project (see Figure 2-38).
 
-Section 2 – Project Management Performance Domains 73
+Section 2 – Project Management Performance Domains
 
 Figure 2-36. Manage Stakeholder Engagement Inputs, Tools and Techniques, and Outputs
 
@@ -3963,7 +3960,7 @@ Figure 2-37. Manage Communications Inputs, Tools and Techniques, and Outputs
 
    - **Large language models (LLMs) and artificial intelligence (AI).** The use of AI should be assessed for each project through a decision-making process to determine when AI can assist with tasks or provide more time for other valuable activities. The evaluation should be focused on the use of AI to produce some artifacts for communication with the sponsor, stakeholders, team, and vendors. Proactive security and ethics measures should be considered, such as project managers engaging with the appropriate stakeholders (e.g., the cybersecurity team, if applicable), to understand if the risk of incorporating AI is acceptable for the organization.
 
-Section 2 – Project Management Performance Domains 75
+Section 2 – Project Management Performance Domains
 
 Figure 2-38. Monitor Stakeholder Engagement Inputs, Tools and Techniques, and Outputs
 
@@ -3988,7 +3985,7 @@ A complex project with numerous stakeholders may require a more sophisticated co
 
 Stakeholders permeate all aspects of projects. Stakeholders define and prioritize the requirements and scope for the project team, participate in and shape project planning, and determine the acceptance and quality criteria for the project deliverables and outcomes. Much of the project work revolves around engaging and communicating with stakeholders. Throughout a project or at its closure, stakeholders use the project deliverables and influence the realization of project outcomes.
 
-Section 2 – Project Management Performance Domains 77
+Section 2 – Project Management Performance Domains
 
 Some stakeholders can assist in lowering the amount of uncertainty present on a project, whereas others may cause an increase in uncertainty. The stakeholders may influence the project risks, especially when the right stakeholders are not identified at the beginning of the project and are not updated and checked throughout the duration of the project. Stakeholders, such as customers, senior management, project management office leads, or program managers, may focus on measures of performance for the project and its deliverables.
 
@@ -4028,7 +4025,7 @@ The following key concepts support effective practices in the Resources performa
 
    - **Physical, material, or virtual resources.** These resources refer to any resource that is not a person. These resources may include equipment, materials, supplies, facilities, infrastructure, software, testing environments, licenses, services, and anything else needed for successful and efficient project completion. Organizations should have
 
-Section 2 – Project Management Performance Domains 79
+Section 2 – Project Management Performance Domains
 
 sufficient data on resource demands (now and in the future), resource configurations that are required to meet those demands, and the supply of resources. Projects with significant physical or virtual resources, such as engineering and construction, may need to plan for procurement activities to acquire the resources. These activities may be as simple as utilizing a basic ordering agreement or as complicated as managing, coordinating, and integrating several large procurement activities. For further details, see Appendix X4 on Procurement.
 
@@ -4066,7 +4063,7 @@ The specific tools and techniques for the Plan Resource Management process inclu
 
 Figure 2-41. Plan Resource Management Inputs, Tools and Techniques, and Outputs
 
-Section 2 – Project Management Performance Domains 81
+Section 2 – Project Management Performance Domains
 
 Figure 2-42. Estimate Resources Inputs, Tools and Techniques, and Outputs
 
@@ -4093,7 +4090,7 @@ The Acquire Resources process is performed periodically throughout the project a
 
    - If the team, physical, or virtual resources are not available due to constraints such as economic factors or assignment to other projects, the project manager or project team may be required to assign alternative resources, perhaps with different competencies, features, or costs. Alternative resources are allowed if risks are acknowledged and the legal, regulatory, mandatory, or other specific criteria are not violated.
 
-Section 2 – Project Management Performance Domains 83
+Section 2 – Project Management Performance Domains
 
     - These factors and criteria may be considered and addressed during the project planning stage. The project manager or team may need to document the impact of the unavailability of required resources on the project schedule, budget, risks, quality, training plans, and other project management plans.
 
@@ -4126,7 +4123,7 @@ Six Thinking Hats [®] is a registered trademark of The de Bono Group.
 
 Figure 2-44. Lead the Team Inputs, Tools and Techniques, and Outputs
 
-Section 2 – Project Management Performance Domains 85
+Section 2 – Project Management Performance Domains
 
 **2.6.2.4.2 High-Performing Project Teams**
 
@@ -4165,7 +4162,7 @@ The Monitor and Control Resourcing process should be performed continuously in a
 
 Figure 2-45. Monitor and Control Resourcing Inputs, Tools and Techniques, and Outputs
 
-Section 2 – Project Management Performance Domains 87
+Section 2 – Project Management Performance Domains
 
 Updating resource allocations requires knowing what actual resources have been used to date and what is still needed. This task is done mainly by reviewing the performance usage to date. The Monitor and Control Resourcing process is concerned with:
 
@@ -4218,7 +4215,7 @@ benefits of collaboration also apply to other project environments, collaborativ
 
        - **Positive discourse.** Throughout the project, diverse opinions, different ways of approaching situations, and misunderstandings will occur. These are a normal part of conducting projects. These challenges present an opportunity to have a dialogue rather than a debate. A dialogue entails working with others to resolve divergent opinions. The goal is to arrive at a resolution that all parties can embrace. Conversely, a debate is a win-lose scenario where people are more interested in winning personally than they are in being open to alternative solutions to a problem.
 
-Section 2 – Project Management Performance Domains 89
+Section 2 – Project Management Performance Domains
 
         - **Support.** Projects can be challenging from the perspectives of technical challenges, environmental influences, and interpersonal interactions. Supporting project team members through problem-solving and removing impediments builds a supportive culture and leads to a trusting and collaborative environment. Support can also be demonstrated by providing encouragement, showing empathy, and engaging in active listening.
 
@@ -4269,7 +4266,7 @@ The Estimate Resources process is closely coordinated with other processes, such
 
 Project managers are responsible for leading the team to work together to focus on what is essential at the project level. This coordination is achieved through the integration of processes, knowledge, and people. So, to integrate all of the performance domains and lead the project work, the project manager’s main concern should be to lead the project team to achieve the project objectives.
 
-Section 2 – Project Management Performance Domains 91
+Section 2 – Project Management Performance Domains
 
 Table 2-10. Check Outcomes—Resources Performance Domain
 
@@ -4309,7 +4306,7 @@ not materialize in a portfolio, program, or project. Potentially harmful risks, 
 
 Figure 2-46. Risk Classifcation
 
-Section 2 – Project Management Performance Domains 93
+Section 2 – Project Management Performance Domains
 
     - **Risk appetite.** Risk appetite is the degree of uncertainty an organization or individual is willing to accept in anticipation of a reward. Risk appetite is often quantified through a risk threshold.
 
@@ -4353,7 +4350,7 @@ _**2.7.2.1 Plan Risk Management**_
 
 Plan Risk Management defines how to conduct risk management activities for a project. The process should begin when a project is conceived and should be completed early in the project. Risk management activities and tools are a key element of this process (see Figure 2-48).
 
-Section 2 – Project Management Performance Domains 95
+Section 2 – Project Management Performance Domains
 
 Figure 2-48. Plan Risk Management Inputs, Tools and Techniques, and Outputs
 
@@ -4374,7 +4371,7 @@ Figure 2-49. Identify Risks Inputs, Tools and Techniques, and Outputs
 
 project risks. This process also allocates resources or includes reserves (see the Finance performance domain in Section 2.4) and inserts activities into project documents and the project management plan as needed. The risk responses for threats and opportunities are listed in Section 5 on Tools and Techniques (see contingent response strategies, strategies for managing threats, strategies for managing opportunities, and strategies for managing overall project risk). This process should be performed throughout the project (see Figure 2-51).
 
-Section 2 – Project Management Performance Domains 97
+Section 2 – Project Management Performance Domains
 
 Figure 2-50. Perform Risk Analysis Inputs, Tools and Techniques, and Outputs
 
@@ -4407,7 +4404,7 @@ such as urgency and industry or government regulations may impact the way risks 
 
    - **Planning and implementing risk responses with flexibility.** Manage risk responses by allowing for timely adjustments to risk strategies without compromising project goals and maintain open communication with relevant stakeholders.
 
-Section 2 – Project Management Performance Domains 99
+Section 2 – Project Management Performance Domains
 
 Figure 2-52. Implement Risk Responses Inputs, Tools and Techniques, and Outputs
 
@@ -4434,7 +4431,7 @@ Stakeholders are critical sources of information regarding risks and uncertainty
 
 The Scope, Schedule, and Finance performance domains are also crucial areas of interaction. In predictive projects with stable scopes, schedule reserves help manage identified risks and maintain timelines. In adaptive projects with evolving requirements, the team should adjust plans to address new risks and uncertainties. Risks can impact the project scope, either increasing or decreasing it, which in turn affects the schedule and budget. Additionally, the Finance performance domain is directly influenced by risk management, with internal projects experiencing increased or decreased costs, and external projects facing potential revenue generation or loss. Effective risk management
 
-Section 2 – Project Management Performance Domains 101
+Section 2 – Project Management Performance Domains
 
 requires integrating scope management, schedule planning, financial considerations, stakeholder engagement, and communication to help ensure tailored and comprehensive risk response strategies.
 
@@ -4466,7 +4463,6 @@ Tailoring is the deliberate adaptation of the project management approach, gover
 
 **3.1 Overview**
 
-**overview of the content.**
 
 **3.1 Overview**
 
@@ -4594,7 +4590,7 @@ Projects exist in environments that hugely influence how projects are executed a
 
 This step determines the development approach that will be used for the project. Project teams apply their knowledge of the product, delivery cadence, and awareness of the available options to select the most appropriate development approach for the situation.
 
-Section 3 – Tailoring 105
+Section 3 – Tailoring
 
 Figure 3-1. Details of the Steps in the Tailoring Process
 
@@ -4621,7 +4617,7 @@ Modern PMOs are increasingly expected to go beyond operational support, acting a
 
 Projects sometimes require the collaboration of multiple organizations, with each bringing its own processes, governance structures, and delivery approaches. In such cases, it is important that tailoring is done using a multiorganization approach to help ensure alignment and cohesion.
 
-Section 3 – Tailoring 107
+Section 3 – Tailoring
 
 Tailoring in multiorganization projects requires careful consideration of how different organizational processes, governance structures, and delivery approaches align. Integration planning should ensure that tailored practices from each participating organization are harmonized to achieve cohesive project outcomes.
 
@@ -4688,7 +4684,7 @@ Keeping the project team engaged with improving its process can foster pride of 
 
 The way an organization tailors itself can also be tailored. However, most organizations undertake some or all of the four steps described. Organizations can use elements of selecting an initial approach, tailoring for the organization, tailoring for the project, and implementing ongoing improvement, as shown in Figure 3-3.
 
-Section 3 – Tailoring 109
+Section 3 – Tailoring
 
 Figure 3-3. The Tailoring Process
 
@@ -4711,7 +4707,7 @@ Tailor to ft the project context
 
 Figure 3-4. Tailoring to Fit the Project Context
 
-Section 3 – Tailoring 111
+Section 3 – Tailoring
 
 Table 3-1. Common Situations and Tailoring Suggestions
 
@@ -4752,7 +4748,6 @@ numbers are assigned. **This section describes important information about A Gui
 
 **Accepted deliverables.describes the relationship of the PMBOK® Guide to The Standard for Project** Accepted deliverables are the products, services, and capabilities that are created through a project and are validated by an appointed individual or a group of individuals **Management [1],1 changes to the PMBOK® Guide, the relationship to** against established criteria. When such criteria are met, the deliverables are approved and accepted. **PMIstandards™ (PMI’s digital platform for standards), and provides a brief**
 
-**overview of the content.**
 
 **Accepted deliverables.describes the relationship of the PMBOK® Guide to The Standard for Project** Accepted deliverables are the products, services, and capabilities that are created through a project and are validated by an appointed individual or a group of individuals **Management [1],1 changes to the PMBOK® Guide, the relationship to** against established criteria. When such criteria are met, the deliverables are approved and accepted.
 
@@ -4870,7 +4865,7 @@ The data and information that are documented in the business case and needs asse
 
 Development and maintenance of the benefits management plan is an iterative activity. The benefits management plan complements the business case, project charter, and project management plan. The project manager works with the sponsor to ensure that the project charter, project management plan, and benefits management plan remain in alignment throughout the life cycle of the project.
 
-Section 4 – Inputs and Outputs 115
+Section 4 – Inputs and Outputs
 
 Both the business case and the benefits management plan are developed prior to the project being initiated. Additionally, both documents are referenced after the project has been completed. Therefore, they are considered business documents rather than project documents or components of the project management plan. As appropriate, these business documents may be inputs to some of the processes involved in managing the project, such as developing the project charter.
 
@@ -4937,7 +4932,7 @@ The communications management plan is both an input and an output that plays a c
 
    - What information needs to be communicated (project updates, risks, changes, etc.);
 
-Section 4 – Inputs and Outputs 117
+Section 4 – Inputs and Outputs
 
     - When and how often communication should occur (daily updates, weekly meetings, etc.); and
 
@@ -4998,7 +4993,7 @@ Costs are estimated for all resources that will be charged to the project. These
 
 **Enterprise environmental factors (EEFs).** Enterprise environmental factors are conditions, not under the immediate control of the team, that influence, constrain, or direct the portfolio, program, or project. These conditions can be internal and/or external to the organization. The EEFs are considered as inputs to many project management processes, specifically for most planning processes. These factors may enhance or constrain project management options. In addition, these factors may have a positive or negative influence on the outcome.
 
-Section 4 – Inputs and Outputs 119
+Section 4 – Inputs and Outputs
 
 **EEFs internal to the organization:**
 
@@ -5069,7 +5064,7 @@ support it throughout its life cycle. This output refers to the transition of th
 
    - **Control thresholds.** Variance thresholds for monitoring cost performance may be specified to indicate an agreed-upon amount of variation to be allowed before some action should be taken. Thresholds are typically expressed as percentage deviations from the baseline plan.
 
-Section 4 – Inputs and Outputs 121
+Section 4 – Inputs and Outputs
 
     - **Rules of performance measurement.** Earned value management (EVM) rules of performance measurement are set. For example, the financial management plan may:
 
@@ -5128,7 +5123,7 @@ At the end of a project or phase, the information is transferred to an organizat
 
 **Organizational process assets (OPAs).** Organizational process assets are plans, processes, policies, procedures, regulations, and knowledge bases specific to and used by the performing organization. These assets influence the management of the project.
 
-Section 4 – Inputs and Outputs 123
+Section 4 – Inputs and Outputs
 
 The OPAs include any artifact, practice, or knowledge from any or all of the performing organizations involved in the project that can be used to execute or govern the project. The OPAs also include the organization’s lessons learned from previous projects and historical information. Additionally, OPAs may include completed schedules, risk data, and earned value data. The OPAs are inputs to many project management processes. Since OPAs are internal to the organization, the project team members may be able to update and add to them as necessary throughout the project. A project’s OPAs may be grouped into two categories:
 
@@ -5183,7 +5178,7 @@ A procurement management plan can be formal or informal, highly detailed or broa
 
 **Project documents.** The project documents include documentation created throughout the five Project Management Focus Areas to initiate, plan, execute, monitor and control, and close the project before delivering it. Examples include the change log, issue log, project schedule, project scope statement, requirements documentation, risk register, and stakeholder register.
 
-Section 4 – Inputs and Outputs 125
+Section 4 – Inputs and Outputs
 
 **Project document updates.** The project document updates include updates to the project documents created throughout the five Project Management Focus Areas to initiate, plan, execute, monitor and control, and close the project before delivering it.
 
@@ -5204,7 +5199,7 @@ Activities that have multiple predecessor activities indicate a path convergence
 
 Figure 4-2. Example of a Project Schedule Network Diagram
 
-Section 4 – Inputs and Outputs 127
+Section 4 – Inputs and Outputs
 
 **Project scope statement.** The project scope statement is the description of the project scope, major deliverables, assumptions, and constraints. The project scope statement documents the entire scope, including the project and product scope. The statement describes the project’s deliverables in detail and provides a common understanding of the project scope among project stakeholders. The document may contain explicit scope exclusions that can assist in managing stakeholder expectations. The project scope statement enables the project team to perform more detailed planning, guides the project team’s work during execution, and provides the baseline for evaluating whether requests for changes or additional work are contained within or outside the project’s boundaries.
 
@@ -5249,7 +5244,7 @@ The quality management plan may include but is not limited to the following comp
 
 **Quality reports.** A quality report is a project document that includes quality management issues, recommendations for corrective actions, and a summary of findings from quality control activities.
 
-Section 4 – Inputs and Outputs 129
+Section 4 – Inputs and Outputs
 
 The quality report may include recommendations for any process, project, and product improvements.
 
@@ -5318,7 +5313,7 @@ The requirements traceability matrix includes but is not limited to the followin
 
 Attributes associated with each requirement can be recorded in the requirements traceability matrix. These attributes help to define key information about the requirement. Typical attributes
 
-Section 4 – Inputs and Outputs 131
+Section 4 – Inputs and Outputs
 
 |Requirements Traceability Matrix|Col2|Col3|Col4|Col5|Col6|Col7|Col8|Col9|
 |---|---|---|---|---|---|---|---|---|
@@ -5370,7 +5365,7 @@ The resource management plan may include but is not limited to the following:
 
      - **Competence.** The skill and capacity required to complete assigned activities within the project constraints. If project team members do not possess required competencies, performance can be jeopardized. When such mismatches are identified, proactive responses such as training, hiring, schedule changes, or scope changes are initiated.
 
-Section 4 – Inputs and Outputs 133
+Section 4 – Inputs and Outputs
 
     - **Project organization charts.** A project organization chart is a graphical display of project team members and their reporting relationships. The chart can be formal or informal, highly detailed or broadly framed, based on the needs of the project. For example, the project organization chart for a 3,000-person disaster response team should have greater detail than a project organization chart for an internal, 20-person project.
 
@@ -5438,7 +5433,7 @@ The risk management plan may include some or all of the following elements:
 
 Figure 4-5. Excerpt From a Sample Risk Breakdown Structure
 
-Section 4 – Inputs and Outputs 135
+Section 4 – Inputs and Outputs
 
 there may be several RBS frameworks for different types of projects, or the project may develop a tailored RBS. Where an RBS is not used, an organization may use a custom risk categorization framework, which may take the form of a simple list of categories or a structure based on project objectives.
 
@@ -5500,7 +5495,7 @@ Additional data may be recorded for each identified risk, depending on the risk 
 
 **Risk register updates.** The risk register updates refer to the process of revising the risk register to reflect new risks, reassess existing risks, and update response strategies as the project progresses. Risk register updates are a key component of risk management that help to ensure the project’s risk documentation remains current and actionable. The process of updating the risk register is iterative and should be performed regularly throughout the project life cycle.
 
-Section 4 – Inputs and Outputs 137
+Section 4 – Inputs and Outputs
 
 **Risk report.** The risk report presents information on sources of overall project risk, together with summary information on identified individual project risks. The risk report is developed progressively throughout the risk processes. The risk report may include the results of the following processes as these processes are completed:
 
@@ -5567,7 +5562,7 @@ The schedule management plan can establish the following:
 
    - **Reporting formats.** The formats and frequency for the various schedule reports are defined.
 
-Section 4 – Inputs and Outputs 139
+Section 4 – Inputs and Outputs
 
 **Scope baseline.** The scope baseline is the approved version of formal scope documents that can be changed using formal change control procedures and is used as the basis for comparison to actual results. The scope baseline may include the approved version of a scope statement, work breakdown structure (WBS), and its associated WBS dictionary, and is a component of the project management plan.
 
@@ -5636,7 +5631,7 @@ The scope management plan can be formal or informal and broadly framed or highly
 
    - **Identification information.** Name, organizational position, location and contact details, and role on the project.
 
-Section 4 – Inputs and Outputs 141
+Section 4 – Inputs and Outputs
 
     - **Assessment information.** Major requirements, expectations, potential for influencing project outcomes, and the phase of the project life cycle where the stakeholder has the most influence or impact.
 
@@ -5695,7 +5690,7 @@ to improve the team’s performance. This effort should also include identifying
 
 Examples of work performance data include work completed, key performance indicators (KPIs), technical performance measures, actual start and finish dates of schedule activities, story points completed, deliverables status, schedule progress, number of change requests, number of defects, actual costs incurred, actual durations, etc.
 
-Section 4 – Inputs and Outputs 143
+Section 4 – Inputs and Outputs
 
 **Work performance information.** Work performance information includes the work performance data collected from controlling processes, analyzed in comparison with project management plan components, project documents, and other work performance details. This comparison helps to indicate how the project is performing.
 
@@ -5720,19 +5715,17 @@ All of the tools and techniques in this section appear in alphabetical order; th
 
 It is particularly critical when working in global or cross-cultural environments, where team members
 
-**overview of the content.**
 
 **describes the relationship of the PMBOK® Guide to The Standard for Project Active listening.** Active listening involves techniques such as acknowledging, clarifying, confirming, **Management [1],1 changes to the PMBOK® Guide, the relationship to** understanding, and addressing barriers that hinder effective communication and comprehension. **PMIstandards™ (PMI’s digital platform for standards), and provides a brief** Active listening is used to reduce misunderstandings and other miscommunications with stakeholders.
 
 It is particularly critical when working in global or cross-cultural environments, where team members
 
-**overview of the content.**
 
 may interpret messages differently due to diverse linguistic and cultural backgrounds.
 
-**1.1 Structure of the PMBOK® GuideAffinity diagram.**
+**1.1 Structure of the PMBOK® Guide Affinity diagram.**
 
-**1.1 Structure of the PMBOK® GuideAffinity diagram.** An affinity diagram shows large numbers of ideas classified into groups for review
+**1.1 Structure of the PMBOK® Guide Affinity diagram.** An affinity diagram shows large numbers of ideas classified into groups for review
 
 and analysis. Affinity diagrams can also organize potential causes of defects into groups showing the
 
@@ -5838,7 +5831,7 @@ most reliable when the previous activities are similar in fact and not just appe
 
 **Assumption and constraint analysis.** Every project is conceived and developed based on a set of assumptions and within a series of constraints. These assumptions and constraints are often already incorporated in the scope baseline and project estimates. Assumption and constraint analysis explores the validity of assumptions and constraints to determine which pose a risk to the project. Threats may be identified from the inaccuracy, instability, inconsistency, or incompleteness
 
-Section 5 – Tools and Techniques 147
+Section 5 – Tools and Techniques
 
 of assumptions. Constraints may give rise to opportunities through removing or relaxing a limiting factor that affects the execution of a project or process.
 
@@ -5893,7 +5886,7 @@ In adaptive approaches, backlog management is the technique used to manage chang
 
    - **Idea napkin** involves documenting ideas in five steps on a napkin. The five steps include such topics as people, offering, customer, value proposition, and core competencies.
 
-Section 5 – Tools and Techniques 149
+Section 5 – Tools and Techniques
 
     - **Individual brainstorming** encourages creative thinking and includes techniques such as:
 
@@ -5942,7 +5935,7 @@ The organization may maintain checklists based on completed projects or use gene
 
 **Colocation.** Colocation is an organizational placement strategy where the project team members are physically located close to one another in order to improve communication, working relationships, and productivity.
 
-Section 5 – Tools and Techniques 151
+Section 5 – Tools and Techniques
 
 Colocation involves placing many or all of the most active project team members in the same physical location to enhance their ability to perform as a team. Colocation can be temporary, such as at strategically important times during the project, or can continue for the entire project. Colocation strategies may include a team meeting room, common places to post schedules, and other conveniences that enhance communication and a sense of community.
 
@@ -6015,7 +6008,7 @@ Communication models can represent the communication process in its most basic l
 
    - **Sample interactive communication model.** This model also describes communication as a process consisting of two parties, the sender and receiver, but recognizes the need to ensure that the message has been understood. In this model, noise includes any interference or barriers that might compromise the understanding of the message, such as the distraction
 
-Section 5 – Tools and Techniques 153
+Section 5 – Tools and Techniques
 
 of the receiver, variations in the perceptions of receivers, or lack of appropriate knowledge or interest. The additional steps in an interactive communication model are:
 
@@ -6062,7 +6055,7 @@ This communication model and its enhancements can assist in developing communica
 
 **Communication technology.** Communication technology includes specific tools, systems, computer programs, etc., used to transfer information among project stakeholders. The methods used to transfer information among project stakeholders may vary significantly. Common methods used for information exchange and collaboration include conversations, meetings, written documents, databases, social media, and websites.
 
-Section 5 – Tools and Techniques 155
+Section 5 – Tools and Techniques
 
 Factors that can affect the choice of communication technology may include the following:
 
@@ -6127,7 +6120,7 @@ There are five general techniques for resolving conflict. Each technique has its
 
    - **Share.** Sharing involves transferring ownership of an opportunity to a third party so that it shares some of the benefit if the opportunity occurs. It is important to select the new owner of a shared opportunity carefully, so they are best able to capture the opportunity for the benefit of the project. Risk sharing often involves payment of a risk premium to the party taking on the opportunity. Examples of sharing actions include forming risk-sharing partnerships, teams, special-purpose companies, or joint ventures.
 
-Section 5 – Tools and Techniques 157
+Section 5 – Tools and Techniques
 
     - **Enhance.** The enhance strategy is used to increase the probability and/or impact of an opportunity. Early enhancement action is often more effective than trying to improve the benefit after the opportunity has occurred. The probability of occurrence for an opportunity may be increased by focusing attention on its causes. Where it is not possible to increase probability, an enhancement response might increase the impact by targeting factors that drive the size of the potential benefit. Examples of enhancing opportunities include adding more resources to an activity to finish early.
 
@@ -6160,7 +6153,7 @@ The optimal CoQ is one that reflects the appropriate balance for investing in th
 
 **Critical chain project management (CCPM).** A set of techniques used to promote fast execution and high due-date performance by aggregating task-level (or sprint-level) variability to a project buffer, and then allocating the project buffer only when and where needed in order to protect the project due date. While the concept of a project reserve or contingency is similar, the difference is that a critical chain buffer is _in lieu of_ task-level or sprint-level buffers, and not in addition to them. CCPM uses nearly identical scheduling logic as the critical path method (CPM), as both are based on
 
-Section 5 – Tools and Techniques 159
+Section 5 – Tools and Techniques
 
 critical path analysis, and both call for a resource-loaded and resource-leveled critical path (RLCP). Indeed, when identifying the longest path or chain of tasks in a project schedule, “the RLCP” is synonymous with “the critical chain.”
 
@@ -6224,7 +6217,7 @@ Some schedule networks may have multiple near-critical paths, and many software 
 
 **Critical thinking.** Critical thinking is the ability to objectively question, analyze, interpret, evaluate, and judge information to make reasonable decisions. Throughout the various project management performance domains, there is a need to recognize bias, identify the root cause of problems, and consider challenging issues such as ambiguity and complexity. Critical thinking helps to accomplish these activities. Critical thinking includes disciplined, rational, logical, and evidence-based thinking. This approach requires an open mind and the ability to analyze objectively. Critical thinking, especially when applied to discovery, can include conceptual imagination, insight, and intuition; it can also include reflective thinking and metacognition (thinking about thinking and being aware of one’s awareness).
 
-Section 5 – Tools and Techniques 161
+Section 5 – Tools and Techniques
 
 **Cultural awareness.** Cultural awareness is an understanding of the differences among individuals, groups, and organizations and adapting the project’s communication strategy in the context of these differences. This awareness and any consequent actions can minimize misunderstandings and miscommunication that may result from cultural differences within the project’s stakeholder community. Cultural awareness and cultural sensitivity help the project manager to plan communications based on the cultural differences and requirements of stakeholders and team members.
 
@@ -6277,7 +6270,7 @@ The decision tree is evaluated by calculating the expected monetary value of eac
 
 **Decomposition.** Decomposition is a technique used for dividing and subdividing the project scope and project deliverables into smaller, more manageable parts. The work package is the work defined at the lowest level of the work breakdown structure (WBS) for which cost and duration can be estimated and managed. The level of decomposition is often guided by the degree of control needed to effectively manage the project. The level of detail for work packages varies depending on the size
 
-Section 5 – Tools and Techniques 163
+Section 5 – Tools and Techniques
 
 |Decision Defnition|Decision Node|Chance Node|Net Path Value|
 |---|---|---|---|
@@ -6316,7 +6309,7 @@ Decomposition of the upper-level WBS components requires subdividing the work fo
 
 To arrive at a work package, the work for some deliverables should be decomposed only to the next level, while others may require additional levels of decomposition. As the work is decomposed
 
-Section 5 – Tools and Techniques 165
+Section 5 – Tools and Techniques
 
 Figure 5-7. Sample WBS Organized by Phase
 
@@ -6337,7 +6330,7 @@ Figure 5-8. Sample WBS With Major Deliverables
 
    - **Discretionary dependencies.** Discretionary dependencies are sometimes referred to as preferred logic, preferential logic, or soft logic. Discretionary dependencies are established based on knowledge of good practices within a particular application area or some unusual aspect of the project where a specific sequence is desired, even though there may be other acceptable sequences. For example, generally accepted good practices recommend that during construction, the electrical work should start after finishing the plumbing work. This order is not mandatory and both activities may occur at the same time (in parallel); however, performing the activities in sequential order reduces the overall project risk. Discretionary dependencies should be fully documented since they can create arbitrary total float values and can limit later scheduling options. When fast tracking techniques are employed, these discretionary dependencies should be reviewed and considered
 
-Section 5 – Tools and Techniques 167
+Section 5 – Tools and Techniques
 
 for modification or removal. The project team determines which dependencies are discretionary during the process of sequencing the activities.
 
@@ -6390,7 +6383,7 @@ In adaptive approaches, effort can be expressed through story points. The result
 
 **Emotional intelligence.** Emotional intelligence is the ability to identify, assess, and manage the personal emotions of oneself and other people, as well as the collective emotions of groups of people. A project team can use emotional intelligence to reduce tension and increase cooperation by identifying, assessing, and controlling the sentiments of project team members, anticipating their actions, acknowledging their concerns, and following up on their issues.
 
-Section 5 – Tools and Techniques 169
+Section 5 – Tools and Techniques
 
 A project manager should invest in their personal emotional intelligence by improving inbound (e.g., self-management and self-awareness) and outbound (e.g., relationship management) competencies. Research suggests that project teams that succeed in developing team emotional intelligence or become an emotionally competent group are more effective. Additionally, there is usually a reduction in staff turnover. See also _leadership_ .
 
@@ -6447,7 +6440,7 @@ decision points, branching loops, parallel paths, and overall order of processin
 
    - **Organizational breakdown structure (OBS).** An OBS is a hierarchical representation of the project organization that illustrates the relationship between project activities and the organizational units that will perform those activities. While the WBS shows a breakdown of project deliverables, an OBS is arranged according to an organization’s existing departments, units, or teams, with the project activities or work packages listed under each
 
-Section 5 – Tools and Techniques 171
+Section 5 – Tools and Techniques
 
 department. An operational department, such as information technology or purchasing, can see all of its project responsibilities by looking at its portion of the OBS.
 
@@ -6502,7 +6495,7 @@ Knowledge and information management tools and techniques should be connected to
 
 **Information radiators.** An information radiator is a visible, physical display that provides information to the rest of the organization, enabling timely knowledge sharing. Information radiators may also be known as big visible charts. Information radiators are posted in a place where people can see the information easily, rather than having information in a scheduling or reporting tool. The information radiators should be easy to update and should be updated frequently. They are often “low tech and high touch” in that they are manually maintained rather than electronically generated. Figure 5-9 shows an information radiator associated with work completed, work remaining, and risks.
 
-Section 5 – Tools and Techniques 173
+Section 5 – Tools and Techniques
 
 |Reference|Risk Description|Date|Likelihood|Impact|Risk Rating|Response|Owner|
 |---|---|---|---|---|---|---|---|
@@ -6534,7 +6527,7 @@ as leadership activities. Management activities focus on the means of meeting pr
 
 Figure 5-10. Iteration Burndown Chart
 
-Section 5 – Tools and Techniques 175
+Section 5 – Tools and Techniques
 
 Knowledge management tools and techniques include but are not limited to the following:
 
@@ -6615,7 +6608,7 @@ Emotional intelligence models converge on four key areas:
 
        - _Social awareness_ . Social awareness is about empathy and understanding and considering other people’s feelings. This key area includes the ability to read nonverbal cues and body language.
 
-Section 5 – Tools and Techniques 177
+Section 5 – Tools and Techniques
 
 Figure 5-11. Components of Emotional Intelligence
 
@@ -6654,7 +6647,7 @@ Search for alternatives together. Damage incurred from conflict can be repaired 
 
 **Leads and lags.** A lead is the amount of time whereby a successor activity can be advanced with respect to a predecessor activity. For example, on a project to construct a new office building, the
 
-Section 5 – Tools and Techniques 179
+Section 5 – Tools and Techniques
 
 landscaping could be scheduled to start 2 weeks prior to the scheduled punch list completion. This activity would be shown as a finish-to-start (FS) with a 2-week lead as shown in Figure 5-12. A lead is often represented as a negative value for lag in scheduling software.
 
@@ -6711,7 +6704,7 @@ Figure 5-12. Examples of Lead and Lag
 
      - **Hygiene and motivational factors.** Frederick Herzberg conducted a study of motivational factors in working life. He believed that job satisfaction and dissatisfaction stem from conditions called motivational factors. Motivational factors include matters that relate to the content of the work, such as achievement, growth, and advancement. Insufficient motivational factors lead to dissatisfaction. Sufficient motivational factors lead to satisfaction. Herzberg also identified hygiene factors related to the work, such as company policies, salary, and the physical environment. If hygiene factors are insufficient, they cause dissatisfaction. However, even if they are sufficient, they do not lead to satisfaction.
 
-Section 5 – Tools and Techniques 181
+Section 5 – Tools and Techniques
 
       - **Intrinsic versus extrinsic motivation.** Daniel Pink published several books about the intrinsic factors that motivate people. He stated that while extrinsic rewards, such as salary, are motivators to a certain extent, once a person is paid fairly for their work, the motivational power of extrinsic rewards ceases to exist. For complicated and challenging work, such as much of the work on projects, intrinsic motivators are far longer lasting and more effective. Pink identifies three types of intrinsic motivators: autonomy, mastery, and purpose:
 
@@ -6762,7 +6755,7 @@ The negotiation should be led by a member of the procurement team who has the au
 
 **Networking.** Networking is the establishment of connections and relationships with other people from the same or other organizations for the purpose of exchanging information and developing contacts. Networks provide project managers and their teams with access to informal organizations to solve problems, influence actions of their stakeholders, and increase stakeholder support for the work and outcomes of the project, thus improving performance.
 
-Section 5 – Tools and Techniques 183
+Section 5 – Tools and Techniques
 
 **Nominal group.** The nominal group technique is a structured method used to facilitate group decision-making by gathering input from participants in a systematic manner. The technique was developed to address the challenges of chaotic and unproductive discussions, particularly in large groups dealing with controversial topics. This technique aims to equalize participation and minimize the dominance of more vocal members, ensuring that all ideas are considered before any discussion takes place.
 
@@ -6805,7 +6798,7 @@ Precedence diagramming method includes four types of dependencies or logical rel
 
    - **Start-to-finish (SF).** A logical relationship in which a predecessor activity cannot finish until a successor activity has started. For example, a new accounts payable system (successor) has to start before the old accounts payable system can be shut down (predecessor).
 
-Section 5 – Tools and Techniques 185
+Section 5 – Tools and Techniques
 
 Figure 5-13. Precedence Diagramming Method Relationship Types
 
@@ -6872,7 +6865,7 @@ Very Low 0.10
 
 Figure 5-14. Example Probability and Impact Matrix With Scoring Scheme
 
-Section 5 – Tools and Techniques 187
+Section 5 – Tools and Techniques
 
 assurance and quality improvement. Using a structured problem-solving method can help eliminate the problem and develop a long-lasting solution. Problem-solving methods generally include the following actions:
 
@@ -6930,7 +6923,7 @@ One of the main advantages of a project canvas is that it provides a comprehensi
 
 The project canvas also serves as a powerful collaboration tool. By providing a common platform for discussing and aligning on project details, it facilitates communication and collaboration among team members and stakeholders. This collaborative approach helps ensure that everyone involved in the project has a shared understanding of its goals, scope, and key components, which can lead to better decision-making and more successful project outcomes.
 
-Section 5 – Tools and Techniques 189
+Section 5 – Tools and Techniques
 
 **Project dashboards.** A project dashboard is a set of charts and graphs showing progress or performance against important measures of the project. A common way of showing large quantities of information on metrics is a dashboard. Dashboards generally collect information electronically and generate charts that depict status. Often, dashboards offer high-level summaries of data and allow drill-down analysis into contributing data. Figure 5-16 and Figure 5-17 each provide examples of a dashboard.
 
@@ -6974,7 +6967,7 @@ Figure 5-17. Project Dashboard Example 2
 
 **Prompt lists.** A prompt list is a predetermined list of risk categories that might give rise to individual project risks and that could also act as sources of overall project risk. The prompt list can be used as a framework to aid the project team in idea generation when using risk identification techniques. The risk categories in the lowest level of the risk breakdown structure can be used as a prompt list for individual project risks. Some common strategic frameworks are more suitable for identifying
 
-Section 5 – Tools and Techniques 191
+Section 5 – Tools and Techniques
 
 sources of overall project risk, for example PESTLE (political, economic, sociocultural, technological, legal, environmental), TECOP (technical, environmental, commercial, operational, political), or VUCA (volatility, uncertainty, complexity, ambiguity).
 
@@ -7011,7 +7004,7 @@ Activities After Resource Leveling
 
 Figure 5-18. Resource Leveling
 
-Section 5 – Tools and Techniques 193
+Section 5 – Tools and Techniques
 
 Available float is used for leveling resources. Consequently, the critical path through the project schedule may change.
 
@@ -7052,7 +7045,7 @@ Grouping risks into categories can lead to the development of more effective ris
 
 **Risk probability and impact assessment.** Risk probability assessments consider the likelihood that a specific risk will occur. Risk impact assessments consider the potential effect on one or more project objectives such as schedule, cost, quality, or performance. Impacts will be negative for threats and positive for opportunities. Probability and impact are assessed for each identified individual project risk. Risks can be assessed in interviews or meetings with participants selected for their familiarity with the types of risk recorded in the risk register. Project team members and knowledgeable persons external to the project are included. The level of probability for each risk and its impact on each objective are evaluated during the interview or meeting. Differences in the levels of probability and impact perceived by stakeholders are to be expected, and such differences should be explored. Explanatory detail, including assumptions justifying the levels assigned, are also recorded. Risk probabilities and impacts are assessed using the definitions given in the risk management plan. Risks with low probability and impact may be included within the risk register as part of a watch list for future monitoring.
 
-Section 5 – Tools and Techniques 195
+Section 5 – Tools and Techniques
 
 **Rolling wave planning.** Rolling wave planning is an iterative planning technique in which the work to be accomplished in the near term is planned in detail, while the work in the future is planned at a higher level. This progressive elaboration allows work to exist at various levels of detail, depending on the project life cycle stage. During early strategic planning, when information is less defined, work packages are outlined at a high level. As more information becomes available, these packages are decomposed into detailed activities.
 
@@ -7110,7 +7103,7 @@ One typical display of sensitivity analysis is the tornado diagram, which presen
 
 **Simulation.** Simulation models the combined effects of individual project risks and other sources of uncertainty to evaluate their potential impact on achieving project objectives. The most common simulation technique is Monte Carlo analysis, in which risks and other sources of uncertainty are used to calculate possible schedule outcomes for the total project. Simulation involves calculating multiple work package durations with different sets of activity assumptions, constraints, risks, issues,
 
-Section 5 – Tools and Techniques 197
+Section 5 – Tools and Techniques
 
 Figure 5-21. Example Tornado Diagram
 
@@ -7147,7 +7140,7 @@ Figure 5-22. Example Probability Distribution of a Target Milestone
 
    - **Ownership.** Ownership is when a person or group has a legal title to an asset or a property.
 
-Section 5 – Tools and Techniques 199
+Section 5 – Tools and Techniques
 
     - **Knowledge.** The person may have specialist knowledge, which can benefit the project through more effective delivery of project objectives, organizational outcomes, or knowledge of the power structures of the organization.
 
@@ -7202,7 +7195,7 @@ of the project (influence), or ability to cause changes to the project’s plann
 
 Stories are particularly effective for transferring tacit knowledge, which is often difficult to articulate through formal documentation. By illustrating real-life scenarios and solutions, storytelling helps team members understand complex concepts and apply them in their work. Additionally, storytelling can shape organizational culture by highlighting values, successes, and learning moments, thereby reinforcing desired behaviors and practices.
 
-Section 5 – Tools and Techniques 201
+Section 5 – Tools and Techniques
 
 Effective storytelling enhances communication within the team and across the organization. Storytelling makes complex information more understandable and relatable, which can lead to better decision-making and problem-solving. Moreover, sharing success stories and overcoming challenges can inspire and motivate team members, fostering a positive and collaborative work environment.
 
@@ -7235,7 +7228,7 @@ Effective storytelling enhances communication within the team and across the org
 
    - **Escalate.** Risk escalation is appropriate when the project team or project sponsor agrees that a threat is outside the scope of the project or that the proposed response would
 
-Section 5 – Tools and Techniques 203
+Section 5 – Tools and Techniques
 
 exceed the project manager’s authority. Escalated risks are managed at the portfolio level, program level, or other relevant part of the organization, but not at the project level. The project manager determines who should be notified about the threat and communicates the details to that person or part of the organization. It is important that the ownership of escalated threats is accepted by the relevant party in the organization. Threats are usually escalated to the level that matches the objectives that would be affected if the threat occurred. Escalated threats are not monitored further by the project team after escalation, although they may be recorded in the risk register for information.
 
@@ -7262,7 +7255,7 @@ Different application areas require different tests. For example, software testi
 
 **Text-oriented formats.** Team member responsibilities that require detailed descriptions can be specified in text-oriented formats. Usually in outline form, these documents provide information such as responsibilities, authority, competencies, and qualifications. The documents are known by various names including position descriptions and role–responsibility–authority forms. These documents can be used as templates for future projects, especially when the information is updated throughout the current project by applying lessons learned.
 
-Section 5 – Tools and Techniques 205
+Section 5 – Tools and Techniques
 
 **Theory of constraints (TOC).** Theory of constraints is a body of knowledge focused on improving the system-level performance of an organization, end-to-end process, project portfolio, or project. The TOC application to a project or project portfolio is critical chain project management (CCPM). See also _critical chain project management_ and _continuous improvement._
 
@@ -7286,7 +7279,7 @@ Table 5-1. Earned Value Calculations Summary
 
 _(continued)_
 
-Section 5 – Tools and Techniques 207
+Section 5 – Tools and Techniques
 
 Table 5-1. (Continued)
 
@@ -7308,7 +7301,7 @@ Table 5-1. (Continued)
 
 _(continued)_
 
-Section 5 – Tools and Techniques 209
+Section 5 – Tools and Techniques
 
 Table 5-1. (Continued)
 
@@ -7345,7 +7338,7 @@ The duration of a particular stage depends upon team dynamics, team size, and te
 
 **Velocity.** Velocity is a measure of a team’s productivity rate at which the deliverables are produced, validated, and accepted within a predefined interval.
 
-Section 5 – Tools and Techniques 211
+Section 5 – Tools and Techniques
 
 **Virtual collaboration tools.** Virtual collaboration tools are software applications and platforms designed to facilitate communication, coordination, and collaboration among project team members who may be geographically dispersed.
 
@@ -7397,7 +7390,7 @@ of work. Different color sticky notes can represent different types of work, and
 
    - **Burn charts.** Burn charts, such as burnup or burndown charts, can show project team velocity. Velocity measures the productivity rate at which the deliverables are produced, validated, and accepted within a predefined interval. A burnup chart can track the amount of work done compared to the expected work that should be done (see Figure 5-26).
 
-Section 5 – Tools and Techniques 213
+Section 5 – Tools and Techniques
 
 Figure 5-26. Burnup Chart
 
@@ -7416,7 +7409,7 @@ A burndown chart can show the number of story points remaining or the amount of 
 
 **What-if analysis.** What-if analysis is the process of evaluating scenarios in order to predict their effect (positive or negative) on project objectives. This process is an analysis of the question: “What if the situation represented by scenario X happens?” A schedule network analysis is performed using the schedule to compute the different scenarios, such as delaying a major component delivery, extending specific engineering durations, or introducing external factors such as a strike or a change in the permit process. The outcome of the what-if analysis can be used to assess the feasibility of the project schedule under different conditions, and in preparing schedule reserves and response plans to address the impact of unexpected situations.
 
-Section 5 – Tools and Techniques 215
+Section 5 – Tools and Techniques
 
 ##### Appendix X1 Contributors and Reviewers
 

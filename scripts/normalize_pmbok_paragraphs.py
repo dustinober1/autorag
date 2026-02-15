@@ -11,6 +11,9 @@ Also removes PDF artifacts:
 - Standalone page numbers (Arabic and Roman numerals)
 - Running headers (page number + section title patterns)
 - Repeated section headers that appear as running headers
+- Section headers with trailing page numbers (e.g., "Section 1 – Introduction 5")
+- Broken bold headers where text runs together (e.g., "GuideAffinity")
+- Standalone "overview of the content." artifact lines
 """
 
 import re
@@ -47,8 +50,19 @@ RUNNING_HEADER_REGEX = re.compile(
 
 # Pattern for section running headers like "Section 1 Introduction 5" or "Section 2 A System for Value Delivery"
 SECTION_HEADER_REGEX = re.compile(
-    r"^(Section\s+\d+)\s*[â-]\s*(.+?)(?:\s+\d+)?$"
+    r"^(Section\s+\d+)\s*[\-–—]\s*(.+?)(?:\s+\d+)?$"
 )
+
+# Pattern for section headers with trailing page numbers
+# Example: "Section 1 – Introduction 5" -> "Section 1 – Introduction"
+SECTION_HEADER_WITH_PAGE_REGEX = re.compile(r"^(Section\s+\d+\s*[\-–—]\s*.+)\s+\d+$")
+
+# Pattern for broken bold headers where next word is attached without space
+# Example: "**1.1 Structure of the PMBOK® GuideAffinity diagram.**" -> "**1.1 Structure of the PMBOK® Guide Affinity diagram.**"
+BROKEN_BOLD_HEADER_REGEX = re.compile(r"\*\*(.+?Guide)([A-Z][a-z]+)")
+
+# Pattern for standalone "overview of the content." lines that are PDF artifacts
+STANDALONE_OVERVIEW_REGEX = re.compile(r"^\*\*overview of the content\.\*\*$")
 
 # Pattern for standalone page numbers (Arabic numerals, 1-4 digits)
 PAGE_NUMBER_REGEX = re.compile(r"^\d{1,4}$")
@@ -230,6 +244,92 @@ def remove_pdf_artifacts(content: str) -> tuple[str, int]:
     return "\n".join(result), artifacts_removed
 
 
+def fix_section_headers_with_page_numbers(content: str) -> tuple[str, int]:
+    """
+    Fix section headers that have trailing page numbers.
+    
+    Example: "Section 1 – Introduction 5" -> "Section 1 – Introduction"
+    
+    Returns:
+        Tuple of (fixed content, number of fixes applied)
+    """
+    lines = content.split("\n")
+    result = []
+    fixes = 0
+    
+    for line in lines:
+        match = SECTION_HEADER_WITH_PAGE_REGEX.match(line.strip())
+        if match:
+            # Replace with the header without trailing page number
+            fixed_line = match.group(1)
+            result.append(fixed_line)
+            fixes += 1
+        else:
+            result.append(line)
+    
+    return "\n".join(result), fixes
+
+
+def fix_broken_bold_headers(content: str) -> tuple[str, int]:
+    """
+    Fix bold headers where the next word is attached without a space.
+    
+    Example: "**1.1 Structure of the PMBOK® GuideAffinity diagram.**" 
+             -> "**1.1 Structure of the PMBOK® Guide Affinity diagram.**"
+    
+    Returns:
+        Tuple of (fixed content, number of fixes applied)
+    """
+    # Use re.sub with a function to insert space between Guide and the next capitalized word
+    def replace_func(match):
+        full_match = match.group(0)  # The full match like "**1.1 Structure of the PMBOK® GuideAffinity diagram.**"
+        # Insert space before the capitalized word that follows "Guide"
+        return re.sub(r'(Guide)([A-Z][a-z])', r'\1 \2', full_match)
+    
+    # Count matches before replacement
+    pattern = re.compile(r'\*\*.*?Guide[A-Z].*?\.\*\*')
+    matches = pattern.findall(content)
+    
+    if not matches:
+        return content, 0
+    
+    # Replace each occurrence
+    fixed_content = pattern.sub(replace_func, content)
+    
+    fixes = len(matches)
+    return fixed_content, fixes
+
+
+def remove_standalone_overview_lines(content: str) -> tuple[str, int]:
+    """
+    Remove standalone "overview of the content." lines that are PDF artifacts.
+    
+    These appear as isolated lines with no surrounding context, indicating they
+    are PDF artifacts from page breaks.
+    
+    Returns:
+        Tuple of (fixed content, number of lines removed)
+    """
+    lines = content.split("\n")
+    result = []
+    removed = 0
+    
+    for i, line in enumerate(lines):
+        stripped = line.strip()
+        if STANDALONE_OVERVIEW_REGEX.match(stripped):
+            # Check if it's standalone (surrounded by blank lines or at file boundaries)
+            prev_blank = not lines[i-1].strip() if i > 0 else True
+            next_blank = not lines[i+1].strip() if i < len(lines)-1 else True
+            
+            if prev_blank or next_blank:
+                removed += 1
+                continue
+        
+        result.append(line)
+    
+    return "\n".join(result), removed
+
+
 def is_special_block_start(line: str) -> bool:
     """Check if line starts a special block that should not be merged."""
     return (
@@ -370,11 +470,26 @@ def main():
     cleaned_content, artifacts_removed = remove_pdf_artifacts(content)
     print(f"PDF artifacts removed: {artifacts_removed}")
     
+    # Phase 2: Fix section headers with trailing page numbers
+    print("Fixing section headers with trailing page numbers...")
+    cleaned_content, section_fixes = fix_section_headers_with_page_numbers(cleaned_content)
+    print(f"Section header page numbers removed: {section_fixes}")
+    
+    # Phase 3: Fix broken bold headers
+    print("Fixing broken bold headers...")
+    cleaned_content, bold_fixes = fix_broken_bold_headers(cleaned_content)
+    print(f"Broken bold headers fixed: {bold_fixes}")
+    
+    # Phase 4: Remove standalone "overview of the content." lines
+    print("Removing standalone overview lines...")
+    cleaned_content, overview_removed = remove_standalone_overview_lines(cleaned_content)
+    print(f"Standalone overview lines removed: {overview_removed}")
+    
     # Count lines after artifact removal
     cleaned_lines = len(cleaned_content.split("\n"))
     print(f"Lines after artifact removal: {cleaned_lines}")
     
-    # Phase 2: Normalize paragraphs
+    # Phase 5: Normalize paragraphs
     print("Normalizing paragraphs...")
     normalized_content = normalize_paragraphs(cleaned_content)
     
