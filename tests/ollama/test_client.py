@@ -96,3 +96,51 @@ def test_post_json_non_object_json_raises_retrieval_error(monkeypatch: pytest.Mo
 
     with pytest.raises(RetrievalError, match="JSON object"):
         client.post_json(path="/api/embed", payload={"model": "test", "input": ["hello"]})
+
+
+def test_client_sends_authorization_header_when_api_key_set(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """OllamaClient should send Authorization header with Bearer token when api_key is set."""
+    captured: dict[str, object] = {}
+
+    def fake_urlopen(req: request.Request, timeout: float) -> _FakeResponse:
+        captured["headers"] = dict(req.headers)
+        return _FakeResponse(b'{"ok": true}')
+
+    monkeypatch.setattr("autokg_rag.ollama.client.request.urlopen", fake_urlopen)
+
+    client = OllamaClient(
+        base_url="http://localhost:11434",
+        timeout_seconds=5,
+        api_key="test-secret-key",
+    )
+    client.post_json(path="/api/test", payload={})
+
+    assert "Authorization" in captured["headers"], "Authorization header should be present"
+    assert captured["headers"]["Authorization"] == "Bearer test-secret-key", \
+        "Authorization header should use Bearer token format"
+
+
+def test_client_omits_authorization_header_when_api_key_empty(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """OllamaClient should omit Authorization header when api_key is empty."""
+    captured: dict[str, object] = {}
+
+    def fake_urlopen(req: request.Request, timeout: float) -> _FakeResponse:
+        captured["headers"] = dict(req.headers)
+        return _FakeResponse(b'{"ok": true}')
+
+    monkeypatch.setattr("autokg_rag.ollama.client.request.urlopen", fake_urlopen)
+
+    # Test with empty string (default)
+    client = OllamaClient(
+        base_url="http://localhost:11434",
+        timeout_seconds=5,
+        api_key="",
+    )
+    client.post_json(path="/api/test", payload={})
+
+    assert "Authorization" not in captured["headers"], \
+        "Authorization header should not be present when api_key is empty"
