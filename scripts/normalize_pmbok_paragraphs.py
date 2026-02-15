@@ -6,10 +6,61 @@ Merges lines that belong to the same paragraph into single lines while
 preserving markdown structure (headings, lists, code blocks, tables, blank lines).
 
 This is critical for Graph RAG quality as broken paragraphs fragment semantic meaning.
+
+Also removes PDF artifacts:
+- Standalone page numbers (Arabic and Roman numerals)
+- Running headers (page number + section title patterns)
+- Repeated section headers that appear as running headers
 """
 
 import re
 from pathlib import Path
+
+
+# Known running header patterns from PMBOK PDF
+RUNNING_HEADERS = [
+    "The Standard for Project Management",
+    "A Guide to the Project Management Body of Knowledge",
+    "PMBOK® Guide",
+    "PMBOK [®] Guide",
+    "Table of Contents",
+    "List of Figures and Tables",
+    "Preface",
+    "Section 1",
+    "Section 2",
+    "Section 3",
+    "Section 4",
+    "Section 5",
+    "Appendix X1",
+    "Appendix X2",
+    "Appendix X3",
+    "Appendix X4",
+    "Appendix X5",
+]
+
+# Build regex pattern for running headers with page numbers
+# Pattern: NUMBER + HEADER (e.g., "32 The Standard for Project Management")
+HEADER_PATTERN_PART = "|".join(re.escape(h) for h in RUNNING_HEADERS)
+RUNNING_HEADER_REGEX = re.compile(
+    rf"^\d+\s+({HEADER_PATTERN_PART})(?:\s|$)"
+)
+
+# Pattern for section running headers like "Section 1 Introduction 5" or "Section 2 A System for Value Delivery"
+SECTION_HEADER_REGEX = re.compile(
+    r"^(Section\s+\d+)\s*[â-]\s*(.+?)(?:\s+\d+)?$"
+)
+
+# Pattern for standalone page numbers (Arabic numerals, 1-4 digits)
+PAGE_NUMBER_REGEX = re.compile(r"^\d{1,4}$")
+
+# Pattern for Roman numerals (commonly used in front matter)
+ROMAN_NUMERAL_REGEX = re.compile(
+    r"^(?:i{1,3}|iv|v|vi{1,3}|ix|x{1,3}|xi{1,3}|xiv|xv|xvi{1,3}|xix|xx{1,3}|xxi{1,3}|xxiv|xxv|xxvi{1,3}|xxix|xxx{1,3})$",
+    re.IGNORECASE
+)
+
+# Pattern for bold page numbers like "**3**"
+BOLD_PAGE_NUMBER_REGEX = re.compile(r"^\*\*\d{1,4}\*\*$")
 
 
 def is_heading(line: str) -> bool:
@@ -42,6 +93,141 @@ def is_table_line(line: str) -> bool:
 def is_blank_line(line: str) -> bool:
     """Check if line is blank or contains only whitespace."""
     return not line.strip()
+
+
+def is_page_number(line: str) -> bool:
+    """
+    Check if line is a standalone page number (Arabic or Roman).
+    
+    Examples:
+    - "39" (Arabic)
+    - "v", "vii", "xii" (Roman numerals in front matter)
+    - "**3**" (bold page numbers)
+    """
+    stripped = line.strip()
+    if not stripped:
+        return False
+    
+    # Check for plain Arabic page numbers (1-4 digits)
+    if PAGE_NUMBER_REGEX.match(stripped):
+        return True
+    
+    # Check for Roman numerals (front matter pages)
+    if ROMAN_NUMERAL_REGEX.match(stripped):
+        return True
+    
+    # Check for bold page numbers like "**3**"
+    if BOLD_PAGE_NUMBER_REGEX.match(stripped):
+        return True
+    
+    return False
+
+
+def is_running_header(line: str) -> bool:
+    """
+    Check if line is a running header from PDF.
+    
+    Examples:
+    - "32 The Standard for Project Management"
+    - "4 The Standard for Project Management"
+    - "viii Preface"
+    - "Preface ix"
+    - "xii Table of Contents"
+    - "Table of Contents xiii"
+    - "List of Figures and Tables xix"
+    - "xix List of Figures and Tables"
+    """
+    stripped = line.strip()
+    if not stripped:
+        return False
+    
+    # Pattern: NUMBER + "The Standard for Project Management"
+    if RUNNING_HEADER_REGEX.match(stripped):
+        return True
+    
+    # Pattern: Roman numeral + "Preface" or "Preface" + Roman numeral
+    if re.match(r"^[ivx]+\s+Preface$", stripped, re.IGNORECASE):
+        return True
+    if re.match(r"^Preface\s+[ivx]+$", stripped, re.IGNORECASE):
+        return True
+    
+    # Pattern: Roman numeral + "Table of Contents" or vice versa
+    if re.match(r"^[ivx]+\s+Table of Contents$", stripped, re.IGNORECASE):
+        return True
+    if re.match(r"^Table of Contents\s+[ivx]+$", stripped, re.IGNORECASE):
+        return True
+    
+    # Pattern: Roman numeral + "List of Figures and Tables" or vice versa
+    if re.match(r"^[ivx]+\s+List of Figures and Tables$", stripped, re.IGNORECASE):
+        return True
+    if re.match(r"^List of Figures and Tables\s+[ivx]+$", stripped, re.IGNORECASE):
+        return True
+    
+    return False
+
+
+def is_repeated_section_header(line: str) -> bool:
+    """
+    Check if line is a section header that appears as running header.
+    
+    These are lines like "Section 2 A System for Value Delivery" that appear
+    repeatedly at page boundaries. They match the pattern:
+    - "Section X Title" where X is a single digit and Title is text
+    - NOT "Section X.Y" which are actual content headings
+    
+    Examples:
+    - "Section 2 A System for Value Delivery"
+    - "Section 3 Project Management Principles"
+    - "Section 4 Project Life Cycles"
+    """
+    stripped = line.strip()
+    if not stripped:
+        return False
+    
+    # Match "Section X Title" pattern (X is a single digit, no decimal)
+    # This distinguishes running headers from actual section headings like "Section 2.1"
+    if re.match(r"^Section\s+\d\s+[A-Za-z]", stripped):
+        # Make sure it's not a subsection (Section X.Y)
+        if not re.match(r"^Section\s+\d+\.\d", stripped):
+            return True
+    
+    return False
+
+
+def is_pdf_artifact(line: str) -> bool:
+    """
+    Check if line is a PDF artifact that should be removed.
+    
+    This includes:
+    - Standalone page numbers
+    - Running headers
+    - Repeated section headers
+    """
+    return (
+        is_page_number(line)
+        or is_running_header(line)
+        or is_repeated_section_header(line)
+    )
+
+
+def remove_pdf_artifacts(content: str) -> tuple[str, int]:
+    """
+    Remove PDF artifacts from content.
+    
+    Returns:
+        Tuple of (cleaned content, number of artifacts removed)
+    """
+    lines = content.split("\n")
+    result = []
+    artifacts_removed = 0
+    
+    for line in lines:
+        if is_pdf_artifact(line):
+            artifacts_removed += 1
+            continue
+        result.append(line)
+    
+    return "\n".join(result), artifacts_removed
 
 
 def is_special_block_start(line: str) -> bool:
@@ -179,14 +365,23 @@ def main():
     original_lines = len(content.split("\n"))
     print(f"Original line count: {original_lines}")
     
-    # Normalize paragraphs
+    # Phase 1: Remove PDF artifacts (page numbers, running headers)
+    print("Removing PDF artifacts...")
+    cleaned_content, artifacts_removed = remove_pdf_artifacts(content)
+    print(f"PDF artifacts removed: {artifacts_removed}")
+    
+    # Count lines after artifact removal
+    cleaned_lines = len(cleaned_content.split("\n"))
+    print(f"Lines after artifact removal: {cleaned_lines}")
+    
+    # Phase 2: Normalize paragraphs
     print("Normalizing paragraphs...")
-    normalized_content = normalize_paragraphs(content)
+    normalized_content = normalize_paragraphs(cleaned_content)
     
     # Count normalized lines
     normalized_lines = len(normalized_content.split("\n"))
     print(f"Normalized line count: {normalized_lines}")
-    print(f"Lines reduced: {original_lines - normalized_lines}")
+    print(f"Total lines reduced: {original_lines - normalized_lines}")
     
     # Write back
     print(f"Writing normalized content to {markdown_path}...")
