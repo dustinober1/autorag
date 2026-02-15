@@ -13,7 +13,13 @@ from autokg_rag.exceptions import RetrievalError
 class OllamaClient:
     """HTTP client for Ollama JSON APIs using stdlib urllib."""
 
-    def __init__(self, *, base_url: str, timeout_seconds: float) -> None:
+    def __init__(
+        self,
+        *,
+        base_url: str,
+        timeout_seconds: float,
+        api_key: str = "",
+    ) -> None:
         normalized_base = base_url.strip()
         if not normalized_base:
             raise RetrievalError("Ollama base URL must not be empty.")
@@ -27,6 +33,7 @@ class OllamaClient:
 
         self.base_url = normalized_base
         self.timeout_seconds = timeout
+        self.api_key = api_key
 
     def _url_for(self, path: str) -> str:
         return urljoin(self.base_url, path.lstrip("/"))
@@ -41,6 +48,8 @@ class OllamaClient:
         url = self._url_for(path)
         body = None
         headers: dict[str, str] = {"Accept": "application/json"}
+        if self.api_key:
+            headers["Authorization"] = f"Bearer {self.api_key}"
         if payload is not None:
             body = json.dumps(payload).encode("utf-8")
             headers["Content-Type"] = "application/json"
