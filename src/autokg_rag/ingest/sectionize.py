@@ -22,7 +22,11 @@ def initialize_pmbok_toc_for_document(pdf_path: Path) -> None:
         _toc_cache[doc_id] = section_map
 
 
-def detect_section(page_text: str, doc_path: Path | None = None, page_num: int | None = None) -> str:
+def detect_section(
+    page_text: str,
+    doc_path: Path | None = None,
+    page_num: int | None = None,
+) -> str:
     """Detect a best-effort section label from page content, using PMBOK TOC if available."""
 
     # If we have document path and page number, try to use TOC mapping

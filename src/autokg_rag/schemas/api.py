@@ -8,7 +8,7 @@ from typing import Literal
 from pydantic import BaseModel, ConfigDict, Field, PositiveInt
 
 from autokg_rag.schemas.provenance import Citation
-from autokg_rag.schemas.records import AnswerRecord, HybridHitRecord
+from autokg_rag.schemas.records import AnswerRecord, DocumentType, HybridHitRecord
 
 QueryMode = Literal["vector", "graph", "hybrid"]
 
@@ -65,6 +65,7 @@ class DocumentInfo(BaseModel):
     title: str = Field(min_length=1)
     source_path: str = Field(min_length=1)
     sha256: str = Field(min_length=10)
+    document_type: DocumentType = "generic"
     page_count: int = Field(ge=0)
     chunk_count: int = Field(ge=0)
 

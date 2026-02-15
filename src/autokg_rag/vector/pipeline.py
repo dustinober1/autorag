@@ -9,7 +9,7 @@ from autokg_rag.embeddings.base import EmbeddingProvider
 from autokg_rag.embeddings.factory import create_embedding_provider
 from autokg_rag.embeddings.pipeline import build_embedding_artifacts
 from autokg_rag.exceptions import RetrievalError
-from autokg_rag.io import read_jsonl_rows, write_jsonl_rows
+from autokg_rag.io import append_jsonl_rows
 from autokg_rag.observability import MetricsWriter, StructuredLogger
 from autokg_rag.schemas.records import EmbeddingMetaRecord, RetrievalHitRecord
 from autokg_rag.vector.retriever import retrieve_vector_hits
@@ -172,9 +172,10 @@ def run_vector_query_pipeline(
             top_k=top_k,
         )
 
-        previous_rows = read_jsonl_rows(artifact_dir / "vector_hits.jsonl")
-        next_rows = previous_rows + [hit.model_dump(mode="json") for hit in hits]
-        write_jsonl_rows(artifact_dir / "vector_hits.jsonl", next_rows)
+        append_jsonl_rows(
+            artifact_dir / "vector_hits.jsonl",
+            [hit.model_dump(mode="json") for hit in hits],
+        )
 
         logger.info(
             stage="query_vector",

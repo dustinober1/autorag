@@ -25,7 +25,8 @@ class PmbokTocParser:
 
     def __init__(self) -> None:
         # Patterns for detecting TOC entries in PMBOK format
-        # Common patterns for PMBOK TOC entries like "1.1 Project Management Overview .................. 23"
+        # Common patterns for PMBOK TOC entries:
+        # "1.1 Project Management Overview .................. 23"
         self.toc_patterns = [
             # Pattern for entries with dots: "1.1.1 Some Title ........ 45"
             re.compile(r'^(\d+(?:\.\d+)*)\s+(.+?)\.{2,}\s+(\d+)$'),
@@ -153,7 +154,12 @@ class PmbokTocParser:
             else:
                 entry.full_path = entry.title
 
-    def create_section_map(self, toc_entries: list[TocEntry], *, max_page: int | None = None) -> dict[int, TocEntry]:
+    def create_section_map(
+        self,
+        toc_entries: list[TocEntry],
+        *,
+        max_page: int | None = None,
+    ) -> dict[int, TocEntry]:
         """Create a mapping from page numbers to their corresponding TOC entries."""
         section_map: dict[int, TocEntry] = {}
         if not toc_entries:
@@ -179,7 +185,11 @@ class PmbokTocParser:
 
         return section_map
 
-    def find_section_by_page(self, section_map: dict[int, TocEntry], page_num: int) -> TocEntry | None:
+    def find_section_by_page(
+        self,
+        section_map: dict[int, TocEntry],
+        page_num: int,
+    ) -> TocEntry | None:
         """Find the appropriate section for a given page number."""
         if not section_map:
             return None

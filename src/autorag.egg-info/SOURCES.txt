@@ -3,6 +3,7 @@ pyproject.toml
 src/autokg_rag/__init__.py
 src/autokg_rag/cli.py
 src/autokg_rag/exceptions.py
+src/autokg_rag/utils.py
 src/autokg_rag/answer/__init__.py
 src/autokg_rag/answer/composer.py
 src/autokg_rag/answer/grounding.py
@@ -43,13 +44,16 @@ src/autokg_rag/eval/matrix_runner.py
 src/autokg_rag/eval/metrics.py
 src/autokg_rag/eval/report.py
 src/autokg_rag/ingest/__init__.py
+src/autokg_rag/ingest/document_types.py
 src/autokg_rag/ingest/header_footer_filter.py
 src/autokg_rag/ingest/image_caption.py
 src/autokg_rag/ingest/image_extract.py
 src/autokg_rag/ingest/manifest.py
 src/autokg_rag/ingest/pdf_parse.py
 src/autokg_rag/ingest/pipeline.py
+src/autokg_rag/ingest/pmbok_toc_parser.py
 src/autokg_rag/ingest/sectionize.py
+src/autokg_rag/ingest/table_extractor.py
 src/autokg_rag/io/__init__.py
 src/autokg_rag/io/artifacts.py
 src/autokg_rag/kg/__init__.py

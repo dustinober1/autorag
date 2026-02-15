@@ -59,7 +59,10 @@ def _parse_space_table(lines: list[str]) -> tuple[list[str], list[list[str]]] | 
     if width < 2:
         return None
 
-    padded = [[_normalize_cell(cell) for cell in row] + [""] * (width - len(row)) for row in split_rows]
+    padded = [
+        [_normalize_cell(cell) for cell in row] + [""] * (width - len(row))
+        for row in split_rows
+    ]
     headers = padded[0]
     data = padded[1:]
     if not any(any(cell for cell in row) for row in data):

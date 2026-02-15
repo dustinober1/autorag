@@ -20,4 +20,7 @@ answer_max_sentences: 6
 graph_max_depth: 2
 hybrid_vector_weight: 0.6
 hybrid_graph_weight: 0.4
+citation_support_lexical_weight: 0.7
+citation_support_hit_weight: 0.3
+citation_support_floor: 0.001
 top_k: 8

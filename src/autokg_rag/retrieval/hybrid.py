@@ -6,7 +6,7 @@ import hashlib
 
 from autokg_rag.config import Settings
 from autokg_rag.exceptions import RetrievalError
-from autokg_rag.io import read_jsonl_rows, write_jsonl_rows
+from autokg_rag.io import append_jsonl_rows
 from autokg_rag.kg.retriever import retrieve_graph_hits
 from autokg_rag.observability import MetricsWriter, StructuredLogger
 from autokg_rag.retrieval.fusion import fuse_hybrid_hits
@@ -91,9 +91,10 @@ def run_hybrid_query_pipeline(
             graph_weight=resolved_graph_weight,
         )
 
-        previous_rows = read_jsonl_rows(artifact_dir / "hybrid_hits.jsonl")
-        next_rows = previous_rows + [hit.model_dump(mode="json") for hit in fused_hits]
-        write_jsonl_rows(artifact_dir / "hybrid_hits.jsonl", next_rows)
+        append_jsonl_rows(
+            artifact_dir / "hybrid_hits.jsonl",
+            [hit.model_dump(mode="json") for hit in fused_hits],
+        )
 
         logger.info(
             stage="query_hybrid",

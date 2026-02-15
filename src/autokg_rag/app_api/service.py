@@ -13,7 +13,7 @@ from autokg_rag.eval.matrix_runner import run_matrix
 from autokg_rag.eval.report import build_experiment_report
 from autokg_rag.exceptions import RetrievalError
 from autokg_rag.ingest import run_ingest_pipeline
-from autokg_rag.io import read_jsonl_rows, write_jsonl_rows
+from autokg_rag.io import append_jsonl_rows
 from autokg_rag.kg.pipeline import run_build_kg_pipeline
 from autokg_rag.kg.retriever import retrieve_graph_hits
 from autokg_rag.ollama import OllamaClient
@@ -178,6 +178,18 @@ def _answer_max_sentences(*, settings: Settings) -> int:
     return max(1, _setting_int(settings=settings, key="answer_max_sentences", default=6))
 
 
+def _citation_support_lexical_weight(*, settings: Settings) -> float:
+    return _setting_float(settings=settings, key="citation_support_lexical_weight", default=0.7)
+
+
+def _citation_support_hit_weight(*, settings: Settings) -> float:
+    return _setting_float(settings=settings, key="citation_support_hit_weight", default=0.3)
+
+
+def _citation_support_floor(*, settings: Settings) -> float:
+    return _setting_float(settings=settings, key="citation_support_floor", default=0.001)
+
+
 def _persist_rerank_artifacts(
     *,
     artifact_dir: Path,
@@ -189,8 +201,11 @@ def _persist_rerank_artifacts(
     if not final_hits:
         return
 
-    question_id = final_hits[0].question_id
-    trace_rows = read_jsonl_rows(artifact_dir / "rerank_trace.jsonl")
+    first_hit = next(iter(final_hits), None)
+    if first_hit is None:
+        return
+
+    question_id = first_hit.question_id
     trace_row: dict[str, Any] = {
         "question_id": question_id,
         "model": model,
@@ -203,12 +218,12 @@ def _persist_rerank_artifacts(
         trace_row["raw_output"] = rerank_result.raw_output
     if rerank_result.error is not None:
         trace_row["error"] = rerank_result.error
-    trace_rows.append(trace_row)
-    write_jsonl_rows(artifact_dir / "rerank_trace.jsonl", trace_rows)
+    append_jsonl_rows(artifact_dir / "rerank_trace.jsonl", [trace_row])
 
-    reranked_rows = read_jsonl_rows(artifact_dir / "reranked_hits.jsonl")
-    reranked_rows.extend(hit.model_dump(mode="json") for hit in final_hits)
-    write_jsonl_rows(artifact_dir / "reranked_hits.jsonl", reranked_rows)
+    append_jsonl_rows(
+        artifact_dir / "reranked_hits.jsonl",
+        [hit.model_dump(mode="json") for hit in final_hits],
+    )
 
 
 def _truncate_hits(*, hits: list[HybridHitRecord], top_k: int) -> list[HybridHitRecord]:
@@ -216,17 +231,14 @@ def _truncate_hits(*, hits: list[HybridHitRecord], top_k: int) -> list[HybridHit
 
 
 def _persist_answer_payload(payload: AnswerPayload, artifact_dir: Path) -> None:
-    existing_answers = read_jsonl_rows(artifact_dir / "answers.jsonl")
-    write_jsonl_rows(
+    append_jsonl_rows(
         artifact_dir / "answers.jsonl",
-        existing_answers + [payload.answer.model_dump(mode="json")],
+        [payload.answer.model_dump(mode="json")],
     )
 
-    existing_citation_trace = read_jsonl_rows(artifact_dir / "citation_trace.jsonl")
-    write_jsonl_rows(
+    append_jsonl_rows(
         artifact_dir / "citation_trace.jsonl",
-        existing_citation_trace
-        + [trace.model_dump(mode="json") for trace in payload.citation_trace],
+        [trace.model_dump(mode="json") for trace in payload.citation_trace],
     )
 
 
@@ -237,14 +249,15 @@ def _persist_demo_payload_sample(
     artifact_dir: Path,
 ) -> Path:
     output_path = artifact_dir / "demo_payload_samples.jsonl"
-    rows = read_jsonl_rows(output_path)
-    rows.append(
-        {
-            "question": question,
-            "answer_record": payload.answer.model_dump(mode="json"),
-        }
+    append_jsonl_rows(
+        output_path,
+        [
+            {
+                "question": question,
+                "answer_record": payload.answer.model_dump(mode="json"),
+            }
+        ],
     )
-    write_jsonl_rows(output_path, rows)
     return output_path
 
 
@@ -309,6 +322,9 @@ def query_service(*, request: QueryRequest, settings: Settings) -> AnswerPayload
         chunk_by_id=chunk_by_id,
         max_sentences=_answer_max_sentences(settings=settings),
         sentence_adapter=sentence_adapter,
+        support_lexical_weight=_citation_support_lexical_weight(settings=settings),
+        support_hit_weight=_citation_support_hit_weight(settings=settings),
+        support_floor=_citation_support_floor(settings=settings),
     )
     payload = AnswerPayload(
         answer=answer_record,

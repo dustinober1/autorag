@@ -6,6 +6,7 @@ from autokg_rag.config import Settings
 from autokg_rag.exceptions import RetrievalError
 from autokg_rag.ollama import OllamaClient
 from autokg_rag.schemas.api import OllamaModelInfo
+from autokg_rag.utils import coerce_non_negative_int
 
 _EMBED_KEYWORDS = (
     "embed",
@@ -26,14 +27,6 @@ def is_embedding_model_name(name: str) -> bool:
     if not normalized:
         return False
     return any(keyword in normalized for keyword in _EMBED_KEYWORDS)
-
-
-def _coerce_int(value: object) -> int:
-    try:
-        coerced = int(value)  # type: ignore[arg-type]
-    except (TypeError, ValueError):
-        return 0
-    return max(0, coerced)
 
 
 def list_available_models(settings: Settings) -> list[OllamaModelInfo]:
@@ -62,9 +55,9 @@ def list_available_models(settings: Settings) -> list[OllamaModelInfo]:
         details_map = details if isinstance(details, dict) else {}
 
         models.append(
-            OllamaModelInfo(
-                name=name,
-                size_bytes=_coerce_int(raw.get("size")),
+                OllamaModelInfo(
+                    name=name,
+                    size_bytes=coerce_non_negative_int(raw.get("size")),
                 family=str(details_map.get("family") or "").strip(),
                 parameter_size=str(details_map.get("parameter_size") or "").strip(),
                 quantization_level=str(details_map.get("quantization_level") or "").strip(),
@@ -82,4 +75,3 @@ def check_ollama_health(settings: Settings) -> bool:
     except Exception:  # noqa: BLE001
         return False
     return True
-

@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 import numpy as np
+from pytest import MonkeyPatch
 
 from autokg_rag.app_api.document_service import add_documents, list_documents, remove_document
 from autokg_rag.app_api.store_service import create_store
@@ -46,6 +47,7 @@ def test_document_service_add_list_remove_and_keep_embeddings_aligned(tmp_path: 
     assert len(docs) == 2
     assert all(doc.page_count >= 1 for doc in docs)
     assert all(doc.chunk_count >= 1 for doc in docs)
+    assert all(doc.document_type == "generic" for doc in docs)
 
     duplicate_result = add_documents("demo", [upload_a], settings)
     assert duplicate_result.documents == 0
@@ -65,3 +67,25 @@ def test_document_service_add_list_remove_and_keep_embeddings_aligned(tmp_path: 
     assert len(meta_rows) == len(chunk_rows)
     assert int(matrix.shape[0]) == len(meta_rows)
 
+
+def test_document_service_detects_pmbok_document_type_from_filename(
+    tmp_path: Path,
+    monkeypatch: MonkeyPatch,
+) -> None:
+    settings = Settings(artifact_root=tmp_path / "artifacts")
+    create_store("demo", settings)
+    monkeypatch.setattr(
+        "autokg_rag.app_api.document_service.initialize_pmbok_toc_for_document",
+        lambda _path: None,
+    )
+
+    pmbok_upload = _make_upload(
+        "pmbok_scope.pdf",
+        "Scope control guidance.\fRisk response guidance.",
+    )
+    add_result = add_documents("demo", [pmbok_upload], settings)
+    assert add_result.documents == 1
+
+    docs = list_documents("demo", settings)
+    assert len(docs) == 1
+    assert docs[0].document_type == "pmbok"

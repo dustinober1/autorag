@@ -32,11 +32,12 @@ from autokg_rag.eval.metrics import ndcg_at_k, recall_at_k
 from autokg_rag.eval.report import build_experiment_report
 from autokg_rag.exceptions import AutoRAGError
 from autokg_rag.ingest import run_ingest_pipeline, run_smoke_pipeline
-from autokg_rag.io import read_jsonl_rows, write_jsonl_rows
+from autokg_rag.io import append_jsonl_rows, read_jsonl_rows, write_jsonl_rows
 from autokg_rag.kg.pipeline import run_build_kg_pipeline, run_graph_query_pipeline
 from autokg_rag.retrieval import run_hybrid_query_pipeline
 from autokg_rag.schemas.api import AnswerPayload, QueryMode, QueryRequest
 from autokg_rag.schemas.records import EvalQuestionRecord, HybridHitRecord, RetrievalHitRecord
+from autokg_rag.utils import coerce_float
 from autokg_rag.vector.pipeline import run_index_vector_pipeline, run_vector_query_pipeline
 from autokg_rag.vector.store import load_chunks
 
@@ -72,29 +73,15 @@ def _run_hybrid_query(
     )
 
 
-def _coerce_float(value: object) -> float:
-    if isinstance(value, (int, float)):
-        return float(value)
-    if isinstance(value, str) and value.strip():
-        try:
-            return float(value)
-        except ValueError:
-            return 0.0
-    return 0.0
-
-
 def _persist_answer_payload(payload: AnswerPayload, artifact_dir: Path) -> None:
-    existing_answers = read_jsonl_rows(artifact_dir / "answers.jsonl")
-    write_jsonl_rows(
+    append_jsonl_rows(
         artifact_dir / "answers.jsonl",
-        existing_answers + [payload.answer.model_dump(mode="json")],
+        [payload.answer.model_dump(mode="json")],
     )
 
-    existing_citation_trace = read_jsonl_rows(artifact_dir / "citation_trace.jsonl")
-    write_jsonl_rows(
+    append_jsonl_rows(
         artifact_dir / "citation_trace.jsonl",
-        existing_citation_trace
-        + [trace.model_dump(mode="json") for trace in payload.citation_trace],
+        [trace.model_dump(mode="json") for trace in payload.citation_trace],
     )
 
 
@@ -355,15 +342,15 @@ def answer(
         chunk_by_id = {chunk.chunk_id: chunk for chunk in load_chunks(artifact_dir)}
 
         sentence_adapter = None
-        configured_max_sentences = max(1, int(getattr(settings, "answer_max_sentences", 6)))
+        configured_max_sentences = max(1, int(settings.answer_max_sentences))
         resolved_max_sentences = (
             configured_max_sentences if max_sentences is None else max(1, int(max_sentences))
         )
-        resolved_use_local = use_local or bool(getattr(settings, "answer_use_local", False))
+        resolved_use_local = use_local or bool(settings.answer_use_local)
         if resolved_use_local:
-            configured_model = str(getattr(settings, "answer_model", "llama3")).strip() or "llama3"
-            configured_temperature = float(getattr(settings, "answer_temperature", 0.2))
-            configured_max_tokens = max(1, int(getattr(settings, "answer_max_tokens", 512)))
+            configured_model = settings.answer_model.strip() or "llama3"
+            configured_temperature = float(settings.answer_temperature)
+            configured_max_tokens = max(1, int(settings.answer_max_tokens))
             resolved_model = (
                 local_model.strip()
                 if isinstance(local_model, str) and local_model.strip()
@@ -391,6 +378,9 @@ def answer(
             chunk_by_id=chunk_by_id,
             max_sentences=resolved_max_sentences,
             sentence_adapter=sentence_adapter,
+            support_lexical_weight=settings.citation_support_lexical_weight,
+            support_hit_weight=settings.citation_support_hit_weight,
+            support_floor=settings.citation_support_floor,
         )
         payload = AnswerPayload(
             answer=answer_record,
@@ -710,7 +700,7 @@ def eval_judge(
         resolved_model = (
             model.strip()
             if isinstance(model, str) and model.strip()
-            else str(getattr(settings, "answer_model", "llama3"))
+            else settings.answer_model
         )
         resolved_criteria_raw = criteria or ["correctness", "helpfulness", "groundedness"]
         allowed_criteria = {"correctness", "helpfulness", "groundedness", "coherence"}
@@ -755,7 +745,7 @@ def eval_judge(
 
             total_score = 0.0
             for judgement in judgements:
-                total_score += _coerce_float(judgement.get("score", 0.0))
+                total_score += coerce_float(judgement.get("score", 0.0))
             avg_score = total_score / float(len(judgements)) if judgements else 0.0
             rows.append(
                 {
@@ -780,7 +770,7 @@ def eval_judge(
             "criteria": [str(item) for item in resolved_criteria],
             "output_path": str(output_path),
             "avg_score": (
-                sum(_coerce_float(row.get("avg_score", 0.0)) for row in rows)
+                sum(coerce_float(row.get("avg_score", 0.0)) for row in rows)
                 / float(len(rows))
                 if rows
                 else 0.0

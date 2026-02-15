@@ -6,6 +6,7 @@ from autokg_rag.config.settings import Settings
 from autokg_rag.ingest.pdf_parse import parse_pdf_pages_clean
 from autokg_rag.ingest.pipeline import run_ingest_pipeline
 from autokg_rag.io import read_parquet_rows
+from autokg_rag.schemas.records import DocumentRecord
 
 
 def _write_text_pdf(path: Path, title: str, body: str) -> None:
@@ -49,6 +50,7 @@ def test_pdf_ingest_extracts_pages_sections_and_stable_doc_ids(tmp_path: Path) -
     doc_ids_first = {row["source_path"]: row["doc_id"] for row in docs_first}
     doc_ids_second = {row["source_path"]: row["doc_id"] for row in docs_second}
     assert doc_ids_first == doc_ids_second
+    assert all(str(row.get("document_type", "")) == "generic" for row in docs_first)
 
     pages = read_parquet_rows(settings.artifact_root / "m2_first" / "pages.parquet")
     assert pages
@@ -66,3 +68,15 @@ def test_parse_pdf_pages_clean_removes_repeated_lines(tmp_path: Path) -> None:
     pages = parse_pdf_pages_clean(path)
     assert len(pages) == 3
     assert all("PMBOK Guide" not in page for page in pages)
+
+
+def test_document_record_defaults_document_type_for_backward_compatibility() -> None:
+    record = DocumentRecord.model_validate(
+        {
+            "doc_id": "doc_123",
+            "title": "Legacy document",
+            "source_path": "legacy.pdf",
+            "sha256": "a" * 64,
+        }
+    )
+    assert record.document_type == "generic"

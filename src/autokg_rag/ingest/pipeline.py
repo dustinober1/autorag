@@ -10,6 +10,7 @@ from autokg_rag.chunking.base import ChunkingStrategy
 from autokg_rag.chunking.fixed import chunk_page
 from autokg_rag.config import Settings, write_resolved_config
 from autokg_rag.exceptions import IngestError, RetrievalError
+from autokg_rag.ingest.document_types import infer_document_type, is_pmbok_document
 from autokg_rag.ingest.manifest import build_raw_documents
 from autokg_rag.ingest.pdf_parse import (
     discover_pdf_files,
@@ -79,15 +80,18 @@ def run_smoke_pipeline(
         chunks: list[ChunkRecord] = []
 
         for document in raw_documents:
-            if "pmbok" in str(document.source_path).lower():
+            document_type = infer_document_type(document.source_path)
+            if is_pmbok_document(document_type):
                 initialize_pmbok_toc_for_document(document.source_path)
             for page_number, page_text in enumerate(document.pages, start=1):
-                section = detect_section(page_text, doc_path=document.source_path, page_num=page_number)
-                section_path = (
-                    resolve_pmbok_section_path(document.source_path, page_number)
-                    if "pmbok" in str(document.source_path).lower()
-                    else ""
+                section = detect_section(
+                    page_text,
+                    doc_path=document.source_path,
+                    page_num=page_number,
                 )
+                section_path = ""
+                if is_pmbok_document(document_type):
+                    section_path = resolve_pmbok_section_path(document.source_path, page_number)
 
                 # Get cross references from the page text
                 cross_refs = get_cross_references(page_text, section_path)
@@ -204,16 +208,18 @@ def run_ingest_pipeline(
             # Parse PDF with both text and tables
             page_texts, tables = parse_pdf_with_tables(file_path)
             title = extract_title(page_texts, fallback=file_path.stem)
+            document_type = infer_document_type(file_path)
 
             document = DocumentRecord(
                 doc_id=doc_id,
                 title=title,
                 source_path=str(file_path),
                 sha256=sha,
+                document_type=document_type,
             )
             documents.append(document)
 
-            if "pmbok" in str(file_path).lower():
+            if is_pmbok_document(document_type):
                 initialize_pmbok_toc_for_document(file_path)
 
             # Process text pages
@@ -276,20 +282,22 @@ def run_ingest_pipeline(
         )
 
         # Enhance chunks with additional PMBOK-specific fields
-        enhanced_chunks = []
+        enhanced_chunks: list[ChunkRecord] = []
+        document_by_id = {doc.doc_id: doc for doc in documents}
         for chunk in chunks:
             # Determine chunk type based on content
             chunk_type = "table" if "TABLE:" in chunk.chunk_text else "text"
 
             # Get section path based on document type
-            doc_path = None
-            for doc in documents:
-                if doc.doc_id == chunk.doc_id:
-                    doc_path = Path(doc.source_path)
-                    break
+            matched_document = document_by_id.get(chunk.doc_id)
+            doc_path = Path(matched_document.source_path) if matched_document is not None else None
 
             section_path = ""
-            if doc_path and "pmbok" in str(doc_path).lower():
+            if (
+                matched_document is not None
+                and doc_path is not None
+                and is_pmbok_document(matched_document.document_type)
+            ):
                 section_path = resolve_pmbok_section_path(doc_path, chunk.page)
 
             # Get cross-references

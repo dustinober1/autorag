@@ -54,6 +54,12 @@ def _load_env_overrides() -> dict[str, Any]:
         "AUTORAG_ANSWER_TEMPERATURE": ("answer_temperature", _parse_env_float),
         "AUTORAG_ANSWER_MAX_TOKENS": ("answer_max_tokens", _parse_env_int),
         "AUTORAG_ANSWER_MAX_SENTENCES": ("answer_max_sentences", _parse_env_int),
+        "AUTORAG_CITATION_SUPPORT_LEXICAL_WEIGHT": (
+            "citation_support_lexical_weight",
+            _parse_env_float,
+        ),
+        "AUTORAG_CITATION_SUPPORT_HIT_WEIGHT": ("citation_support_hit_weight", _parse_env_float),
+        "AUTORAG_CITATION_SUPPORT_FLOOR": ("citation_support_floor", _parse_env_float),
     }
 
     resolved: dict[str, Any] = {}

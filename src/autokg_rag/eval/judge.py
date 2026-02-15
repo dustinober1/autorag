@@ -6,6 +6,7 @@ import re
 from typing import Literal
 
 from autokg_rag.ollama import OllamaClient
+from autokg_rag.utils import coerce_float
 
 JudgementCriteria = Literal["correctness", "helpfulness", "groundedness", "coherence"]
 _SCORE_RE = re.compile(r"(?im)^score\s*:\s*([0-9]+(?:\.[0-9]+)?)\s*$")
@@ -48,17 +49,6 @@ def _parse_score_reasoning(raw_text: str) -> tuple[float, str]:
                 reasoning = candidate
             break
     return score, reasoning
-
-
-def _coerce_float(value: object) -> float:
-    if isinstance(value, (int, float)):
-        return float(value)
-    if isinstance(value, str) and value.strip():
-        try:
-            return float(value)
-        except ValueError:
-            return 0.0
-    return 0.0
 
 
 def evaluate_with_llm_judge(
@@ -144,7 +134,7 @@ def evaluate_answer_set(
 
         total = 0.0
         for judgement in judgements:
-            total += _coerce_float(judgement.get("score", 0.0))
+            total += coerce_float(judgement.get("score", 0.0))
         average = total / float(len(judgements)) if judgements else 0.0
         rows.append(
             {

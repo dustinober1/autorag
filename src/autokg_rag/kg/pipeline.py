@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from autokg_rag.config import Settings
 from autokg_rag.exceptions import RetrievalError
-from autokg_rag.io import read_jsonl_rows, write_jsonl_rows, write_parquet_rows
+from autokg_rag.io import append_jsonl_rows, write_parquet_rows
 from autokg_rag.kg.ontology_extract import extract_ontology_from_chunks
 from autokg_rag.kg.retriever import retrieve_graph_hits
 from autokg_rag.kg.store_sqlite import persist_graph_sqlite
@@ -88,9 +88,8 @@ def run_graph_query_pipeline(
         if not hits:
             raise RetrievalError("Graph retrieval returned no hits.")
 
-        existing_rows = read_jsonl_rows(artifact_dir / "graph_hits.jsonl")
         hit_rows = [hit.model_dump(mode="json") for hit in hits]
-        write_jsonl_rows(artifact_dir / "graph_hits.jsonl", existing_rows + hit_rows)
+        append_jsonl_rows(artifact_dir / "graph_hits.jsonl", hit_rows)
 
         chunk_rows = load_chunks(artifact_dir)
         chunk_by_id = {chunk.chunk_id: chunk for chunk in chunk_rows}

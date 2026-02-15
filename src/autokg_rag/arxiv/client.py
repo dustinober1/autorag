@@ -5,15 +5,16 @@ from __future__ import annotations
 import re
 from datetime import UTC, datetime
 from pathlib import Path
+from typing import Any
 from urllib import error, request
 
 from autokg_rag.exceptions import IngestError
 from autokg_rag.schemas.api import ArxivPaper
 
 
-def _load_arxiv_sdk() -> object:
+def _load_arxiv_sdk() -> Any:
     try:
-        import arxiv as arxiv_sdk  # type: ignore[import-not-found]
+        import arxiv as arxiv_sdk  # type: ignore[import-untyped]
     except ImportError as exc:  # pragma: no cover - dependency guarded in pyproject.
         raise IngestError(
             "arXiv dependency is not installed. Add `arxiv` to dependencies."

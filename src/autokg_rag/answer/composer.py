@@ -57,10 +57,18 @@ def _dedupe_hits_by_chunk(hits: Sequence[HybridHitLike]) -> list[HybridHitLike]:
     return deduped
 
 
-def _support_score(sentence: str, chunk_text: str, hit_score: float) -> float:
+def _support_score(
+    *,
+    sentence: str,
+    chunk_text: str,
+    hit_score: float,
+    lexical_weight: float,
+    hit_weight: float,
+    floor: float,
+) -> float:
     lexical_support = score_sentence_support(sentence=sentence, evidence_text=chunk_text)
     normalized_hit = hit_score / (1.0 + hit_score) if hit_score > 0.0 else 0.0
-    return max(0.001, (0.7 * lexical_support) + (0.3 * normalized_hit))
+    return max(floor, (lexical_weight * lexical_support) + (hit_weight * normalized_hit))
 
 
 def compose_grounded_answer(
@@ -70,11 +78,20 @@ def compose_grounded_answer(
     chunk_by_id: Mapping[str, ChunkRecord],
     max_sentences: int = 6,
     sentence_adapter: SentenceAdapter | None = None,
+    support_lexical_weight: float = 0.7,
+    support_hit_weight: float = 0.3,
+    support_floor: float = 0.001,
 ) -> tuple[AnswerRecord, list[CitationTraceRecord]]:
     """Compose an answer where every output sentence maps to a citation."""
 
     if max_sentences < 1:
         raise ValueError("max_sentences must be >= 1")
+    if support_lexical_weight < 0.0:
+        raise ValueError("support_lexical_weight must be >= 0")
+    if support_hit_weight < 0.0:
+        raise ValueError("support_hit_weight must be >= 0")
+    if support_floor < 0.0:
+        raise ValueError("support_floor must be >= 0")
     if not hits:
         raise RetrievalError("Hybrid retrieval returned no hits for answer composition.")
 
@@ -141,6 +158,9 @@ def compose_grounded_answer(
                     sentence=item.sentence,
                     chunk_text=item.chunk_text,
                     hit_score=item.hit_score,
+                    lexical_weight=support_lexical_weight,
+                    hit_weight=support_hit_weight,
+                    floor=support_floor,
                 ),
                 6,
             ),

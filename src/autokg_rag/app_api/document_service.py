@@ -6,7 +6,7 @@ from collections import Counter
 from collections.abc import Sequence
 from pathlib import Path
 from tempfile import TemporaryDirectory
-from typing import Any, Protocol, cast
+from typing import Any, Protocol
 
 import numpy as np
 
@@ -15,12 +15,13 @@ from autokg_rag.chunking.base import ChunkingStrategy
 from autokg_rag.config import Settings
 from autokg_rag.embeddings.factory import create_embedding_provider
 from autokg_rag.exceptions import IngestError, RetrievalError
+from autokg_rag.ingest.document_types import infer_document_type, is_pmbok_document
 from autokg_rag.ingest.pdf_parse import (
     extract_title,
     parse_pdf_pages_clean,
     sha256_for_file,
 )
-from autokg_rag.ingest.sectionize import detect_section
+from autokg_rag.ingest.sectionize import detect_section, initialize_pmbok_toc_for_document
 from autokg_rag.io import read_parquet_rows, write_parquet_rows
 from autokg_rag.schemas.api import DocumentInfo, IngestResult
 from autokg_rag.schemas.records import (
@@ -31,6 +32,13 @@ from autokg_rag.schemas.records import (
 )
 from autokg_rag.vector.pipeline import run_index_vector_pipeline
 from autokg_rag.vector.store import load_embedding_meta, load_embeddings
+
+_CHUNKING_STRATEGIES: tuple[ChunkingStrategy, ...] = (
+    "heading_recursive",
+    "sentence_window",
+    "semantic_breakpoint",
+    "fixed",
+)
 
 
 class UploadedFileLike(Protocol):
@@ -90,9 +98,9 @@ def _resolve_chunking_strategy(chunks: list[ChunkRecord]) -> ChunkingStrategy:
         return "heading_recursive"
 
     candidate = chunks[0].chunk_id
-    for strategy in ("heading_recursive", "sentence_window", "semantic_breakpoint", "fixed"):
+    for strategy in _CHUNKING_STRATEGIES:
         if f"-{strategy}-" in candidate:
-            return cast(ChunkingStrategy, strategy)
+            return strategy
     return "heading_recursive"
 
 
@@ -266,6 +274,7 @@ def _build_records_from_pdf_paths(
         doc_id = f"doc_{sha[:12]}"
         page_texts = parse_pdf_pages_clean(pdf_path)
         title = extract_title(page_texts, fallback=pdf_path.stem)
+        document_type = infer_document_type(pdf_path)
 
         new_documents.append(
             DocumentRecord(
@@ -273,14 +282,19 @@ def _build_records_from_pdf_paths(
                 title=title,
                 source_path=str(pdf_path),
                 sha256=sha,
+                document_type=document_type,
             )
         )
+
+        if is_pmbok_document(document_type):
+            initialize_pmbok_toc_for_document(pdf_path)
+
         for page_number, page_text in enumerate(page_texts, start=1):
             new_pages.append(
                 PageRecord(
                     doc_id=doc_id,
                     page=page_number,
-                    section=detect_section(page_text),
+                    section=detect_section(page_text, doc_path=pdf_path, page_num=page_number),
                     text=page_text,
                 )
             )
@@ -313,6 +327,7 @@ def list_documents(store_name: str, settings: Settings) -> list[DocumentInfo]:
             title=document.title,
             source_path=document.source_path,
             sha256=document.sha256,
+            document_type=document.document_type,
             page_count=int(page_counts.get(document.doc_id, 0)),
             chunk_count=int(chunk_counts.get(document.doc_id, 0)),
         )
@@ -436,4 +451,3 @@ def add_documents(
         temp_dir = Path(raw_temp_dir)
         pdf_paths = _save_uploads_to_temp(files, temp_dir)
         return add_document_paths(store_name, pdf_paths, settings)
-

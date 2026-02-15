@@ -34,4 +34,7 @@ class Settings(BaseModel):
     graph_max_depth: int = Field(default=2, ge=1)
     hybrid_vector_weight: float = Field(default=0.6, ge=0.0)
     hybrid_graph_weight: float = Field(default=0.4, ge=0.0)
+    citation_support_lexical_weight: float = Field(default=0.7, ge=0.0)
+    citation_support_hit_weight: float = Field(default=0.3, ge=0.0)
+    citation_support_floor: float = Field(default=0.001, ge=0.0)
     top_k: int = Field(default=8, ge=1)

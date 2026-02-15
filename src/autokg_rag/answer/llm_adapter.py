@@ -2,12 +2,15 @@
 
 from __future__ import annotations
 
+import logging
 import re
 from typing import Protocol
 
 from autokg_rag.answer.grounding import split_sentences
+from autokg_rag.exceptions import RetrievalError
 
 _CITATION_RE = re.compile(r"\[(\d+)\]")
+logger = logging.getLogger(__name__)
 
 
 class SentenceAdapter(Protocol):
@@ -114,7 +117,8 @@ class OllamaSentenceAdapter:
                 evidence_texts=evidence_texts,
                 max_sentences=max_sentences,
             )
-        except Exception:
+        except (RetrievalError, TimeoutError, OSError, ValueError) as exc:
+            logger.warning("Ollama sentence generation failed; using extractive fallback: %s", exc)
             return self._fallback.generate_sentences(
                 question=question,
                 evidence_texts=evidence_texts,
