@@ -106,6 +106,7 @@ def test_query_service_reranks_candidates_and_truncates_to_top_k(
         reranker_model="llama3:8b",
         ollama_base_url="http://localhost:11434",
         ollama_timeout_seconds=10.0,
+        ollama_api_key="",
     )
     payload = service.query_service(
         request=QueryRequest(

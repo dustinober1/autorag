@@ -12,9 +12,10 @@ def test_list_available_models_parses_ollama_tags(monkeypatch: MonkeyPatch, tmp_
     settings = Settings(artifact_root=tmp_path / "artifacts")
 
     class _FakeClient:
-        def __init__(self, *, base_url: str, timeout_seconds: float) -> None:
+        def __init__(self, *, base_url: str, timeout_seconds: float, api_key: str = "") -> None:
             _ = base_url
             _ = timeout_seconds
+            _ = api_key
 
         def list_tags(self) -> dict[str, object]:
             return {
