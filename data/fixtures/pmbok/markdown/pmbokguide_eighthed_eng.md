@@ -79,49 +79,40 @@ By examining these foundational elements, project management practitioners can g
 
 ### 1.3.1 Characteristics of a Project
 
-Organizations expect projects to deliver value in addition to outputs and artifacts. Project managers are expected to deliver project outcomes that create value for the organization and stakeholders within the organization’s system for value delivery.
+Organizations expect projects to deliver value in addition to outputs and artifacts. Project managers are expected to deliver project outcomes that create value for the organization and stakeholders within the organization's system for value delivery.
 
 Organizational work encompasses both operations and projects. Although both are expected to deliver value beyond outputs and artifacts, they differ in their value-creation processes. The following terms are defined to provide context for these distinctions and the broader content of this standard:
 
-   - **Temporary.** Projects are initiated to create value by producing tangible and/or intangible deliverables such as products, services, or other results. Unlike ongoing operations, projects are temporary and have a defined beginning and end. Although projects are temporary, their deliverables often persist beyond the project’s conclusion. Usually, a project ends when one or more of the following conditions are met:
+- **Temporary.** Projects are initiated to create value by producing tangible and/or intangible deliverables such as products, services, or other results. Unlike ongoing operations, projects are temporary and have a defined beginning and end. Although projects are temporary, their deliverables often persist beyond the project's conclusion. Usually, a project ends when one or more of the following conditions are met:
 
-     - The project’s objectives have been achieved;
+  - The project's objectives have been achieved;
+  - A governing body, the project sponsor, or the project team has determined that the objectives will not or cannot be met;
+  - Resources (funding, human, or physical) are exhausted or no longer available;
+  - Due to changes in strategy, priorities, or the external environment, the need for the project no longer exists; or
+  - The project is terminated for other reasons such as legal, regulatory, or compliance issues.
 
-     - A governing body, the project sponsor, or the project team has determined that the objectives will not or cannot be met;
-
-     - Resources (funding, human, or physical) are exhausted or no longer available;
-
-     - Due to changes in strategy, priorities, or the external environment, the need for the project no longer exists; or
-
-     - The project is terminated for other reasons such as legal, regulatory, or compliance issues.
-
-   - **Unique context.** A unique context in projects refers to the specific conditions and environments that distinguish one project from another, even if they have otherwise similar characteristics. This uniqueness arises from factors such as differences in goals, scope, duration, location, technology, quality, costs, risks, resources, and stakeholders involved in the project. Even if two projects aim for the same value or objectives, each project differs due to the context in which it is carried out. These differences require tailored management approaches to meet the specific needs and challenges of each project. As a result, the unique context of each project requires customized strategies for success.
+- **Unique context.** A unique context in projects refers to the specific conditions and environments that distinguish one project from another, even if they have otherwise similar characteristics. This uniqueness arises from factors such as differences in goals, scope, duration, location, technology, quality, costs, risks, resources, and stakeholders involved in the project. Even if two projects aim for the same value or objectives, each project differs due to the context in which it is carried out. These differences require tailored management approaches to meet the specific needs and challenges of each project. As a result, the unique context of each project requires customized strategies for success.
 
 For example, a large housing development project may involve a single construction vendor in a single government district. However, each of those housing units may involve varying lenders and buyers, distinct customization requests, and unique grading requirements from one plot to another.
 
-   - **Value creation through organizational change.** Projects, in pursuit of value, drive change in organizations. From a business perspective, a project’s purpose is to move an organization from one state to another to achieve a specific objective (see Figure 1-1). Before the project begins, an organization is in its current state. The desired result of the change driven by the project is described as the future state. For some projects, this shift may involve creating a transition state where several steps are taken in a structured manner to achieve the future state. The successful completion of a project results in the organization moving to the future state and achieving value for the organization, as defined by key stakeholders.
+- **Value creation through organizational change.** Projects, in pursuit of value, drive change in organizations. From a business perspective, a project's purpose is to move an organization from one state to another to achieve a specific objective (see Figure 1-1). Before the project begins, an organization is in its current state. The desired result of the change driven by the project is described as the future state. For some projects, this shift may involve creating a transition state where several steps are taken in a structured manner to achieve the future state. The successful completion of a project results in the organization moving to the future state and achieving value for the organization, as defined by key stakeholders.
 
 **1.3.2 Connecting Organizational Governance and Project Governance**
 
-Organizational governance provides direction and control through policies, processes, procedures, and decisions to meet strategic and operational goals. Typically overseen by an executive committee or organizational leaders, organizational governance helps ensure transparency, oversight, compliance, resiliency, and adaptability for its stakeholders. In many organizations, organizational governance is inspired by the country’s laws, business domain regulations, industry standards, and custom policies that are formed by the organization’s unique context. This context can influence the governance of portfolios, programs, and projects in several ways, including the following:
+Organizational governance provides direction and control through policies, processes, procedures, and decisions to meet strategic and operational goals. Typically overseen by an executive committee or organizational leaders, organizational governance helps ensure transparency, oversight, compliance, resiliency, and adaptability for its stakeholders. In many organizations, organizational governance is inspired by the country's laws, business domain regulations, industry standards, and custom policies that are formed by the organization's unique context. This context can influence the governance of portfolios, programs, and projects in several ways, including the following:
 
-   - Enforcing legal, regulatory, and compliance requirements;
-
-   - Defining ethical, social, and environmental responsibilities;
-
-   - Specifying operational, legal, financial, and risk policies;
-
-   - Promoting the alignment of portfolios, programs, and projects with strategic objectives at different hierarchical levels;
-
-   - Ensuring that initiatives contribute to the organizational mission and vision: and
-
-   - Facilitating decision-making that maximizes delivered value connected to the system for value delivery.
+- Enforcing legal, regulatory, and compliance requirements;
+- Defining ethical, social, and environmental responsibilities;
+- Specifying operational, legal, financial, and risk policies;
+- Promoting the alignment of portfolios, programs, and projects with strategic objectives at different hierarchical levels;
+- Ensuring that initiatives contribute to the organizational mission and vision: and
+- Facilitating decision-making that maximizes delivered value connected to the system for value delivery.
 
 Project governance is the adaptable framework that guides project management activities to create value through a unique product, service, or result aligned with organizational, strategic, and operational goals. Governance provides structure, systems and processes, roles, responsibilities, and decision-making models, such as RACI (responsible, accountable, consulted, informed) matrices or governance boards, to manage projects effectively. Governance frameworks can also ensure alignment with stakeholder expectations by defining accountability and communication protocols.
 
 Additionally, project governance helps prioritize initiatives and allocate resources to support strategic objectives. For instance, a steering committee in a product launch project may oversee milestones, enforce quality standards, and resolve escalated issues. Further details on the Governance performance domain are discussed in the second part of this publication (see Section 2.1 of A Guide to the Project Management Body of Knowledge [PMBOK [®] Guide] ) [2].
 
-In summary, while organizational governance provides the overall direction and control for the entire organization, project governance focuses on the specific processes and frameworks that should be implemented to manage individual projects effectively. Both are essential for ensuring that projects contribute to the organization’s strategic objectives and are executed successfully.
+In summary, while organizational governance provides the overall direction and control for the entire organization, project governance focuses on the specific processes and frameworks that should be implemented to manage individual projects effectively. Both are essential for ensuring that projects contribute to the organization's strategic objectives and are executed successfully.
 
 **1.3.2.1 Project Initiation**
 
