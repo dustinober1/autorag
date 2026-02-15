@@ -45,6 +45,7 @@ def _load_env_overrides() -> dict[str, Any]:
         "AUTORAG_EMBEDDING_MODEL": ("embedding_model", str),
         "AUTORAG_OLLAMA_BASE_URL": ("ollama_base_url", str),
         "AUTORAG_OLLAMA_TIMEOUT_SECONDS": ("ollama_timeout_seconds", _parse_env_float),
+        "OLLAMA_API_KEY": ("ollama_api_key", str),
         "AUTORAG_RERANKER_ENABLED": ("reranker_enabled", _parse_env_bool),
         "AUTORAG_RERANKER_MODEL": ("reranker_model", str),
         "AUTORAG_RERANKER_CANDIDATE_K": ("reranker_candidate_k", _parse_env_int),
