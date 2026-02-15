@@ -7,6 +7,12 @@ from autokg_rag.ingest.table_extractor import (
     extract_tables_from_pdf,
     table_to_markdown,
 )
+from autokg_rag.ingest.markdown_parse import (
+    discover_markdown_files,
+    extract_title_from_markdown,
+    parse_markdown_sections,
+    parse_markdown_to_chunks,
+)
 
 __all__ = [
     "run_ingest_pipeline",
@@ -17,4 +23,8 @@ __all__ = [
     "ExtractedTable",
     "extract_tables_from_pdf",
     "table_to_markdown",
+    "discover_markdown_files",
+    "extract_title_from_markdown",
+    "parse_markdown_sections",
+    "parse_markdown_to_chunks",
 ]

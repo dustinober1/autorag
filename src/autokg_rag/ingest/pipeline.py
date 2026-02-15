@@ -12,6 +12,12 @@ from autokg_rag.config import Settings, write_resolved_config
 from autokg_rag.exceptions import IngestError, RetrievalError
 from autokg_rag.ingest.document_types import infer_document_type, is_pmbok_document
 from autokg_rag.ingest.manifest import build_raw_documents
+from autokg_rag.ingest.markdown_parse import (
+    discover_markdown_files,
+    extract_title_from_markdown,
+    parse_markdown_sections,
+    sha256_for_file as sha256_for_markdown_file,
+)
 from autokg_rag.ingest.pdf_parse import (
     discover_pdf_files,
     extract_title,
